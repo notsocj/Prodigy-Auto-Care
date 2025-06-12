@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Prodigy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-5">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium px-4 py-2 rounded-lg hover:bg-white/10 backdrop-blur-sm">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex items-center justify-center min-h-screen py-12 px-4">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-dark">
+                    <i class="fas fa-user text-cream text-xl"></i>
+                </div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold font-display text-navy">
+                    Sign in to your account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Or
+                    <a href="register.html" class="font-medium text-blue-dark hover:text-navy transition-colors">
+                        create a new account
+                    </a>
+                </p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="mt-8 space-y-6">
+                <div class="rounded-md shadow-sm space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                            Email address
+                        </label>
+                        <input id="email" name="email" type="email" autocomplete="email" required 
+                               class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <input id="password" name="password" type="password" autocomplete="current-password" required 
+                                   class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10">
+                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-dark focus:ring-blue-dark border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="forgot-password.html" class="font-medium text-blue-dark hover:text-navy transition-colors">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" id="login-btn" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-sign-in-alt text-blue-200 group-hover:text-blue-100"></i>
+                        </span>
+                        Sign in
+                    </button>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-800" id="error-text"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading" class="hidden flex items-center justify-center">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-dark"></div>
+                    <span class="ml-2 text-blue-dark">Signing in...</span>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module">
+        import { loginUser } from './firebase.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const loginBtn = document.getElementById('login-btn');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const togglePassword = document.getElementById('toggle-password');
+            const passwordInput = document.getElementById('password');
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                const icon = togglePassword.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+
+            // Handle form submission
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Show loading state
+                loginBtn.style.display = 'none';
+                loading.classList.remove('hidden');
+                errorMessage.classList.add('hidden');
+                
+                try {
+                    const result = await loginUser(email, password);
+                    
+                    if (result.success) {
+                        // Redirect based on user role or to dashboard
+                        window.location.href = 'index.html';
+                    } else {
+                        showError(result.error);
+                    }
+                } catch (error) {
+                    showError(error.message);
+                }
+                
+                // Hide loading state
+                loginBtn.style.display = 'block';
+                loading.classList.add('hidden');
+            });
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

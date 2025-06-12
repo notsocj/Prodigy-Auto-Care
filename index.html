@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodigy - Car Wash Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .calendar-day {
+            @apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 cursor-pointer relative;
+        }
+        .calendar-day:hover {
+            @apply bg-gray-100 transform scale-105;
+        }
+        .calendar-day.available {
+            @apply text-navy hover:bg-blue-dark hover:text-white;
+        }
+        .calendar-day.selected {
+            @apply bg-blue-dark text-white shadow-lg;
+        }
+        .calendar-day.today {
+            @apply bg-brown text-white font-bold shadow-md;
+        }
+        .calendar-day.other-month {
+            @apply text-gray-300 cursor-not-allowed;
+        }
+        .calendar-day.unavailable {
+            @apply text-gray-400 cursor-not-allowed line-through;
+        }
+        .calendar-day.has-bookings::after {
+            content: '';
+            @apply absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-400 rounded-full;
+        }
+        
+        /* Mobile menu animation */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        /* Enhanced Navigation Styles */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #EFE4D2, #954C2E);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .logo-glow {
+            text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);
+        }
+        
+        .profile-btn-gradient {
+            background: linear-gradient(135deg, #954C2E, #754029);
+            box-shadow: 0 2px 8px rgba(149, 76, 46, 0.3);
+        }
+        
+        .profile-btn-gradient:hover {
+            background: linear-gradient(135deg, #754029, #5a3020);
+            box-shadow: 0 4px 12px rgba(149, 76, 46, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        .signout-btn-gradient {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+        
+        .signout-btn-gradient:hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        /* Flatpickr customization */
+        .flatpickr-calendar {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 12px !important;
+            border: 1px solid #e5e7eb !important;
+        }
+        
+        .flatpickr-day.selected {
+            background: #254D70 !important;
+            border-color: #254D70 !important;
+        }
+        
+        .flatpickr-day:hover {
+            background: #EFE4D2 !important;
+            border-color: #254D70 !important;
+        }
+        
+        .flatpickr-day.today {
+            background: #954C2E !important;
+            border-color: #954C2E !important;
+            color: white !important;
+        }
+        
+        .flatpickr-day.disabled {
+            color: #d1d5db !important;
+        }
+        
+        .flatpickr-months .flatpickr-month {
+            background: #254D70 !important;
+            color: white !important;
+        }
+        
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            background: #254D70 !important;
+        }
+        
+        .numInputWrapper span.arrowUp:after,
+        .numInputWrapper span.arrowDown:after {
+            border-bottom-color: white !important;
+            border-top-color: white !important;
+        }
+    </style>
+</head>
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl relative border-b border-blue-dark/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-5">
+                <!-- Logo Section -->
+                <div class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl logo-glow transition-all duration-300 group-hover:scale-110 group-hover:rotate-12"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display logo-glow tracking-wide">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div id="desktop-nav" class="hidden lg:flex items-center space-x-8">
+                    <!-- Customer Nav -->
+                    <div id="customer-nav" class="flex space-x-8">
+                        <a href="#booking-section" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Book Now</a>
+                        <a href="bookings.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">My Bookings</a>
+                        <a href="vehicles.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Vehicles</a>
+                        <a href="subscription.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Subscription</a>
+                    </div>
+                    
+                    <!-- Washer Nav -->
+                    <div id="washer-nav" class="hidden flex space-x-8">
+                        <a href="washer-jobs.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">My Jobs</a>
+                        <a href="washer-schedule.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Schedule</a>
+                        <a href="washer-earnings.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Earnings</a>
+                    </div>
+                    
+                    <!-- Admin Nav -->
+                    <div id="admin-nav" class="hidden flex space-x-8">
+                        <a href="admin.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Dashboard</a>
+                        <a href="admin-bookings.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Bookings</a>
+                        <a href="admin-staff.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Staff</a>
+                        <a href="admin-reports.html" class="nav-link text-cream hover:text-cream/90 transition-all duration-300 font-medium px-2 py-1">Reports</a>
+                    </div>
+                </div>
+                
+                <!-- User Profile & Mobile Menu Button -->
+                <div class="flex items-center space-x-4">
+                    <!-- Authenticated User -->
+                    <div id="user-nav" class="hidden sm:flex items-center space-x-4">
+                        <!-- User Info Card -->
+                        <div class="hidden md:block bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                            <div class="text-cream text-sm">
+                                <div id="user-name" class="font-semibold">Loading...</div>
+                                <div class="flex items-center space-x-1 text-xs opacity-90">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <span id="loyalty-points">0 points</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Profile Button -->
+                        <a href="profile.html" id="profile-btn" class="profile-btn-gradient text-white p-3 rounded-xl hover:bg-opacity-80 transition-all duration-300 shadow-lg border border-brown/30">
+                            <i class="fas fa-user text-lg"></i>
+                        </a>
+                        
+                        <!-- Sign Out Button -->
+                        <button id="signout-btn" class="signout-btn-gradient text-white p-3 rounded-xl transition-all duration-300 shadow-lg border border-red-600/30">
+                            <i class="fas fa-sign-out-alt text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-button" class="lg:hidden text-cream p-3 rounded-xl hover:bg-white/10 transition-all duration-300 backdrop-blur-sm border border-white/20">
+                        <i id="menu-icon" class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Subtle gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Quick Booking Section -->
+        <div id="booking-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-8">
+                <h2 class="text-2xl sm:text-3xl font-bold font-display text-navy mb-6 sm:mb-8">Quick Booking</h2>
+                
+                <!-- Step Indicator -->
+                <div class="flex items-center mb-6">
+                    <div class="flex items-center">
+                        <div id="step1" class="w-8 h-8 bg-blue-dark text-white rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300">1</div>
+                        <span class="ml-2 text-sm font-medium text-blue-dark transition-all duration-300">Select Service</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center">
+                        <div id="step2" class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300">2</div>
+                        <span class="ml-2 text-sm font-medium text-gray-500 transition-all duration-300">Choose Vehicle</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center">
+                        <div id="step3" class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300">3</div>
+                        <span class="ml-2 text-sm font-medium text-gray-500 transition-all duration-300">Select Date & Time</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div id="step-navigation" class="flex justify-between mb-6 hidden">
+                    <button id="prev-step-btn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i>Previous
+                    </button>
+                    <button id="next-step-btn" class="px-4 py-2 bg-blue-dark text-white rounded-lg hover:bg-navy transition-colors font-medium">
+                        Next<i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- Service Selection -->
+                <div id="service-step" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-navy">Choose Your Service</h3>
+                        <p class="text-sm text-gray-500">Step 1 of 3</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Services will be populated by JavaScript -->
+                    </div>
+                    <div class="text-center text-sm text-gray-500 mt-4">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Select a service to continue to vehicle selection
+                    </div>
+                </div>
+
+                <!-- Vehicle Selection -->
+                <div id="vehicle-step" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-navy">Select Vehicle</h3>
+                        <p class="text-sm text-gray-500">Step 2 of 3</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Vehicles will be populated by JavaScript -->
+                    </div>
+                    <div class="flex justify-between items-center mt-4">
+                        <button id="vehicle-back-btn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Services
+                        </button>
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Select a vehicle to continue
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar & Time Selection -->
+                <div id="datetime-step" class="hidden space-y-6 sm:space-y-8">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg sm:text-xl font-semibold font-display text-navy">Select Date & Time</h3>
+                        <p class="text-sm text-gray-500">Step 3 of 3</p>
+                    </div>
+                    
+                    <!-- Back Button -->
+                    <div class="flex justify-start">
+                        <button id="datetime-back-btn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-medium">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Vehicles
+                        </button>
+                    </div>
+                    
+                    <!-- Flatpickr Calendar -->
+                    <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm">
+                        <div class="mb-6">
+                            <label for="booking-calendar" class="block text-lg font-semibold font-display text-navy mb-4">Choose Your Date</label>
+                            <input 
+                                id="booking-calendar" 
+                                type="text" 
+                                class="w-full p-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-dark focus:outline-none transition-colors" 
+                                placeholder="Click to select date" 
+                                readonly
+                            />
+                        </div>
+                        
+                        <div class="flex items-center justify-center space-x-6 pt-4 border-t border-gray-100">
+                            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                <div class="w-3 h-3 bg-brown rounded-full"></div>
+                                <span>Today</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                <div class="w-3 h-3 bg-blue-dark rounded-full"></div>
+                                <span>Selected</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                                <span>Unavailable</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Slots -->
+                    <div id="time-slots" class="hidden">
+                        <h4 class="text-base sm:text-lg font-semibold font-display text-navy mb-4">Available Times for <span id="selected-date" class="text-blue-dark"></span></h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                            <!-- Time slots will be generated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Summary -->
+                    <div id="booking-summary" class="hidden bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-bold text-navy text-lg">Booking Summary</h4>
+                            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                        </div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center py-2 border-b border-blue-200">
+                                <span class="font-medium text-gray-700">Service:</span>
+                                <span id="summary-service" class="font-semibold text-navy"></span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-blue-200">
+                                <span class="font-medium text-gray-700">Vehicle:</span>
+                                <span id="summary-vehicle" class="font-semibold text-navy"></span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-blue-200">
+                                <span class="font-medium text-gray-700">Date & Time:</span>
+                                <span id="summary-datetime" class="font-semibold text-navy"></span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 bg-white rounded-lg px-4 border-2 border-blue-300">
+                                <span class="font-bold text-lg text-gray-800">Total:</span>
+                                <span id="summary-price" class="font-bold text-xl text-brown"></span>
+                            </div>
+                        </div>
+                        
+                        <button id="confirm-booking" class="w-full bg-gradient-to-r from-blue-dark to-navy text-white py-4 rounded-xl font-bold text-lg hover:from-navy hover:to-blue-dark transition-all duration-300 mt-6 shadow-lg transform hover:scale-105">
+                            <i class="fas fa-calendar-check mr-2"></i>Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold text-navy mb-4">Recent Bookings</h2>
+            <div id="recent-bookings-container" class="space-y-3">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-navy">Sign In / Register</h3>
+                <button id="close-auth-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Auth Tabs -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button id="signin-tab" class="px-4 py-2 font-medium text-blue-dark border-b-2 border-blue-dark">Sign In</button>
+                <button id="register-tab" class="px-4 py-2 font-medium text-gray-500">Register</button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <form id="signin-form" class="space-y-4">
+                <div>
+                    <label for="signin-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="signin-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="signin-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="signin-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
+                    Sign In
+                </button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="register-form" class="space-y-4 hidden">
+                <div>
+                    <label for="register-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="register-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="register-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="register-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="register-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input type="tel" id="register-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="register-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="register-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="register-confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
+                    Register
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Guest CTA Modal -->
+    <div id="guest-cta-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+            <div class="text-center">
+                <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-dark mb-4">
+                    <i class="fas fa-user text-cream text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-navy mb-2">Sign in required</h3>
+                <p class="text-gray-600 mb-6">Please sign in or create an account to book a car wash service.</p>
+                <div class="flex space-x-4">
+                    <a href="login.html" class="flex-1 bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors text-center">
+                        Sign In
+                    </a>
+                    <a href="register.html" class="flex-1 bg-brown text-white py-3 rounded-lg font-semibold hover:bg-opacity-80 transition-colors text-center">
+                        Sign Up
+                    </a>
+                </div>
+                <button id="close-guest-modal" class="mt-4 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div id="vehicle-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-navy">Add New Vehicle</h3>
+                <button id="close-vehicle-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="add-vehicle-form" class="space-y-4">
+                <div>
+                    <label for="vehicle-make" class="block text-sm font-medium text-gray-700 mb-1">Make</label>
+                    <input type="text" id="vehicle-make" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="vehicle-model" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                    <input type="text" id="vehicle-model" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="vehicle-plate" class="block text-sm font-medium text-gray-700 mb-1">Plate Number</label>
+                    <input type="text" id="vehicle-plate" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
+                    Add Vehicle
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
