@@ -794,12 +794,14 @@ async function confirmBooking() {
             paymentMethod
         );
         
-        // Reload bookings and calendar
+        // Reload bookings
         appState.bookings = await getUserBookings();
         updateBookingsUI();
         
-        // Refresh the calendar to show updated availability
-        await generateCalendar();
+        // Refresh the time slots to show updated availability
+        if (bookingState.date) {
+            await generateTimeSlots(bookingState.date);
+        }
         
         // Show success message
         alert('Booking confirmed! You will receive a confirmation SMS shortly.');
