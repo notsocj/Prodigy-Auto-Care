@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-5">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Admin Panel</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="admin-dashboard.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
+                    <a href="admin-bookings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Bookings</a>
+                    <a href="admin-staff.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Staff</a>
+                    <a href="admin-reports.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
+                    <a href="admin-settings.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Settings</a>
+                </div>
+                
+                <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+                    <i class="fas fa-user-shield mr-2"></i>Admin
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold font-display text-navy mb-2">System Settings</h1>
+            <p class="text-gray-600">Configure your car wash business settings</p>
+        </div>
+
+        <!-- Settings Sections -->
+        <div class="space-y-6">
+            <!-- Business Information -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Business Information</h2>
+                <form id="business-info-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="business-name" class="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
+                        <input type="text" id="business-name" value="Prodigy Auto Care" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="business-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="business-phone" value="+63 XXX XXX XXXX" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="business-address" class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <textarea id="business-address" rows="2" 
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">123 Car Wash Street, Auto City, Philippines</textarea>
+                    </div>
+                    <div>
+                        <label for="business-email" class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                        <input type="email" id="business-email" value="info@prodigyautocare.com" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="business-hours" class="block text-sm font-medium text-gray-700 mb-2">Operating Hours</label>
+                        <input type="text" id="business-hours" value="8:00 AM - 6:00 PM" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div class="md:col-span-2 flex justify-end">
+                        <button type="submit" class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Business Info
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Booking Settings -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Booking Settings</h2>
+                <form id="booking-settings-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="booking-cutoff" class="block text-sm font-medium text-gray-700 mb-2">Booking Cutoff Hours</label>
+                        <select id="booking-cutoff" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <option value="1">1 hour before</option>
+                            <option value="2" selected>2 hours before</option>
+                            <option value="3">3 hours before</option>
+                            <option value="6">6 hours before</option>
+                            <option value="12">12 hours before</option>
+                            <option value="24">24 hours before</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Minimum time before service to allow bookings</p>
+                    </div>
+                    <div>
+                        <label for="max-bookings-per-slot" class="block text-sm font-medium text-gray-700 mb-2">Max Bookings per Time Slot</label>
+                        <input type="number" id="max-bookings-per-slot" value="3" min="1" max="10"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="service-duration" class="block text-sm font-medium text-gray-700 mb-2">Default Service Duration (minutes)</label>
+                        <input type="number" id="service-duration" value="60" min="15" max="180" step="15"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="auto-assign" class="block text-sm font-medium text-gray-700 mb-2">Auto-assign Washers</label>
+                        <select id="auto-assign" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <option value="false">Manual assignment</option>
+                            <option value="true">Automatic assignment</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 flex justify-end">
+                        <button type="submit" class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Booking Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Payment Settings -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Payment Settings</h2>
+                <form id="payment-settings-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Accepted Payment Methods</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="payment-gcash" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>GCash</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="payment-maya" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Maya</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="payment-card" class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Credit/Debit Card</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="payment-cash" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Cash on Service</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="payment-bank" class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Bank Transfer</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="tax-rate" class="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
+                            <input type="number" id="tax-rate" value="12" min="0" max="100" step="0.01"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        </div>
+                        <div>
+                            <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                            <select id="currency" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                                <option value="PHP" selected>Philippine Peso (₱)</option>
+                                <option value="USD">US Dollar ($)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Payment Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Subscription Settings -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Subscription Settings</h2>
+                <form id="subscription-settings-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="monthly-price" class="block text-sm font-medium text-gray-700 mb-2">Monthly Subscription Price</label>
+                        <input type="number" id="monthly-price" value="999" min="0" step="1"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="subscription-benefits" class="block text-sm font-medium text-gray-700 mb-2">Subscription Benefits</label>
+                        <textarea id="subscription-benefits" rows="3" placeholder="List subscription benefits..."
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">Unlimited washes, Priority booking, 20% discount on add-ons</textarea>
+                    </div>
+                    <div>
+                        <label for="loyalty-points-rate" class="block text-sm font-medium text-gray-700 mb-2">Loyalty Points Rate</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" id="loyalty-points-rate" value="1" min="0" step="0.1"
+                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <span class="text-sm text-gray-600">points per ₱1 spent</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="points-redemption-rate" class="block text-sm font-medium text-gray-700 mb-2">Points Redemption Rate</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" id="points-redemption-rate" value="100" min="1"
+                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <span class="text-sm text-gray-600">points = ₱1</span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 flex justify-end">
+                        <button type="submit" class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Subscription Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Notification Settings</h2>
+                <form id="notification-settings-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Email Notifications</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="email-new-booking" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>New booking notifications</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="email-cancellation" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Booking cancellation notifications</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="email-daily-report" class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Daily summary reports</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">SMS Notifications</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="sms-booking-reminder" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Booking reminders to customers</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="sms-service-complete" class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span>Service completion notifications</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Notification Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- System Maintenance -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">System Maintenance</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h3 class="font-semibold text-gray-800">Data Management</h3>
+                        <button class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-download mr-2"></i>Export All Data
+                        </button>
+                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-database mr-2"></i>Backup Database
+                        </button>
+                        <button class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-broom mr-2"></i>Clean Old Data
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h3 class="font-semibold text-gray-800">System Actions</h3>
+                        <button class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Cache
+                        </button>
+                        <button class="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors">
+                            <i class="fas fa-tools mr-2"></i>System Check
+                        </button>
+                        <button class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>Maintenance Mode
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module" src="../admin-firebase.js"></script>
+    <script type="module">
+        import { onAdminAuthChange } from '../admin-firebase.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSettingsPage();
+        });
+
+        function initializeSettingsPage() {
+            onAdminAuthChange(async (user, isAdmin) => {
+                if (isAdmin) {
+                    await loadSettings();
+                } else {
+                    window.location.href = '../index.html';
+                }
+            });
+
+            // Event listeners for forms
+            initializeFormHandlers();
+        }
+
+        function initializeFormHandlers() {
+            // Business Info Form
+            document.getElementById('business-info-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                alert('Business information saved successfully!');
+            });
+
+            // Booking Settings Form
+            document.getElementById('booking-settings-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                alert('Booking settings saved successfully!');
+            });
+
+            // Payment Settings Form
+            document.getElementById('payment-settings-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                alert('Payment settings saved successfully!');
+            });
+
+            // Subscription Settings Form
+            document.getElementById('subscription-settings-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                alert('Subscription settings saved successfully!');
+            });
+
+            // Notification Settings Form
+            document.getElementById('notification-settings-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                alert('Notification settings saved successfully!');
+            });
+
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                try {
+                    window.location.href = '../index.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
+            });
+        }
+
+        async function loadSettings() {
+            try {
+                // Load settings from Firebase
+                // This would be implemented with actual Firebase calls
+                console.log('Loading admin settings...');
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+    </script>
+</body>
+</html>

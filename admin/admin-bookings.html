@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-5">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Admin Panel</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="admin-dashboard.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
+                    <a href="admin-bookings.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Bookings</a>
+                    <a href="admin-staff.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Staff</a>
+                    <a href="admin-reports.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
+                    <a href="admin-settings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
+                </div>
+                
+                <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+                    <i class="fas fa-user-shield mr-2"></i>Admin
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold font-display text-navy mb-2">Manage Bookings</h1>
+            <p class="text-gray-600">View and manage all car wash bookings</p>
+        </div>
+
+        <!-- Tabs for Bookings and Availability -->
+        <div class="bg-white rounded-xl shadow-lg mb-8">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                    <button id="bookings-tab" class="tab-button border-b-2 border-blue-dark text-blue-dark py-4 px-1 text-sm font-medium">
+                        <i class="fas fa-calendar-check mr-2"></i>Manage Bookings
+                    </button>
+                    <button id="availability-tab" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                        <i class="fas fa-clock mr-2"></i>Manage Availability
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Bookings Management Section -->
+        <div id="bookings-section">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy" id="total-bookings">0</h3>
+                    <p class="text-sm text-gray-600">Total Bookings</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy" id="pending-bookings">0</h3>
+                    <p class="text-sm text-gray-600">Pending</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-play text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy" id="ongoing-bookings">0</h3>
+                    <p class="text-sm text-gray-600">Ongoing</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy" id="completed-bookings">0</h3>
+                    <p class="text-sm text-gray-600">Completed</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy" id="cancelled-bookings">0</h3>
+                    <p class="text-sm text-gray-600">Cancelled</p>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="search-bookings" placeholder="Search bookings..." 
+                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark w-full">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="status-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <option value="">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Service</label>
+                        <select id="service-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <option value="">All Services</option>
+                            <option value="Basic Wash">Basic Wash</option>
+                            <option value="Premium Wash">Premium Wash</option>
+                            <option value="Deluxe Wash">Deluxe Wash</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                        <input type="date" id="date-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    
+                    <div>
+                        <button id="clear-filters" class="w-full bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold font-display text-navy">All Bookings</h2>
+                </div>
+                
+                <!-- Loading State -->
+                <div id="bookings-loading" class="text-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-dark mx-auto mb-4"></div>
+                    <p class="text-gray-500">Loading bookings...</p>
+                </div>
+
+                <!-- Bookings Table -->
+                <div id="bookings-table-container" class="hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Washer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body" class="bg-white divide-y divide-gray-200">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="no-bookings" class="hidden text-center py-12">
+                    <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-navy mb-2">No Bookings Found</h3>
+                    <p class="text-gray-600">No bookings match your current filters</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Availability Management Section -->
+        <div id="availability-section" class="hidden">
+            <!-- Availability Header -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold font-display text-navy">Availability Management</h2>
+                        <p class="text-gray-600">Manage time slots and booking capacity for each day (24/7 Operations)</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button id="bulk-create-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Bulk Create Slots
+                        </button>
+                        <button id="copy-template-btn" class="bg-blue-dark text-white px-4 py-2 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-copy mr-2"></i>Copy Template
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Date Selection for Availability -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="availability-date" class="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+                        <input type="date" id="availability-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="day-template" class="block text-sm font-medium text-gray-700 mb-2">Day Template</label>
+                        <select id="day-template" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <option value="">Select template</option>
+                            <option value="24hours">24 Hours (Every Hour)</option>
+                            <option value="business-hours">Business Hours (8AM-8PM)</option>
+                            <option value="night-shift">Night Shift (8PM-8AM)</option>
+                            <option value="peak-hours">Peak Hours (6AM-10PM)</option>
+                            <option value="custom">Custom Hours</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="time-interval" class="block text-sm font-medium text-gray-700 mb-2">Time Interval</label>
+                        <select id="time-interval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                            <option value="30">Every 30 minutes</option>
+                            <option value="60" selected>Every hour</option>
+                            <option value="120">Every 2 hours</option>
+                            <option value="180">Every 3 hours</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="load-availability-btn" class="w-full bg-blue-dark text-white py-2 px-4 rounded-lg hover:bg-navy transition-colors">
+                            <i class="fas fa-search mr-2"></i>Load Day
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Range Selector for Custom Template -->
+            <div id="custom-time-range" class="bg-white rounded-xl shadow-lg p-6 mb-8 hidden">
+                <h3 class="text-lg font-bold text-navy mb-4">Custom Time Range</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="start-time" class="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                        <input type="time" id="start-time" value="08:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div>
+                        <label for="end-time" class="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                        <input type="time" id="end-time" value="18:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="apply-custom-range" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                            Apply Custom Range
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Month Calendar Preview -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-navy">Calendar Overview - <span id="calendar-month-year"></span></h3>
+                    <div class="flex space-x-2">
+                        <button id="prev-month" class="p-2 text-gray-600 hover:text-navy transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-month" class="p-2 text-gray-600 hover:text-navy transition-colors">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1">
+                    <!-- Calendar will be populated by JavaScript -->
+                </div>
+                <div class="flex items-center justify-center space-x-6 mt-4 text-xs">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-500 rounded"></div>
+                        <span>Has Availability</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-gray-300 rounded"></div>
+                        <span>No Availability</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-blue-500 rounded"></div>
+                        <span>Selected</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Slots Management -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold text-navy">Time Slots Configuration</h3>
+                    <div class="flex space-x-2">
+                        <button id="add-time-slot-btn" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                            <i class="fas fa-plus mr-1"></i>Add Slot
+                        </button>
+                        <button id="save-availability-btn" class="bg-blue-dark text-white px-3 py-2 rounded-lg hover:bg-navy transition-colors text-sm">
+                            <i class="fas fa-save mr-1"></i>Save Changes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selected Date Display -->
+                <div id="selected-date-info" class="mb-6 p-4 bg-blue-50 rounded-lg hidden">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-semibold text-navy">Managing availability for:</h4>
+                            <p id="selected-date-display" class="text-gray-600"></p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600">Total Slots: <span id="total-slots-count">0</span></p>
+                            <p class="text-sm text-gray-600">Max Capacity: <span id="total-capacity">0</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Slots Grid -->
+                <div id="time-slots-grid" class="space-y-4">
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                        <p>Select a date to manage time slots</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Time Slot Modal -->
+    <div id="add-time-slot-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-navy">Add Time Slot</h3>
+                <button id="close-add-slot-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="add-time-slot-form" class="space-y-4">
+                <div>
+                    <label for="slot-time" class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                    <input type="time" id="slot-time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                </div>
+                
+                <div>
+                    <label for="slot-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max Bookings</label>
+                    <input type="number" id="slot-max-bookings" min="1" max="20" value="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                </div>
+                
+                <div>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="slot-available" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                        <span class="text-sm font-medium text-gray-700">Available for booking</span>
+                    </label>
+                </div>
+
+                <div class="flex space-x-4 pt-4">
+                    <button type="button" id="cancel-add-slot" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        Add Slot
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Create Modal -->
+    <div id="bulk-create-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-navy">Bulk Create Availability</h3>
+                <button id="close-bulk-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="bulk-create-form" class="space-y-6">
+                <!-- Date Range Selection -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-navy mb-3">Date Range</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="bulk-start-date" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                            <input type="date" id="bulk-start-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                        </div>
+                        <div>
+                            <label for="bulk-end-date" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                            <input type="date" id="bulk-end-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day Selection -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-navy mb-3">Days of Week to Include</h4>
+                    <div class="grid grid-cols-7 gap-2">
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-0" name="days" value="0" class="mb-1">
+                            <span class="text-xs">Sun</span>
+                        </label>
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-1" name="days" value="1" checked class="mb-1">
+                            <span class="text-xs">Mon</span>
+                        </label>
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-2" name="days" value="2" checked class="mb-1">
+                            <span class="text-xs">Tue</span>
+                        </label>
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-3" name="days" value="3" checked class="mb-1">
+                            <span class="text-xs">Wed</span>
+                        </label>
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-4" name="days" value="4" checked class="mb-1">
+                            <span class="text-xs">Thu</span>
+                        </label>
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-5" name="days" value="5" checked class="mb-1">
+                            <span class="text-xs">Fri</span>
+                        </label>
+                        <label class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-100">
+                            <input type="checkbox" id="day-6" name="days" value="6" checked class="mb-1">
+                            <span class="text-xs">Sat</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Time Configuration -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-navy mb-3">Time Configuration</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="bulk-template" class="block text-sm font-medium text-gray-700 mb-2">Template</label>
+                            <select id="bulk-template" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                                <option value="">Select template</option>
+                                <option value="24hours">24 Hours (All Day)</option>
+                                <option value="business-hours">Business Hours (8AM-8PM)</option>
+                                <option value="night-shift">Night Shift (8PM-8AM)</option>
+                                <option value="peak-hours">Peak Hours (6AM-10PM)</option>
+                                <option value="custom">Custom Time Range</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="bulk-interval" class="block text-sm font-medium text-gray-700 mb-2">Time Interval</label>
+                            <select id="bulk-interval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                                <option value="30">Every 30 minutes</option>
+                                <option value="60" selected>Every hour</option>
+                                <option value="120">Every 2 hours</option>
+                                <option value="180">Every 3 hours</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Custom Time Range -->
+                    <div id="bulk-custom-range" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="bulk-start-time" class="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                            <input type="time" id="bulk-start-time" value="08:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        </div>
+                        <div>
+                            <label for="bulk-end-time" class="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                            <input type="time" id="bulk-end-time" value="18:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Settings -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-navy mb-3">Booking Settings</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="bulk-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max Bookings per Slot</label>
+                            <input type="number" id="bulk-max-bookings" min="1" max="20" value="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                        </div>
+                        <div class="flex items-end">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" id="bulk-skip-existing" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span class="text-sm font-medium text-gray-700">Skip dates with existing availability</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div id="bulk-preview" class="bg-blue-50 rounded-lg p-4 hidden">
+                    <h4 class="font-semibold text-navy mb-2">Preview</h4>
+                    <div id="preview-content" class="text-sm text-gray-700">
+                        <!-- Preview content will be populated -->
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="button" id="cancel-bulk-create" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="button" id="preview-bulk-create" class="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        Preview
+                    </button>
+                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        Create Availability
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../admin-firebase.js"></script>
+    <script type="module">
+        import { onAdminAuthChange, getRecentBookings, updateBookingStatus, assignWasherToBooking, getActiveStaff, getAvailability, updateDateAvailability } from '../admin-firebase.js';
+        
+        let allBookings = [];
+        let filteredBookings = [];
+        let washers = [];
+        let currentAvailabilityDate = null;
+        let currentTimeSlots = {};
+        let currentCalendarDate = new Date();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBookingsPage();
+        });
+
+        function initializeBookingsPage() {
+            onAdminAuthChange(async (user, isAdmin) => {
+                if (isAdmin) {
+                    await loadBookingsData();
+                } else {
+                    window.location.href = '../index.html';
+                }
+            });
+
+            // Initialize tabs and event listeners
+            initializeTabs();
+            initializeEventListeners();
+        }
+
+        function initializeTabs() {
+            const bookingsTab = document.getElementById('bookings-tab');
+            const availabilityTab = document.getElementById('availability-tab');
+            const bookingsSection = document.getElementById('bookings-section');
+            const availabilitySection = document.getElementById('availability-section');
+
+            bookingsTab.addEventListener('click', () => {
+                // Show bookings section
+                bookingsSection.classList.remove('hidden');
+                availabilitySection.classList.add('hidden');
+                
+                // Update tab styles
+                bookingsTab.classList.add('border-blue-dark', 'text-blue-dark');
+                bookingsTab.classList.remove('border-transparent', 'text-gray-500');
+                availabilityTab.classList.remove('border-blue-dark', 'text-blue-dark');
+                availabilityTab.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            availabilityTab.addEventListener('click', () => {
+                // Show availability section
+                availabilitySection.classList.remove('hidden');
+                bookingsSection.classList.add('hidden');
+                
+                // Update tab styles
+                availabilityTab.classList.add('border-blue-dark', 'text-blue-dark');
+                availabilityTab.classList.remove('border-transparent', 'text-gray-500');
+                bookingsTab.classList.remove('border-blue-dark', 'text-blue-dark');
+                bookingsTab.classList.add('border-transparent', 'text-gray-500');
+                
+                // Initialize availability management
+                initializeAvailabilityManagement();
+            });
+        }
+
+        function initializeEventListeners() {
+            // Existing bookings event listeners
+            document.getElementById('search-bookings').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('service-filter').addEventListener('change', applyFilters);
+            document.getElementById('date-filter').addEventListener('change', applyFilters);
+            document.getElementById('clear-filters').addEventListener('click', clearFilters);
+
+            // Availability management event listeners
+            document.getElementById('load-availability-btn').addEventListener('click', loadAvailabilityForDate);
+            document.getElementById('add-time-slot-btn').addEventListener('click', openAddTimeSlotModal);
+            document.getElementById('save-availability-btn').addEventListener('click', saveAvailability);
+            document.getElementById('bulk-create-btn').addEventListener('click', openBulkCreateModal);
+
+            // Modal event listeners
+            document.getElementById('close-add-slot-modal').addEventListener('click', closeAddTimeSlotModal);
+            document.getElementById('cancel-add-slot').addEventListener('click', closeAddTimeSlotModal);
+            document.getElementById('add-time-slot-form').addEventListener('submit', handleAddTimeSlot);
+
+            document.getElementById('close-bulk-modal').addEventListener('click', closeBulkCreateModal);
+            document.getElementById('cancel-bulk-create').addEventListener('click', closeBulkCreateModal);
+            document.getElementById('bulk-create-form').addEventListener('submit', handleBulkCreate);
+
+            // Calendar navigation
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                renderCalendar();
+            });
+
+            // Template change handlers
+            document.getElementById('day-template').addEventListener('change', handleTemplateChange);
+            document.getElementById('bulk-template').addEventListener('change', handleBulkTemplateChange);
+            document.getElementById('apply-custom-range').addEventListener('click', applyCustomTemplate);
+            document.getElementById('preview-bulk-create').addEventListener('click', previewBulkCreate);
+        }
+
+        function initializeAvailabilityManagement() {
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('availability-date').value = tomorrow.toISOString().split('T')[0];
+            
+            // Set bulk create dates to next week
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            const monthLater = new Date();
+            monthLater.setMonth(monthLater.getMonth() + 1);
+            
+            document.getElementById('bulk-start-date').value = nextWeek.toISOString().split('T')[0];
+            document.getElementById('bulk-end-date').value = monthLater.toISOString().split('T')[0];
+            
+            // Initialize calendar
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            const monthYearElement = document.getElementById('calendar-month-year');
+            
+            // Clear previous calendar
+            calendarGrid.innerHTML = '';
+            
+            // Set month/year display
+            monthYearElement.textContent = currentCalendarDate.toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            // Create day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'text-center text-xs font-semibold text-gray-600 p-2';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 1);
+            const lastDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 0);
+            const startDay = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < startDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'p-2';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                const dateString = `${currentCalendarDate.getFullYear()}-${(currentCalendarDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                
+                dayElement.className = 'p-2 text-center cursor-pointer border rounded hover:bg-blue-100 transition-colors relative';
+                dayElement.textContent = day;
+                dayElement.dataset.date = dateString;
+                
+                // Highlight today
+                const today = new Date();
+                if (dateString === today.toISOString().split('T')[0]) {
+                    dayElement.classList.add('bg-brown', 'text-white', 'font-bold');
+                }
+                
+                // Check if date has availability (you can implement this async)
+                checkDateAvailabilityAsync(dateString).then(hasAvailability => {
+                    if (hasAvailability) {
+                        dayElement.classList.add('bg-green-100');
+                        dayElement.style.borderColor = '#10b981';
+                    }
+                });
+                
+                // Add click handler
+                dayElement.addEventListener('click', () => {
+                    document.getElementById('availability-date').value = dateString;
+                    loadAvailabilityForDate();
+                    
+                    // Update calendar selection
+                    document.querySelectorAll('[data-date]').forEach(el => {
+                        el.classList.remove('bg-blue-500', 'text-white');
+                    });
+                    dayElement.classList.add('bg-blue-500', 'text-white');
+                });
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        async function checkDateAvailabilityAsync(dateString) {
+            try {
+                const availability = await getAvailability(dateString);
+                return availability && Object.keys(availability).length > 0;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function handleTemplateChange() {
+            const template = document.getElementById('day-template').value;
+            
+            if (template === 'custom') {
+                document.getElementById('custom-time-range').classList.remove('hidden');
+            } else {
+                document.getElementById('custom-time-range').classList.add('hidden');
+                if (template) {
+                    applyTemplate(template);
+                }
+            }
+        }
+
+        function handleBulkTemplateChange() {
+            const template = document.getElementById('bulk-template').value;
+            
+            if (template === 'custom') {
+                document.getElementById('bulk-custom-range').classList.remove('hidden');
+            } else {
+                document.getElementById('bulk-custom-range').classList.add('hidden');
+            }
+        }
+
+        function applyCustomTemplate() {
+            const startTime = document.getElementById('start-time').value;
+            const endTime = document.getElementById('end-time').value;
+            const interval = parseInt(document.getElementById('time-interval').value);
+            
+            if (!startTime || !endTime) {
+                alert('Please select both start and end times');
+                return;
+            }
+            
+            currentTimeSlots = generateTimeSlots(startTime, endTime, interval);
+            displayAvailability();
+            updateSlotStats();
+        }
+
+        function generateTimeSlots(startTime, endTime, intervalMinutes, maxBookings = 3) {
+            const slots = {};
+            const start = new Date(`2025-01-01T${startTime}:00`);
+            const end = new Date(`2025-01-01T${endTime}:00`);
+            
+            // Handle overnight shifts (end time is next day)
+            if (end <= start) {
+                end.setDate(end.getDate() + 1);
+            }
+            
+            const current = new Date(start);
+            
+            while (current < end) {
+                const timeString = current.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                slots[timeString] = {
+                    available: true,
+                    maxBookings: maxBookings,
+                    currentBookings: 0
+                };
+                
+                current.setMinutes(current.getMinutes() + intervalMinutes);
+            }
+            
+            return slots;
+        }
+
+        function applyTemplate(template) {
+            const interval = parseInt(document.getElementById('time-interval').value);
+            let timeSlots = {};
+            
+            switch (template) {
+                case '24hours':
+                    timeSlots = generateTimeSlots('00:00', '23:59', interval);
+                    break;
+                case 'business-hours':
+                    timeSlots = generateTimeSlots('08:00', '20:00', interval);
+                    break;
+                case 'night-shift':
+                    timeSlots = generateTimeSlots('20:00', '08:00', interval);
+                    break;
+                case 'peak-hours':
+                    timeSlots = generateTimeSlots('06:00', '22:00', interval);
+                    break;
+            }
+            
+            if (Object.keys(timeSlots).length > 0) {
+                currentTimeSlots = timeSlots;
+                displayAvailability();
+                updateSlotStats();
+            }
+        }
+
+        function previewBulkCreate() {
+            const startDate = new Date(document.getElementById('bulk-start-date').value);
+            const endDate = new Date(document.getElementById('bulk-end-date').value);
+            const template = document.getElementById('bulk-template').value;
+            const interval = parseInt(document.getElementById('bulk-interval').value);
+            const selectedDays = Array.from(document.querySelectorAll('input[name="days"]:checked')).map(cb => parseInt(cb.value));
+            
+            if (!template || selectedDays.length === 0) {
+                alert('Please select a template and at least one day of the week');
+                return;
+            }
+            
+            let previewText = `Date Range: ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}\n`;
+            previewText += `Template: ${template}\n`;
+            previewText += `Interval: Every ${interval} minutes\n`;
+            previewText += `Days: ${selectedDays.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}\n\n`;
+            
+            // Calculate number of dates that will be affected
+            let dateCount = 0;
+            const currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+                if (selectedDays.includes(currentDate.getDay())) {
+                    dateCount++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            previewText += `Total dates to be created: ${dateCount}\n`;
+            
+            // Get sample time slots for preview
+            const sampleSlots = getSampleTimeSlots(template, interval);
+            previewText += `Sample time slots: ${Object.keys(sampleSlots).slice(0, 5).join(', ')}${Object.keys(sampleSlots).length > 5 ? '...' : ''}`;
+            
+            document.getElementById('preview-content').innerHTML = previewText.replace(/\n/g, '<br>');
+            document.getElementById('bulk-preview').classList.remove('hidden');
+        }
+
+        function getSampleTimeSlots(template, intervalMinutes) {
+            switch (template) {
+                case '24hours':
+                    return generateTimeSlots('00:00', '23:59', intervalMinutes);
+                case 'business-hours':
+                    return generateTimeSlots('08:00', '20:00', intervalMinutes);
+                case 'night-shift':
+                    return generateTimeSlots('20:00', '08:00', intervalMinutes);
+                case 'peak-hours':
+                    return generateTimeSlots('06:00', '22:00', intervalMinutes);
+                case 'custom':
+                    const startTime = document.getElementById('bulk-start-time').value || '08:00';
+                    const endTime = document.getElementById('bulk-end-time').value || '18:00';
+                    return generateTimeSlots(startTime, endTime, intervalMinutes);
+                default:
+                    return {};
+            }
+        }
+
+        async function handleBulkCreate(e) {
+            e.preventDefault();
+            
+            const startDate = new Date(document.getElementById('bulk-start-date').value);
+            const endDate = new Date(document.getElementById('bulk-end-date').value);
+            const template = document.getElementById('bulk-template').value;
+            const interval = parseInt(document.getElementById('bulk-interval').value);
+            const maxBookings = parseInt(document.getElementById('bulk-max-bookings').value);
+            const skipExisting = document.getElementById('bulk-skip-existing').checked;
+            const selectedDays = Array.from(document.querySelectorAll('input[name="days"]:checked')).map(cb => parseInt(cb.value));
+            
+            if (startDate >= endDate) {
+                alert('End date must be after start date');
+                return;
+            }
+            
+            if (!template || selectedDays.length === 0) {
+                alert('Please select a template and at least one day of the week');
+                return;
+            }
+
+            try {
+                let createdCount = 0;
+                let skippedCount = 0;
+                const currentDate = new Date(startDate);
+                
+                // Show progress
+                const originalText = e.target.textContent;
+                e.target.textContent = 'Creating...';
+                e.target.disabled = true;
+                
+                while (currentDate <= endDate) {
+                    // Check if this day of week is selected
+                    if (!selectedDays.includes(currentDate.getDay())) {
+                        currentDate.setDate(currentDate.getDate() + 1);
+                        continue;
+                    }
+                    
+                    const dateString = currentDate.toISOString().split('T')[0];
+                    
+                    // Check if availability already exists
+                    if (skipExisting) {
+                        const existing = await getAvailability(dateString);
+                        if (existing && Object.keys(existing).length > 0) {
+                            skippedCount++;
+                            currentDate.setDate(currentDate.getDate() + 1);
+                            continue;
+                        }
+                    }
+                    
+                    // Generate time slots based on template
+                    let timeSlots;
+                    if (template === 'custom') {
+                        const startTime = document.getElementById('bulk-start-time').value;
+                        const endTime = document.getElementById('bulk-end-time').value;
+                        timeSlots = generateTimeSlots(startTime, endTime, interval, maxBookings);
+                    } else {
+                        timeSlots = getSampleTimeSlots(template, interval);
+                        // Update max bookings for all slots
+                        Object.keys(timeSlots).forEach(time => {
+                            timeSlots[time].maxBookings = maxBookings;
+                        });
+                    }
+                    
+                    // Create availability for this date
+                    await updateDateAvailability(dateString, timeSlots);
+                    createdCount++;
+                    
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    
+                    // Add small delay to prevent overwhelming Firebase
+                    if (createdCount % 10 === 0) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                }
+                
+                // Restore button
+                e.target.textContent = originalText;
+                e.target.disabled = false;
+                
+                closeBulkCreateModal();
+                renderCalendar(); // Refresh calendar
+                alert(`Bulk creation completed!\nCreated: ${createdCount} days\nSkipped: ${skippedCount} days`);
+                
+            } catch (error) {
+                console.error('Error in bulk creation:', error);
+                e.target.textContent = originalText;
+                e.target.disabled = false;
+                alert('Error creating bulk availability. Please try again.');
+            }
+        }
+
+        // ...existing code for other functions...
+
+        async function loadAvailabilityForDate() {
+            const dateInput = document.getElementById('availability-date');
+            const selectedDate = dateInput.value;
+            
+            if (!selectedDate) {
+                alert('Please select a date');
+                return;
+            }
+
+            try {
+                currentAvailabilityDate = selectedDate;
+                const availability = await getAvailability(selectedDate);
+                
+                if (availability) {
+                    currentTimeSlots = { ...availability };
+                } else {
+                    currentTimeSlots = {};
+                }
+
+                displayAvailability();
+                
+                // Show selected date info
+                const selectedDateInfo = document.getElementById('selected-date-info');
+                const selectedDateDisplay = document.getElementById('selected-date-display');
+                const date = new Date(selectedDate);
+                
+                selectedDateDisplay.textContent = date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                selectedDateInfo.classList.remove('hidden');
+                updateSlotStats();
+                
+            } catch (error) {
+                console.error('Error loading availability:', error);
+                alert('Error loading availability for selected date');
+            }
+        }
+
+        function displayAvailability() {
+            const grid = document.getElementById('time-slots-grid');
+            grid.innerHTML = '';
+
+            if (Object.keys(currentTimeSlots).length === 0) {
+                grid.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-clock text-4xl mb-4"></i>
+                        <p>No time slots configured for this date</p>
+                        <button class="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors" onclick="document.getElementById('add-time-slot-btn').click()">
+                            <i class="fas fa-plus mr-2"></i>Add First Time Slot
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort time slots by time
+            const sortedTimes = Object.keys(currentTimeSlots).sort((a, b) => {
+                return new Date('1970/01/01 ' + convertTo24Hour(a)) - new Date('1970/01/01 ' + convertTo24Hour(b));
+            });
+
+            sortedTimes.forEach(time => {
+                const slot = currentTimeSlots[time];
+                const slotElement = createTimeSlotElement(time, slot);
+                grid.appendChild(slotElement);
+            });
+        }
+
+        function createTimeSlotElement(time, slot) {
+            const div = document.createElement('div');
+            div.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow';
+            
+            const availableClass = slot.available ? 'text-green-600' : 'text-red-600';
+            const availableIcon = slot.available ? 'check-circle' : 'times-circle';
+            
+            div.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-lg font-bold text-navy">${time}</div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-${availableIcon} ${availableClass}"></i>
+                            <span class="text-sm ${availableClass}">${slot.available ? 'Available' : 'Disabled'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="text-sm text-gray-600">
+                            <span class="font-medium">${slot.currentBookings || 0}</span> / ${slot.maxBookings} bookings
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button class="edit-slot-btn text-blue-600 hover:text-blue-800 p-1" data-time="${time}" title="Edit Slot">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-slot-btn text-red-600 hover:text-red-800 p-1" data-time="${time}" title="Delete Slot">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3 flex items-center space-x-4">
+                    <div class="flex-1 bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: ${((slot.currentBookings || 0) / slot.maxBookings) * 100}%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        ${Math.round(((slot.currentBookings || 0) / slot.maxBookings) * 100)}% filled
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            const editBtn = div.querySelector('.edit-slot-btn');
+            const deleteBtn = div.querySelector('.delete-slot-btn');
+
+            editBtn.addEventListener('click', () => editTimeSlot(time));
+            deleteBtn.addEventListener('click', () => deleteTimeSlot(time));
+
+            return div;
+        }
+
+        function openAddTimeSlotModal() {
+            if (!currentAvailabilityDate) {
+                alert('Please select a date first');
+                return;
+            }
+            document.getElementById('add-time-slot-modal').classList.remove('hidden');
+        }
+
+        function closeAddTimeSlotModal() {
+            document.getElementById('add-time-slot-modal').classList.add('hidden');
+            document.getElementById('add-time-slot-form').reset();
+        }
+
+        function handleAddTimeSlot(e) {
+            e.preventDefault();
+            
+            const timeInput = document.getElementById('slot-time').value;
+            const maxBookings = parseInt(document.getElementById('slot-max-bookings').value);
+            const available = document.getElementById('slot-available').checked;
+            
+            // Convert 24-hour time to 12-hour format
+            const time = convertTo12Hour(timeInput);
+            
+            if (currentTimeSlots[time]) {
+                alert('A time slot for this time already exists');
+                return;
+            }
+            
+            currentTimeSlots[time] = {
+                available: available,
+                maxBookings: maxBookings,
+                currentBookings: 0
+            };
+            
+            displayAvailability();
+            updateSlotStats();
+            closeAddTimeSlotModal();
+        }
+
+        function editTimeSlot(time) {
+            const slot = currentTimeSlots[time];
+            
+            // Simple prompt-based editing (can be enhanced with a proper modal)
+            const newMaxBookings = prompt(`Edit max bookings for ${time}:`, slot.maxBookings);
+            if (newMaxBookings !== null && !isNaN(newMaxBookings) && newMaxBookings > 0) {
+                currentTimeSlots[time].maxBookings = parseInt(newMaxBookings);
+                displayAvailability();
+                updateSlotStats();
+            }
+        }
+
+        function deleteTimeSlot(time) {
+            if (confirm(`Are you sure you want to delete the ${time} time slot?`)) {
+                delete currentTimeSlots[time];
+                displayAvailability();
+                updateSlotStats();
+            }
+        }
+
+        async function saveAvailability() {
+            if (!currentAvailabilityDate) {
+                alert('Please select a date first');
+                return;
+            }
+
+            try {
+                await updateDateAvailability(currentAvailabilityDate, currentTimeSlots);
+                alert('Availability saved successfully!');
+            } catch (error) {
+                console.error('Error saving availability:', error);
+                alert('Error saving availability. Please try again.');
+            }
+        }
+
+        function openBulkCreateModal() {
+            // Set default dates
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('bulk-start-date').value = tomorrow.toISOString().split('T')[0];
+            
+            const nextMonth = new Date();
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            document.getElementById('bulk-end-date').value = nextMonth.toISOString().split('T')[0];
+            
+            document.getElementById('bulk-create-modal').classList.remove('hidden');
+        }
+
+        function closeBulkCreateModal() {
+            document.getElementById('bulk-create-modal').classList.add('hidden');
+            document.getElementById('bulk-create-form').reset();
+            document.getElementById('bulk-preview').classList.add('hidden');
+            document.getElementById('bulk-custom-range').classList.add('hidden');
+        }
+
+        function updateSlotStats() {
+            const totalSlots = Object.keys(currentTimeSlots).length;
+            const totalCapacity = Object.values(currentTimeSlots).reduce((sum, slot) => sum + slot.maxBookings, 0);
+            
+            document.getElementById('total-slots-count').textContent = totalSlots;
+            document.getElementById('total-capacity').textContent = totalCapacity;
+        }
+
+        // Utility functions
+        function convertTo12Hour(time24) {
+            const [hours, minutes] = time24.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour % 12 || 12;
+            return `${hour12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+        }
+
+        function convertTo24Hour(time12) {
+            const [time, ampm] = time12.split(' ');
+            const [hours, minutes] = time.split(':');
+            let hour = parseInt(hours);
+            
+            if (ampm === 'PM' && hour !== 12) {
+                hour += 12;
+            } else if (ampm === 'AM' && hour === 12) {
+                hour = 0;
+            }
+            
+            return `${hour.toString().padStart(2, '0')}:${minutes}`;
+        }
+
+        // Existing booking management functions
+        async function loadBookingsData() {
+            try {
+                document.getElementById('bookings-loading').classList.remove('hidden');
+                
+                // Load all bookings and washers
+                const [bookingsData, washersData] = await Promise.all([
+                    getRecentBookings(100), // Get more bookings for admin
+                    getActiveStaff()
+                ]);
+
+                allBookings = bookingsData;
+                washers = washersData;
+                filteredBookings = [...allBookings];
+
+                updateStats();
+                displayBookings();
+                
+                document.getElementById('bookings-loading').classList.add('hidden');
+                document.getElementById('bookings-table-container').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('bookings-loading').classList.add('hidden');
+            }
+        }
+
+        function updateStats() {
+            const total = allBookings.length;
+            const pending = allBookings.filter(b => b.status === 'Pending').length;
+            const ongoing = allBookings.filter(b => b.status === 'Ongoing').length;
+            const completed = allBookings.filter(b => b.status === 'Completed').length;
+            const cancelled = allBookings.filter(b => b.status === 'Cancelled').length;
+
+            document.getElementById('total-bookings').textContent = total;
+            document.getElementById('pending-bookings').textContent = pending;
+            document.getElementById('ongoing-bookings').textContent = ongoing;
+            document.getElementById('completed-bookings').textContent = completed;
+            document.getElementById('cancelled-bookings').textContent = cancelled;
+        }
+
+        function displayBookings() {
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = '';
+
+            if (filteredBookings.length === 0) {
+                document.getElementById('bookings-table-container').classList.add('hidden');
+                document.getElementById('no-bookings').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('bookings-table-container').classList.remove('hidden');
+            document.getElementById('no-bookings').classList.add('hidden');
+
+            filteredBookings.forEach(booking => {
+                const row = createBookingRow(booking);
+                tbody.appendChild(row);
+            });
+        }
+
+        function createBookingRow(booking) {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+
+            const customerName = booking.user ? booking.user.fullName : 'Unknown';
+            const vehicleInfo = booking.vehicle ? 
+                `${booking.vehicle.make} ${booking.vehicle.model} (${booking.vehicle.plateNumber})` : 
+                'Unknown Vehicle';
+            
+            const assignedWasher = washers.find(w => w.id === booking.washerId);
+            const washerName = assignedWasher ? assignedWasher.user?.fullName || 'Unknown' : 'Unassigned';
+
+            const statusColors = {
+                'Pending': 'yellow',
+                'Ongoing': 'blue', 
+                'Completed': 'green',
+                'Cancelled': 'red'
+            };
+            const statusColor = statusColors[booking.status] || 'gray';
+
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">${customerName}</div>
+                    <div class="text-sm text-gray-500">${booking.user?.email || ''}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${booking.service}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${vehicleInfo}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${booking.date}</div>
+                    <div class="text-sm text-gray-500">${booking.time}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-${statusColor}-100 text-${statusColor}-800">
+                        ${booking.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    ₱${booking.payment?.amount || 0}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${washerName}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                        ${booking.status === 'Pending' ? `
+                            <button class="text-green-600 hover:text-green-900" onclick="updateStatus('${booking.id}', 'Ongoing')">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        ` : ''}
+                        ${booking.status === 'Ongoing' ? `
+                            <button class="text-blue-600 hover:text-blue-900" onclick="updateStatus('${booking.id}', 'Completed')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                        <button class="text-gray-600 hover:text-gray-900" onclick="viewBookingDetails('${booking.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+
+            return row;
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-bookings').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const serviceFilter = document.getElementById('service-filter').value;
+            const dateFilter = document.getElementById('date-filter').value;
+
+            filteredBookings = allBookings.filter(booking => {
+                const customerName = booking.user?.fullName?.toLowerCase() || '';
+                const vehicleInfo = booking.vehicle ? 
+                    `${booking.vehicle.make} ${booking.vehicle.model} ${booking.vehicle.plateNumber}`.toLowerCase() : '';
+                
+                const matchesSearch = !searchTerm || 
+                    customerName.includes(searchTerm) ||
+                    booking.service.toLowerCase().includes(searchTerm) ||
+                    vehicleInfo.includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || booking.status === statusFilter;
+                const matchesService = !serviceFilter || booking.service === serviceFilter;
+                const matchesDate = !dateFilter || booking.date === dateFilter;
+
+                return matchesSearch && matchesStatus && matchesService && matchesDate;
+            });
+
+            displayBookings();
+        }
+
+        function clearFilters() {
+            document.getElementById('search-bookings').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('service-filter').value = '';
+            document.getElementById('date-filter').value = '';
+            filteredBookings = [...allBookings];
+            displayBookings();
+        }
+
+        // Global functions for button clicks
+        window.updateStatus = async function(bookingId, newStatus) {
+            try {
+                await updateBookingStatus(bookingId, newStatus);
+                
+                // Update local data
+                const booking = allBookings.find(b => b.id === bookingId);
+                if (booking) {
+                    booking.status = newStatus;
+                }
+                
+                updateStats();
+                displayBookings();
+                
+                alert(`Booking status updated to ${newStatus}`);
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Error updating booking status');
+            }
+        };
+
+        window.viewBookingDetails = function(bookingId) {
+            const booking = allBookings.find(b => b.id === bookingId);
+            if (booking) {
+                alert(`Booking Details:\n\nID: ${booking.id}\nCustomer: ${booking.user?.fullName || 'Unknown'}\nService: ${booking.service}\nDate: ${booking.date}\nTime: ${booking.time}\nStatus: ${booking.status}`);
+            }
+        };
+    </script>
+</body>
+</html>

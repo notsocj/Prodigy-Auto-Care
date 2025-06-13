@@ -209,10 +209,162 @@ export async function assignWasherToBooking(bookingId, washerId) {
     return true;
 }
 
+// Availability management functions
+export async function getAvailability(dateString) {
+    try {
+        const availabilityRef = doc(db, "availability", dateString);
+        const availabilityDoc = await getDoc(availabilityRef);
+        
+        if (availabilityDoc.exists()) {
+            return availabilityDoc.data();
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Error getting availability for', dateString, ':', error);
+        throw error;
+    }
+}
+
 // Create or update availability for a date
 export async function updateDateAvailability(dateString, timeSlots) {
-    await setDoc(doc(db, "availability", dateString), timeSlots);
-    return true;
+    try {
+        await setDoc(doc(db, "availability", dateString), timeSlots);
+        return true;
+    } catch (error) {
+        console.error('Error updating availability for', dateString, ':', error);
+        throw error;
+    }
+}
+
+// Delete availability for a specific date
+export async function deleteAvailability(dateString) {
+    try {
+        await deleteDoc(doc(db, "availability", dateString));
+        return true;
+    } catch (error) {
+        console.error('Error deleting availability for', dateString, ':', error);
+        throw error;
+    }
+}
+
+// Get availability for multiple dates
+export async function getAvailabilityRange(startDate, endDate) {
+    try {
+        const availabilityData = {};
+        const currentDate = new Date(startDate);
+        const end = new Date(endDate);
+        
+        while (currentDate <= end) {
+            const dateString = currentDate.toISOString().split('T')[0];
+            const availability = await getAvailability(dateString);
+            
+            if (availability) {
+                availabilityData[dateString] = availability;
+            }
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return availabilityData;
+    } catch (error) {
+        console.error('Error getting availability range:', error);
+        throw error;
+    }
+}
+
+// Update specific time slot booking count
+export async function updateTimeSlotBookingCount(dateString, timeSlot, increment = true) {
+    try {
+        const availabilityRef = doc(db, "availability", dateString);
+        const availabilityDoc = await getDoc(availabilityRef);
+        
+        if (availabilityDoc.exists()) {
+            const availability = availabilityDoc.data();
+            
+            if (availability[timeSlot]) {
+                const currentBookings = availability[timeSlot].currentBookings || 0;
+                const maxBookings = availability[timeSlot].maxBookings;
+                
+                let newBookingCount;
+                if (increment) {
+                    newBookingCount = Math.min(currentBookings + 1, maxBookings);
+                } else {
+                    newBookingCount = Math.max(currentBookings - 1, 0);
+                }
+                
+                await updateDoc(availabilityRef, {
+                    [`${timeSlot}.currentBookings`]: newBookingCount,
+                    [`${timeSlot}.available`]: newBookingCount < maxBookings
+                });
+                
+                return true;
+            }
+        }
+        
+        throw new Error(`Time slot ${timeSlot} not found for date ${dateString}`);
+    } catch (error) {
+        console.error('Error updating time slot booking count:', error);
+        throw error;
+    }
+}
+
+// Check if a specific time slot is available
+export async function checkTimeSlotAvailability(dateString, timeSlot) {
+    try {
+        const availability = await getAvailability(dateString);
+        
+        if (!availability || !availability[timeSlot]) {
+            return false;
+        }
+        
+        const slot = availability[timeSlot];
+        return slot.available && (slot.currentBookings || 0) < slot.maxBookings;
+    } catch (error) {
+        console.error('Error checking time slot availability:', error);
+        return false;
+    }
+}
+
+// Get all bookings for a specific date (for admin view)
+export async function getBookingsForDate(dateString) {
+    try {
+        const bookingsQuery = query(
+            collection(db, "bookings"),
+            where("date", "==", dateString),
+            orderBy("time", "asc")
+        );
+        
+        const bookingsSnapshot = await getDocs(bookingsQuery);
+        const bookings = [];
+        
+        for (const docSnapshot of bookingsSnapshot.docs) {
+            const booking = { id: docSnapshot.id, ...docSnapshot.data() };
+            
+            // Get user details
+            if (booking.userId) {
+                const userDoc = await getDoc(doc(db, "users", booking.userId));
+                if (userDoc.exists()) {
+                    booking.user = userDoc.data();
+                }
+            }
+            
+            // Get vehicle details
+            if (booking.vehicleId) {
+                const vehicleDoc = await getDoc(doc(db, "vehicles", booking.vehicleId));
+                if (vehicleDoc.exists()) {
+                    booking.vehicle = vehicleDoc.data();
+                }
+            }
+            
+            bookings.push(booking);
+        }
+        
+        return bookings;
+    } catch (error) {
+        console.error('Error getting bookings for date:', error);
+        throw error;
+    }
 }
 
 export { auth, db };

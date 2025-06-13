@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Staff - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-5">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Admin Panel</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="admin-dashboard.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
+                    <a href="admin-bookings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Bookings</a>
+                    <a href="admin-staff.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Staff</a>
+                    <a href="admin-reports.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
+                    <a href="admin-settings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
+                </div>
+                
+                <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+                    <i class="fas fa-user-shield mr-2"></i>Admin
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold font-display text-navy mb-2">Staff Management</h1>
+            <p class="text-gray-600">Manage your car wash staff and their availability</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <button id="add-staff-btn" class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors text-left">
+                <i class="fas fa-user-plus text-2xl mb-2"></i>
+                <p class="font-semibold">Add New Staff</p>
+            </button>
+            <button class="bg-blue-dark text-white p-4 rounded-lg hover:bg-navy transition-colors text-left">
+                <i class="fas fa-calendar-check text-2xl mb-2"></i>
+                <p class="font-semibold">Schedule Management</p>
+            </button>
+            <button class="bg-brown text-white p-4 rounded-lg hover:bg-opacity-90 transition-colors text-left">
+                <i class="fas fa-chart-bar text-2xl mb-2"></i>
+                <p class="font-semibold">Performance Reports</p>
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-users text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-navy" id="total-staff">0</h3>
+                <p class="text-sm text-gray-600">Total Staff</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-user-check text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-navy" id="active-staff">0</h3>
+                <p class="text-sm text-gray-600">On Work</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-user-times text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-navy" id="unavailable-staff">0</h3>
+                <p class="text-sm text-gray-600">Unavailable</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-tasks text-yellow-600 text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-navy" id="active-jobs">0</h3>
+                <p class="text-sm text-gray-600">Active Jobs</p>
+            </div>
+        </div>
+
+        <!-- Staff List -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold font-display text-navy">Staff Members</h2>
+                <div class="flex space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search-staff" placeholder="Search staff..." 
+                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    </div>
+                    <select id="status-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <option value="">All Status</option>
+                        <option value="On Work">On Work</option>
+                        <option value="Unavailable">Unavailable</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="staff-loading" class="text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-dark mx-auto mb-4"></div>
+                <p class="text-gray-500">Loading staff...</p>
+            </div>
+
+            <!-- Staff Grid -->
+            <div id="staff-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="no-staff" class="hidden text-center py-12">
+                <i class="fas fa-users text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-xl font-semibold text-navy mb-2">No Staff Found</h3>
+                <p class="text-gray-600">No staff members match your search criteria</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Staff Modal -->
+    <div id="add-staff-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-navy">Add New Staff Member</h3>
+                <button id="close-add-staff-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="add-staff-form" class="space-y-4">
+                <div>
+                    <label for="staff-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                    <input type="email" id="staff-email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" placeholder="Enter staff email" required>
+                    <p class="text-xs text-gray-500 mt-1">Staff member must already have an account</p>
+                </div>
+                
+                <div>
+                    <label for="staff-role" class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                    <select id="staff-role" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                        <option value="">Select role</option>
+                        <option value="washer">Washer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="staff-availability" class="block text-sm font-medium text-gray-700 mb-1">Initial Availability</label>
+                    <select id="staff-availability" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <option value="Unavailable">Unavailable</option>
+                        <option value="On Work">On Work</option>
+                    </select>
+                </div>
+
+                <div class="flex space-x-4 pt-4">
+                    <button type="button" id="cancel-add-staff" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        Add Staff Member
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Staff Modal -->
+    <div id="edit-staff-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-navy">Edit Staff Member</h3>
+                <button id="close-edit-staff-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="edit-staff-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Staff Member</label>
+                    <p id="edit-staff-name" class="font-semibold text-navy"></p>
+                    <p id="edit-staff-email" class="text-sm text-gray-600"></p>
+                </div>
+                
+                <div>
+                    <label for="edit-staff-availability" class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                    <select id="edit-staff-availability" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <option value="On Work">On Work</option>
+                        <option value="Unavailable">Unavailable</option>
+                    </select>
+                </div>
+
+                <div class="flex space-x-4 pt-4">
+                    <button type="button" id="cancel-edit-staff" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
+                        Update Staff
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../admin-firebase.js"></script>
+    <script type="module">
+        import { onAdminAuthChange, getActiveStaff, updateWasherAvailability } from '../admin-firebase.js';
+        
+        let allStaff = [];
+        let filteredStaff = [];
+        let editingStaffId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStaffPage();
+        });
+
+        function initializeStaffPage() {
+            onAdminAuthChange(async (user, isAdmin) => {
+                if (isAdmin) {
+                    await loadStaffData();
+                } else {
+                    window.location.href = '../index.html';
+                }
+            });
+
+            // Event listeners
+            initializeEventListeners();
+        }
+
+        function initializeEventListeners() {
+            // Modals
+            document.getElementById('add-staff-btn').addEventListener('click', () => {
+                document.getElementById('add-staff-modal').classList.remove('hidden');
+            });
+
+            document.getElementById('close-add-staff-modal').addEventListener('click', closeAddStaffModal);
+            document.getElementById('cancel-add-staff').addEventListener('click', closeAddStaffModal);
+            document.getElementById('close-edit-staff-modal').addEventListener('click', closeEditStaffModal);
+            document.getElementById('cancel-edit-staff').addEventListener('click', closeEditStaffModal);
+
+            // Forms
+            document.getElementById('add-staff-form').addEventListener('submit', handleAddStaff);
+            document.getElementById('edit-staff-form').addEventListener('submit', handleEditStaff);
+
+            // Filters
+            document.getElementById('search-staff').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+        }
+
+        async function loadStaffData() {
+            try {
+                document.getElementById('staff-loading').classList.remove('hidden');
+                document.getElementById('staff-grid').classList.add('hidden');
+                document.getElementById('no-staff').classList.add('hidden');
+
+                // Load staff data
+                allStaff = await getActiveStaff();
+                filteredStaff = [...allStaff];
+
+                updateStats();
+                displayStaff();
+
+                document.getElementById('staff-loading').classList.add('hidden');
+                
+                if (filteredStaff.length > 0) {
+                    document.getElementById('staff-grid').classList.remove('hidden');
+                } else {
+                    document.getElementById('no-staff').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading staff data:', error);
+                document.getElementById('staff-loading').classList.add('hidden');
+            }
+        }
+
+        function updateStats() {
+            const totalStaff = allStaff.length;
+            const activeStaff = allStaff.filter(s => s.availability === 'On Work').length;
+            const unavailableStaff = allStaff.filter(s => s.availability === 'Unavailable').length;
+            const activeJobs = allStaff.reduce((total, staff) => total + (staff.assignedBookings?.length || 0), 0);
+
+            document.getElementById('total-staff').textContent = totalStaff;
+            document.getElementById('active-staff').textContent = activeStaff;
+            document.getElementById('unavailable-staff').textContent = unavailableStaff;
+            document.getElementById('active-jobs').textContent = activeJobs;
+        }
+
+        function displayStaff() {
+            const grid = document.getElementById('staff-grid');
+            grid.innerHTML = '';
+
+            if (filteredStaff.length === 0) {
+                document.getElementById('staff-grid').classList.add('hidden');
+                document.getElementById('no-staff').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('staff-grid').classList.remove('hidden');
+            document.getElementById('no-staff').classList.add('hidden');
+
+            filteredStaff.forEach(staff => {
+                const staffCard = createStaffCard(staff);
+                grid.appendChild(staffCard);
+            });
+        }
+
+        function createStaffCard(staff) {
+            const isOnWork = staff.availability === 'On Work';
+            const statusColor = isOnWork ? 'green' : 'red';
+            const statusIcon = isOnWork ? 'check' : 'times';
+            const assignedJobs = staff.assignedBookings?.length || 0;
+
+            const card = document.createElement('div');
+            card.className = 'bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow';
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-${statusColor}-500 text-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-navy">${staff.user?.fullName || 'Unknown'}</h3>
+                            <p class="text-sm text-gray-600">${staff.user?.email || ''}</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button class="staff-menu-btn p-2 text-gray-400 hover:text-gray-600 transition-colors" data-staff-id="${staff.id}">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="staff-menu hidden absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-10" data-staff-id="${staff.id}">
+                            <button class="edit-staff-btn block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors" data-staff-id="${staff.id}">
+                                <i class="fas fa-edit mr-2"></i>Edit
+                            </button>
+                            <button class="view-jobs-btn block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors" data-staff-id="${staff.id}">
+                                <i class="fas fa-tasks mr-2"></i>View Jobs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Status:</span>
+                        <span class="px-3 py-1 bg-${statusColor}-100 text-${statusColor}-800 text-sm rounded-full font-medium">
+                            <i class="fas fa-${statusIcon} mr-1"></i>${staff.availability}
+                        </span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Role:</span>
+                        <span class="font-semibold text-navy capitalize">${staff.user?.role || 'Washer'}</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Active Jobs:</span>
+                        <span class="font-semibold text-navy">${assignedJobs}</span>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+                        <span class="text-sm text-gray-600">Member Since:</span>
+                        <span class="text-sm text-gray-800">${formatDate(staff.user?.createdAt)}</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button class="toggle-availability-btn w-full py-2 rounded-lg font-semibold transition-colors ${isOnWork ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-green-500 text-white hover:bg-green-600'}" 
+                            data-staff-id="${staff.id}" data-current-status="${staff.availability}">
+                        <i class="fas fa-${isOnWork ? 'pause' : 'play'} mr-2"></i>
+                        ${isOnWork ? 'Set Unavailable' : 'Set Available'}
+                    </button>
+                </div>
+            `;
+
+            // Add event listeners
+            const menuBtn = card.querySelector('.staff-menu-btn');
+            const menu = card.querySelector('.staff-menu');
+            const editBtn = card.querySelector('.edit-staff-btn');
+            const viewJobsBtn = card.querySelector('.view-jobs-btn');
+            const toggleBtn = card.querySelector('.toggle-availability-btn');
+
+            menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close other menus
+                document.querySelectorAll('.staff-menu').forEach(m => {
+                    if (m !== menu) m.classList.add('hidden');
+                });
+                menu.classList.toggle('hidden');
+            });
+
+            editBtn.addEventListener('click', () => {
+                openEditStaffModal(staff);
+                menu.classList.add('hidden');
+            });
+
+            viewJobsBtn.addEventListener('click', () => {
+                viewStaffJobs(staff);
+                menu.classList.add('hidden');
+            });
+
+            toggleBtn.addEventListener('click', () => {
+                toggleStaffAvailability(staff.id, staff.availability);
+            });
+
+            return card;
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-staff').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+
+            filteredStaff = allStaff.filter(staff => {
+                const name = staff.user?.fullName?.toLowerCase() || '';
+                const email = staff.user?.email?.toLowerCase() || '';
+                
+                const matchesSearch = !searchTerm || 
+                    name.includes(searchTerm) || 
+                    email.includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || staff.availability === statusFilter;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            displayStaff();
+        }
+
+        function closeAddStaffModal() {
+            document.getElementById('add-staff-modal').classList.add('hidden');
+            document.getElementById('add-staff-form').reset();
+        }
+
+        function closeEditStaffModal() {
+            document.getElementById('edit-staff-modal').classList.add('hidden');
+            editingStaffId = null;
+        }
+
+        function openEditStaffModal(staff) {
+            editingStaffId = staff.id;
+            document.getElementById('edit-staff-name').textContent = staff.user?.fullName || 'Unknown';
+            document.getElementById('edit-staff-email').textContent = staff.user?.email || '';
+            document.getElementById('edit-staff-availability').value = staff.availability;
+            document.getElementById('edit-staff-modal').classList.remove('hidden');
+        }
+
+        async function handleAddStaff(e) {
+            e.preventDefault();
+            // This would require implementing user lookup and washer creation
+            alert('Add staff functionality will be implemented with proper user management');
+        }
+
+        async function handleEditStaff(e) {
+            e.preventDefault();
+            
+            const newAvailability = document.getElementById('edit-staff-availability').value;
+            
+            try {
+                await updateWasherAvailability(editingStaffId, newAvailability);
+                
+                // Update local data
+                const staff = allStaff.find(s => s.id === editingStaffId);
+                if (staff) {
+                    staff.availability = newAvailability;
+                }
+                
+                updateStats();
+                displayStaff();
+                closeEditStaffModal();
+                
+                alert('Staff availability updated successfully');
+            } catch (error) {
+                console.error('Error updating staff:', error);
+                alert('Error updating staff availability');
+            }
+        }
+
+        async function toggleStaffAvailability(staffId, currentStatus) {
+            const newStatus = currentStatus === 'On Work' ? 'Unavailable' : 'On Work';
+            
+            try {
+                await updateWasherAvailability(staffId, newStatus);
+                
+                // Update local data
+                const staff = allStaff.find(s => s.id === staffId);
+                if (staff) {
+                    staff.availability = newStatus;
+                }
+                
+                updateStats();
+                displayStaff();
+            } catch (error) {
+                console.error('Error toggling staff availability:', error);
+                alert('Error updating staff availability');
+            }
+        }
+
+        function viewStaffJobs(staff) {
+            const jobCount = staff.assignedBookings?.length || 0;
+            alert(`${staff.user?.fullName || 'Staff member'} has ${jobCount} active job(s).\n\nDetailed job management will be implemented.`);
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Unknown';
+            
+            const date = timestamp.seconds ? 
+                new Date(timestamp.seconds * 1000) : 
+                new Date(timestamp);
+                
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        // Click outside to close menus
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.staff-menu').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

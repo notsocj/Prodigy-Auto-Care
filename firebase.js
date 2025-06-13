@@ -301,4 +301,58 @@ export async function getUserBookings() {
     return bookings;
 }
 
+// Add function to update booking rating
+export async function updateBookingRating(bookingId, rating, review = null) {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    
+    const updateData = {
+        rating: rating
+    };
+    
+    if (review) {
+        updateData.review = review;
+    }
+    
+    await updateDoc(doc(db, "bookings", bookingId), updateData);
+    return true;
+}
+
+// Add function to cancel booking
+export async function cancelBooking(bookingId) {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    
+    // Get booking details first to update availability
+    const bookingDoc = await getDoc(doc(db, "bookings", bookingId));
+    if (!bookingDoc.exists()) {
+        throw new Error("Booking not found");
+    }
+    
+    const booking = bookingDoc.data();
+    
+    // Update booking status
+    await updateDoc(doc(db, "bookings", bookingId), {
+        status: "Cancelled"
+    });
+    
+    // Update availability (decrease currentBookings and set available to true if needed)
+    const availabilityRef = doc(db, "availability", booking.date);
+    const availabilityDoc = await getDoc(availabilityRef);
+    
+    if (availabilityDoc.exists()) {
+        const availability = availabilityDoc.data();
+        const timeSlot = availability[booking.time];
+        
+        if (timeSlot) {
+            await updateDoc(availabilityRef, {
+                [`${booking.time}.currentBookings`]: Math.max(0, timeSlot.currentBookings - 1),
+                [`${booking.time}.available`]: true
+            });
+        }
+    }
+    
+    return true;
+}
+
 export { auth, db };

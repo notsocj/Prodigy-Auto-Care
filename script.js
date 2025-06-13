@@ -677,28 +677,38 @@ async function selectDate(dateString) {
         day: 'numeric' 
     });
     
-    document.getElementById('selected-date').textContent = formattedDate;
+    document.getElementById('selected-date-display').textContent = `Available times for ${formattedDate}`;
     
     // Generate time slots from Firebase
     await generateTimeSlots(dateString);
     document.getElementById('time-slots').classList.remove('hidden');
+    document.getElementById('time-slots-container').style.display = 'none';
 }
 
-// Remove the old calendar functions and replace with updated time slots function
+// Update time slots function for compact layout
 async function generateTimeSlots(dateString) {
-    const timeSlotsContainer = document.querySelector('#time-slots .grid');
+    const timeSlotsGrid = document.querySelector('#time-slots .grid');
     
-    // Show loading state
-    timeSlotsContainer.innerHTML = '<div class="col-span-full text-center py-8"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-dark mx-auto"></div><p class="text-gray-500 mt-2">Loading time slots...</p></div>';
+    // Show loading state in the time slots area
+    document.getElementById('time-slots-container').innerHTML = `
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-dark mx-auto mb-2"></div>
+            <p class="text-gray-500 text-sm">Loading time slots...</p>
+        </div>
+    `;
+    document.getElementById('time-slots-container').style.display = 'flex';
+    document.getElementById('time-slots').classList.add('hidden');
     
     try {
         const availability = await getAvailability(dateString);
         
-        // Clear loading state
-        timeSlotsContainer.innerHTML = '';
-        
         if (!availability) {
-            timeSlotsContainer.innerHTML = '<p class="col-span-full text-center py-4 text-gray-500">No available time slots for this date</p>';
+            document.getElementById('time-slots-container').innerHTML = `
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+                    <p class="text-sm">No available time slots for this date</p>
+                </div>
+            `;
             return;
         }
         
@@ -712,39 +722,56 @@ async function generateTimeSlots(dateString) {
         const availableTimes = timeOrder.filter(time => availability[time]);
         
         if (availableTimes.length === 0) {
-            timeSlotsContainer.innerHTML = '<p class="col-span-full text-center py-4 text-gray-500">No time slots available for this date</p>';
+            document.getElementById('time-slots-container').innerHTML = `
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-clock-exclamation text-2xl mb-2"></i>
+                    <p class="text-sm">No time slots available for this date</p>
+                </div>
+            `;
             return;
         }
+        
+        // Clear and populate time slots
+        timeSlotsGrid.innerHTML = '';
         
         availableTimes.forEach(time => {
             const slot = availability[time];
             const timeElement = document.createElement('div');
-            timeElement.className = 'text-center py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-200 font-medium';
+            timeElement.className = 'text-center py-3 px-3 rounded-lg border-2 cursor-pointer transition-all duration-200 font-medium text-sm';
             
             const slotsLeft = slot.maxBookings - slot.currentBookings;
             const isAvailable = slot.available && slotsLeft > 0;
             
             if (isAvailable) {
-                timeElement.className += ' border-gray-200 hover:border-blue-dark hover:bg-blue-50 hover:shadow-md';
+                timeElement.className += ' border-gray-200 hover:border-blue-dark hover:bg-blue-50 hover:shadow-sm';
                 timeElement.innerHTML = `
                     <div class="text-navy font-semibold">${time}</div>
-                    <div class="text-xs text-gray-500 mt-1">${slotsLeft} slots left</div>
+                    <div class="text-xs text-gray-500 mt-1">${slotsLeft} left</div>
                 `;
                 timeElement.addEventListener('click', (e) => selectTime(time, e.currentTarget));
             } else {
                 timeElement.className += ' border-gray-200 bg-gray-50 cursor-not-allowed opacity-60';
                 timeElement.innerHTML = `
                     <div class="text-gray-400 font-semibold">${time}</div>
-                    <div class="text-xs text-red-500 mt-1">Fully booked</div>
+                    <div class="text-xs text-red-500 mt-1">Full</div>
                 `;
             }
             
-            timeSlotsContainer.appendChild(timeElement);
+            timeSlotsGrid.appendChild(timeElement);
         });
+        
+        // Show the time slots grid
+        document.getElementById('time-slots-container').style.display = 'none';
+        document.getElementById('time-slots').classList.remove('hidden');
         
     } catch (error) {
         console.error('Error generating time slots:', error);
-        timeSlotsContainer.innerHTML = '<p class="col-span-full text-center py-4 text-red-500">Error loading time slots. Please try again.</p>';
+        document.getElementById('time-slots-container').innerHTML = `
+            <div class="text-center text-red-400">
+                <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                <p class="text-sm">Error loading time slots. Please try again.</p>
+            </div>
+        `;
     }
 }
 
@@ -753,70 +780,15 @@ function selectTime(time, timeElement) {
     
     // Update UI
     document.querySelectorAll('#time-slots .grid > div').forEach(slot => {
-        slot.classList.remove('border-blue-dark', 'bg-blue-50', 'shadow-md');
+        slot.classList.remove('border-blue-dark', 'bg-blue-50', 'shadow-sm');
         slot.classList.add('border-gray-200');
     });
     timeElement.classList.remove('border-gray-200');
-    timeElement.classList.add('border-blue-dark', 'bg-blue-50', 'shadow-md');
+    timeElement.classList.add('border-blue-dark', 'bg-blue-50', 'shadow-sm');
     
     // Show booking summary
     updateBookingSummary();
     document.getElementById('booking-summary').classList.remove('hidden');
-}
-
-async function confirmBooking() {
-    if (!appState.currentUser) {
-        authModal.classList.remove('hidden');
-        return;
-    }
-    
-    if (!bookingState.vehicle || !bookingState.service || !bookingState.date || !bookingState.time) {
-        alert('Please complete all booking steps');
-        return;
-    }
-    
-    const confirmBtn = document.getElementById('confirm-booking');
-    const originalText = confirmBtn.textContent;
-    
-    try {
-        // Show loading state
-        confirmBtn.textContent = 'Processing...';
-        confirmBtn.disabled = true;
-        
-        // Default payment method (can be expanded with payment selection)
-        const paymentMethod = "GCash";
-        
-        await createBooking(
-            bookingState.vehicle,
-            bookingState.serviceName,
-            bookingState.date,
-            bookingState.time,
-            paymentMethod
-        );
-        
-        // Reload bookings
-        appState.bookings = await getUserBookings();
-        updateBookingsUI();
-        
-        // Refresh the time slots to show updated availability
-        if (bookingState.date) {
-            await generateTimeSlots(bookingState.date);
-        }
-        
-        // Show success message
-        alert('Booking confirmed! You will receive a confirmation SMS shortly.');
-        
-        // Reset booking flow
-        resetBookingFlow();
-        
-    } catch (error) {
-        console.error('Booking error:', error);
-        alert('Error creating booking: ' + error.message);
-    } finally {
-        // Reset button state
-        confirmBtn.textContent = originalText;
-        confirmBtn.disabled = false;
-    }
 }
 
 function resetBookingFlow() {
@@ -835,6 +807,16 @@ function resetBookingFlow() {
     document.getElementById('booking-summary').classList.add('hidden');
     document.getElementById('time-slots').classList.add('hidden');
     
+    // Reset time slots display
+    document.getElementById('time-slots-container').style.display = 'flex';
+    document.getElementById('time-slots-container').innerHTML = `
+        <div class="text-center text-gray-400">
+            <i class="fas fa-clock text-3xl mb-2"></i>
+            <p class="text-sm">Please select a date first</p>
+        </div>
+    `;
+    document.getElementById('selected-date-display').textContent = 'Select a date to view available times';
+    
     // Clear Flatpickr selection
     if (calendarInstance) {
         calendarInstance.clear();
@@ -848,7 +830,7 @@ function resetBookingFlow() {
         card.classList.remove('border-blue-dark', 'bg-blue-50');
     });
     document.querySelectorAll('#time-slots .grid > div').forEach(slot => {
-        slot.classList.remove('border-blue-dark', 'bg-blue-50', 'shadow-md');
+        slot.classList.remove('border-blue-dark', 'bg-blue-50', 'shadow-sm');
     });
 }
 
