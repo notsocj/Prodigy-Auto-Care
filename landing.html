@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodigy Auto Care - Premium Car Wash Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Animation Effects */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .animate-delay-1 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+        
+        .animate-delay-2 {
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        .animate-delay-3 {
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+        
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Custom Gradients */
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #254D70 0%, #131D4F 100%);
+        }
+    </style>
+</head>
+<body class="bg-cream font-sans">
+    <!-- Header/Navigation -->
+    <header class="bg-gradient-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#services" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Services</a>
+                    <a href="#about" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">About Us</a>
+                    <a href="#testimonials" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Testimonials</a>
+                    <a href="#contact" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Contact</a>
+                </nav>
+                
+                <!-- Auth Buttons -->
+                <div class="flex items-center space-x-4">
+                    <a href="login.html" class="px-4 py-2 text-cream border border-cream/30 rounded-lg hover:bg-white/10 transition-all duration-300">
+                        Login
+                    </a>
+                    <a href="register.html" class="px-4 py-2 bg-brown text-white rounded-lg hover:bg-brown/90 transition-all duration-300">
+                        Sign Up
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-white/20">
+                <div class="flex flex-col space-y-4">
+                    <a href="#services" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Services</a>
+                    <a href="#about" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">About Us</a>
+                    <a href="#testimonials" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Testimonials</a>
+                    <a href="#contact" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Contact</a>
+                    <div class="flex flex-col space-y-2 pt-2 border-t border-white/20">
+                        <a href="login.html" class="px-4 py-2 text-center text-cream border border-cream/30 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            Login
+                        </a>
+                        <a href="register.html" class="px-4 py-2 text-center bg-brown text-white rounded-lg hover:bg-brown/90 transition-all duration-300">
+                            Sign Up
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="bg-gradient-primary text-white py-20 lg:py-32 relative overflow-hidden">
+        <!-- Background decorations -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+            <div class="absolute -right-10 top-10 w-72 h-72 bg-blue-dark/30 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 top-40 w-80 h-80 bg-navy/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="animate-fade-in">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-tight mb-6">
+                        Premium Car Wash & Detailing Services
+                    </h1>
+                    <p class="text-lg text-cream/90 mb-8 max-w-xl">
+                        Experience the finest car care in the Philippines. Our professional team delivers spotless results and exceptional service for your vehicle.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="register.html" class="px-8 py-4 bg-brown text-white rounded-xl font-semibold hover:bg-brown/90 transition-all duration-300 shadow-lg">
+                            Book Now
+                        </a>
+                        <a href="#services" class="px-8 py-4 bg-white/10 backdrop-blur-sm text-white border border-white/30 rounded-xl font-semibold hover:bg-white/20 transition-all duration-300">
+                            View Services
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="relative animate-fade-in animate-delay-1">
+                    <div class="absolute inset-0 bg-blue-dark/20 blur-2xl rounded-3xl transform rotate-3"></div>
+                    <img src="https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                         alt="Car Wash Service" 
+                         class="relative z-10 w-full h-auto rounded-2xl shadow-2xl">
+                </div>
+            </div>
+            
+            <!-- Trusted By -->
+            <div class="mt-20 text-center animate-fade-in animate-delay-2">
+                <p class="text-cream/70 text-sm font-medium tracking-widest uppercase mb-6">Trusted By</p>
+                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+                    <img src="https://via.placeholder.com/120x40/254D70/FFFFFF?text=PARTNER" alt="Partner" class="h-8 opacity-70 hover:opacity-100 transition-opacity">
+                    <img src="https://via.placeholder.com/120x40/254D70/FFFFFF?text=PARTNER" alt="Partner" class="h-8 opacity-70 hover:opacity-100 transition-opacity">
+                    <img src="https://via.placeholder.com/120x40/254D70/FFFFFF?text=PARTNER" alt="Partner" class="h-8 opacity-70 hover:opacity-100 transition-opacity">
+                    <img src="https://via.placeholder.com/120x40/254D70/FFFFFF?text=PARTNER" alt="Partner" class="h-8 opacity-70 hover:opacity-100 transition-opacity">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold font-display text-navy mb-4">Our Premium Services</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Choose from our range of professional car wash and detailing services, designed to keep your vehicle looking its best.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift">
+                    <div class="h-48 bg-blue-dark">
+                        <img src="https://images.unsplash.com/photo-1600322305530-45fba6071821?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Basic Wash" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-navy mb-2">Basic Wash</h3>
+                        <p class="text-gray-600 mb-4">Complete exterior wash, tire cleaning, and basic interior vacuum.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-brown font-semibold text-lg">₱500</span>
+                            <a href="register.html" class="text-blue-dark hover:text-navy font-medium">Book Now →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift">
+                    <div class="h-48 bg-blue-dark">
+                        <img src="https://images.unsplash.com/photo-1601148522989-f7b0d4eaff9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Premium Wash" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-navy">Premium Wash</h3>
+                            <span class="bg-brown/10 text-brown text-xs font-semibold px-2 py-1 rounded-full">Popular</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Exterior wash, wax protection, tire shine, and complete interior cleaning.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-brown font-semibold text-lg">₱1,200</span>
+                            <a href="register.html" class="text-blue-dark hover:text-navy font-medium">Book Now →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift">
+                    <div class="h-48 bg-blue-dark">
+                        <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Deluxe Detail" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-navy mb-2">Deluxe Detail</h3>
+                        <p class="text-gray-600 mb-4">Complete exterior and interior detailing with premium products and protection.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-brown font-semibold text-lg">₱2,500</span>
+                            <a href="register.html" class="text-blue-dark hover:text-navy font-medium">Book Now →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="register.html" class="inline-block px-8 py-4 bg-blue-dark text-white rounded-xl font-semibold hover:bg-navy transition-all duration-300">
+                    View All Services
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Why Choose Us -->
+    <section id="about" class="py-20 bg-blue-dark/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold font-display text-navy mb-6">Why Choose Prodigy Auto Care</h2>
+                    <p class="text-gray-600 mb-8">
+                        We take pride in delivering exceptional car wash and detailing services. Our skilled professionals use premium products to ensure your vehicle gets the care it deserves.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-8 h-8 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-check text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Experienced Staff</h3>
+                                <p class="text-gray-600">Our team consists of trained professionals with years of experience in car detailing.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-8 h-8 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-check text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Premium Products</h3>
+                                <p class="text-gray-600">We use only high-quality, eco-friendly products that are safe for your vehicle and the environment.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-8 h-8 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-check text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Convenient Booking</h3>
+                                <p class="text-gray-600">Our online booking system makes it easy to schedule services at your preferred time.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-8 h-8 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-check text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Satisfaction Guaranteed</h3>
+                                <p class="text-gray-600">We're not happy until you're happy. We stand behind the quality of our work.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="relative h-64 md:h-80">
+                        <img src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
+                             alt="Car Detail" 
+                             class="absolute inset-0 w-full h-full object-cover rounded-xl shadow-lg">
+                    </div>
+                    <div class="relative h-64 md:h-80 mt-12">
+                        <img src="https://images.unsplash.com/photo-1596883313922-a8bd9a0439d6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
+                             alt="Car Detail" 
+                             class="absolute inset-0 w-full h-full object-cover rounded-xl shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold font-display text-navy mb-4">What Our Customers Say</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Don't just take our word for it. Here's what our satisfied customers have to say about our services.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover-lift">
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-6">"The attention to detail was amazing. My car looks better than when I first bought it! Definitely the best car wash service in the area."</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-blue-dark/20 rounded-full flex items-center justify-center">
+                            <span class="text-blue-dark font-bold">MS</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-navy">Maria Santos</h4>
+                            <p class="text-gray-500 text-sm">Regular Customer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover-lift">
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-6">"The online booking system is so convenient, and the service is always top-notch. I appreciate how they take care of my car every time."</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-blue-dark/20 rounded-full flex items-center justify-center">
+                            <span class="text-blue-dark font-bold">JD</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-navy">Juan Dela Cruz</h4>
+                            <p class="text-gray-500 text-sm">Verified Customer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover-lift">
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-6">"I've tried many car wash services, but Prodigy Auto Care stands out. Their premium wash is worth every peso. My car always looks fantastic!"</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-blue-dark/20 rounded-full flex items-center justify-center">
+                            <span class="text-blue-dark font-bold">AR</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-navy">Antonio Reyes</h4>
+                            <p class="text-gray-500 text-sm">Loyal Customer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold font-display mb-6">Ready to Experience Premium Car Care?</h2>
+            <p class="text-lg text-cream/90 mb-8 max-w-2xl mx-auto">
+                Join thousands of satisfied customers who trust us with their vehicles. Book your appointment today.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="register.html" class="px-8 py-4 bg-brown text-white rounded-xl font-semibold hover:bg-brown/90 transition-all duration-300 shadow-lg">
+                    Sign Up & Book Now
+                </a>
+                <a href="login.html" class="px-8 py-4 bg-white/10 backdrop-blur-sm text-white border border-white/30 rounded-xl font-semibold hover:bg-white/20 transition-all duration-300">
+                    Login to Your Account
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold font-display text-navy mb-6">Get in Touch</h2>
+                    <p class="text-gray-600 mb-8">
+                        Have questions about our services? Contact us and we'll be happy to assist you.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Location</h3>
+                                <p class="text-gray-600">123 Car Wash Street, Auto City, Philippines</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Phone</h3>
+                                <p class="text-gray-600">+63 XXX XXX XXXX</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Email</h3>
+                                <p class="text-gray-600">info@prodigyautocare.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-navy mb-1">Hours</h3>
+                                <p class="text-gray-600">Monday - Sunday: 8:00 AM - 6:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white hover:bg-navy transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white hover:bg-navy transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-blue-dark rounded-full flex items-center justify-center text-white hover:bg-navy transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-2xl font-bold text-navy mb-6">Send us a Message</h3>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" placeholder="john@example.com">
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" placeholder="How can we help?">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" placeholder="Your message here..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-navy text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="relative">
+                            <i class="fas fa-car text-cream text-2xl"></i>
+                            <div class="absolute -top-1 -right-1 w-2 h-2 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                        </div>
+                        <div>
+                            <h1 class="text-cream text-2xl font-bold font-display tracking-wide">Prodigy</h1>
+                            <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        Premium car wash and detailing services for your vehicle. Quality, convenience, and excellence in every service.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#services" class="text-gray-400 hover:text-white transition-colors">Services</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#testimonials" class="text-gray-400 hover:text-white transition-colors">Testimonials</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Services</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Basic Wash</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Premium Wash</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Deluxe Detail</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Interior Cleaning</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Paint Protection</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Contact Us</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-gray-400"></i>
+                            <span class="text-gray-400">123 Car Wash Street, Auto City, Philippines</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-phone-alt mt-1 text-gray-400"></i>
+                            <span class="text-gray-400">+63 XXX XXX XXXX</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-envelope mt-1 text-gray-400"></i>
+                            <span class="text-gray-400">info@prodigyautocare.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 mb-4 md:mb-0">© 2023 Prodigy Auto Care. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                if (href !== "#") {
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

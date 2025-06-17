@@ -43,6 +43,22 @@
             transform: translateY(-2px);
         }
         
+        /* Page Transition Animation */
+        body {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         /* Flatpickr customization */
         .flatpickr-calendar {
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
@@ -87,7 +103,6 @@
                     <a href="index.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Home</a>
                     <a href="bookings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">My Bookings</a>
                     <a href="#" class="text-cream font-semibold border-b-2 border-cream pb-1">My Vehicles</a>
-                    <a href="subscription.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Subscription</a>
                     <a href="profile.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Profile</a>
                 </div>
                 

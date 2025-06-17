@@ -11,8 +11,6 @@
                 extend: {
                     colors: {
                         'cream': '#EFE4D2',
-                        'blue-dark': '#254D70',
-                        'navy': '#131D4F',
                         'brown': '#954C2E'
                     },
                     fontFamily: {
@@ -53,6 +51,22 @@
         .star:hover {
             color: #fbbf24;
         }
+        
+        /* Page Transition Animation */
+        body {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body class="bg-cream min-h-screen font-sans">
@@ -75,7 +89,6 @@
                     <a href="index.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Home</a>
                     <a href="#" class="text-cream font-semibold border-b-2 border-cream pb-1">My Bookings</a>
                     <a href="vehicles.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Vehicles</a>
-                    <a href="subscription.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Subscription</a>
                     <a href="profile.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Profile</a>
                 </div>
                 

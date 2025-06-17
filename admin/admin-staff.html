@@ -25,6 +25,23 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Page Transition Animation */
+        body {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body class="bg-cream min-h-screen font-sans">
     <!-- Navigation -->
@@ -281,6 +298,11 @@
             // Filters
             document.getElementById('search-staff').addEventListener('input', applyFilters);
             document.getElementById('status-filter').addEventListener('change', applyFilters);
+
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                window.location.href = '../login.html';
+            });
         }
 
         async function loadStaffData() {
