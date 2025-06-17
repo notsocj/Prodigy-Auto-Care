@@ -65,6 +65,87 @@
         .bg-gradient-primary {
             background: linear-gradient(135deg, #254D70 0%, #131D4F 100%);
         }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 640px) {
+            .hero-text {
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+            
+            .section-spacing {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+        }
+        
+        /* Fix for mobile browser viewport height issues */
+        .min-h-screen {
+            min-height: 100vh; /* Fallback */
+            min-height: calc(var(--vh, 1vh) * 100);
+        }
+        
+        /* Improve touch targets for mobile */
+        @media (max-width: 640px) {
+            .nav-link, .button, .interactive-element {
+                padding: 0.625rem 1rem;  /* Slightly larger touch targets on mobile */
+            }
+        }
+        
+        /* Ensure images don't overflow on small screens */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Adjustments for mobile layout */
+        @media (max-width: 768px) {
+            .mobile-header-layout {
+                grid-template-columns: auto auto;
+                grid-template-areas:
+                    "logo buttons"
+                    "menu menu";
+            }
+        }
+        
+        /* Fix for navigation layout */
+        @media (min-width: 768px) {
+            header .max-w-7xl > div:first-child {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+            }
+            
+            header .max-w-7xl > div:first-child > div:nth-child(1) {
+                justify-self: start;
+            }
+            
+            header .max-w-7xl > div:first-child > div:nth-child(2) {
+                justify-self: center;
+            }
+            
+            header .max-w-7xl > div:first-child > div:nth-child(3) {
+                justify-self: end;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            header .max-w-7xl > div:first-child {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+            }
+            
+            header .max-w-7xl > div:first-child > a:first-child {
+                justify-self: start;
+            }
+            
+            header .max-w-7xl > div:first-child > div:nth-child(2) {
+                justify-self: center;
+            }
+            
+            header .max-w-7xl > div:first-child > div:nth-child(3) {
+                justify-self: end;
+            }
+        }
     </style>
 </head>
 <body class="bg-cream font-sans">
@@ -72,59 +153,57 @@
     <header class="bg-gradient-primary text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
+                <!-- Logo (Left) -->
+                <a href="landing.html" class="flex items-center space-x-3">
                     <div class="relative">
                         <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
                         <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
                     </div>
                     <div>
                         <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
-                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">AUTO CARE</p>
                     </div>
-                </div>
+                </a>
                 
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex space-x-8">
+                <!-- Navigation Links (Center) - Desktop Only -->
+                <div class="hidden lg:flex items-center space-x-8">
                     <a href="#services" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Services</a>
                     <a href="#about" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">About Us</a>
                     <a href="#testimonials" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Testimonials</a>
                     <a href="#contact" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Contact</a>
-                </nav>
+                </div>
                 
-                <!-- Auth Buttons -->
-                <div class="flex items-center space-x-4">
-                    <a href="login.html" class="px-4 py-2 text-cream border border-cream/30 rounded-lg hover:bg-white/10 transition-all duration-300">
+                <!-- Auth Buttons (Right) - Desktop Only -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="login.html" class="px-5 py-2 text-white border border-white/30 rounded-lg hover:bg-white/10 transition-all duration-300">
                         Login
                     </a>
-                    <a href="register.html" class="px-4 py-2 bg-brown text-white rounded-lg hover:bg-brown/90 transition-all duration-300">
+                    <a href="register.html" class="px-5 py-2 bg-brown text-white rounded-lg hover:bg-brown/90 transition-all duration-300">
                         Sign Up
                     </a>
                 </div>
                 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-white">
+                <!-- Mobile Navigation -->
+                <div class="flex items-center space-x-3 lg:hidden">
+                    <!-- Mobile Auth Button - Only Login (removed Sign Up) -->
+                    <a href="login.html" class="px-4 py-1.5 text-sm text-white border border-white/30 rounded hover:bg-white/10 transition-all duration-300">
+                        Login
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-button" class="text-white p-2">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
-            </div>
+            </div
             
-            <!-- Mobile Menu -->
+            <!-- Mobile Menu - Hidden by default -->
             <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-white/20">
                 <div class="flex flex-col space-y-4">
                     <a href="#services" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Services</a>
                     <a href="#about" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">About Us</a>
                     <a href="#testimonials" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Testimonials</a>
                     <a href="#contact" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Contact</a>
-                    <div class="flex flex-col space-y-2 pt-2 border-t border-white/20">
-                        <a href="login.html" class="px-4 py-2 text-center text-cream border border-cream/30 rounded-lg hover:bg-white/10 transition-all duration-300">
-                            Login
-                        </a>
-                        <a href="register.html" class="px-4 py-2 text-center bg-brown text-white rounded-lg hover:bg-brown/90 transition-all duration-300">
-                            Sign Up
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -609,17 +688,39 @@
     <!-- JavaScript -->
     <script>
         // Mobile Menu Toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('mobile-menu-button').addEventListener('click', function(e) {
+            e.stopPropagation();
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenu.classList.toggle('hidden');
         });
         
-        // Close mobile menu when clicking on a link
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            
+            if (!mobileMenu.contains(e.target) && e.target !== mobileMenuButton && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+        // Add touchstart event for mobile devices
         document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.getElementById('mobile-menu').classList.add('hidden');
+            link.addEventListener('touchstart', function() {
+                setTimeout(() => {
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }, 300);
             });
         });
+        
+        // Add viewport height fix for mobile browsers
+        function setMobileHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        setMobileHeight();
+        window.addEventListener('resize', setMobileHeight);
         
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
