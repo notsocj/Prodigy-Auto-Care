@@ -70,7 +70,7 @@
             </div>
             
             <!-- Login Form -->
-            <form id="login-form" class="mt-8 space-y-6">
+            <form id="loginForm" class="mt-8 space-y-6">
                 <div class="rounded-md shadow-sm space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
@@ -110,7 +110,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" id="login-btn" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
+                    <button type="submit" id="loginBtn" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
                         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                             <i class="fas fa-sign-in-alt text-blue-200 group-hover:text-blue-100"></i>
                         </span>
@@ -119,7 +119,7 @@
                 </div>
 
                 <!-- Error Message -->
-                <div id="error-message" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <i class="fas fa-exclamation-circle text-red-400"></i>
@@ -142,16 +142,16 @@
     <!-- Scripts -->
     <script type="module" src="firebase.js"></script>
     <script type="module">
-        import { loginUser } from './firebase.js';
+        import { loginUser, getCurrentUser } from './firebase.js';
 
         document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('login-form');
-            const loginBtn = document.getElementById('login-btn');
-            const loading = document.getElementById('loading');
-            const errorMessage = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
             const togglePassword = document.getElementById('toggle-password');
             const passwordInput = document.getElementById('password');
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
 
             // Toggle password visibility
             togglePassword.addEventListener('click', function() {
@@ -179,8 +179,18 @@
                     const result = await loginUser(email, password);
                     
                     if (result.success) {
-                        // Redirect based on user role or to dashboard
-                        window.location.href = 'index.html';
+                        // Get current user data to check role
+                        const userData = await getCurrentUser();
+                        
+                        // Redirect based on user role
+                        if (userData && userData.role === 'admin') {
+                            window.location.href = 'admin/admin-dashboard.html';
+                        } else if (userData && userData.role === 'washer') {
+                            window.location.href = 'washer-dashboard.html'; // When you create washer pages
+                        } else {
+                            // Customer or default redirect to main page
+                            window.location.href = 'index.html';
+                        }
                     } else {
                         showError(result.error);
                     }

@@ -255,6 +255,7 @@
                         <select id="time-interval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                             <option value="30">Every 30 minutes</option>
                             <option value="60" selected>Every hour</option>
+                            <option value="90">Every 1 ½ hours</option>
                             <option value="120">Every 2 hours</option>
                             <option value="180">Every 3 hours</option>
                         </select>
@@ -479,6 +480,7 @@
                             <select id="bulk-interval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
                                 <option value="30">Every 30 minutes</option>
                                 <option value="60" selected>Every hour</option>
+                                <option value="90">Every 1 ½ hours</option>
                                 <option value="120">Every 2 hours</option>
                                 <option value="180">Every 3 hours</option>
                             </select>
@@ -854,7 +856,24 @@
             
             let previewText = `Date Range: ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}\n`;
             previewText += `Template: ${template}\n`;
-            previewText += `Interval: Every ${interval} minutes\n`;
+            
+            // Format interval display
+            let intervalText;
+            if (interval === 30) {
+                intervalText = 'Every 30 minutes';
+            } else if (interval === 60) {
+                intervalText = 'Every hour';
+            } else if (interval === 90) {
+                intervalText = 'Every 1½ hours';
+            } else if (interval === 120) {
+                intervalText = 'Every 2 hours';
+            } else if (interval === 180) {
+                intervalText = 'Every 3 hours';
+            } else {
+                intervalText = `Every ${interval} minutes`;
+            }
+            
+            previewText += `Interval: ${intervalText}\n`;
             previewText += `Days: ${selectedDays.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}\n\n`;
             
             // Calculate number of dates that will be affected
@@ -1080,7 +1099,7 @@
                     </div>
                     
                     <div class="flex items-center space-x-4">
-                        <div class="text-sm text-gray-600">
+                        <div class="text-sm text-gray-900">
                             <span class="font-medium">${slot.currentBookings || 0}</span> / ${slot.maxBookings} bookings
                         </div>
                         

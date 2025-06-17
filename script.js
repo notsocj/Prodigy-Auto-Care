@@ -226,29 +226,25 @@ function updateAuthUI(isAuthenticated) {
         if (mobileGuestNav) mobileGuestNav.classList.add('hidden');
         if (mobileSignOutBtn) mobileSignOutBtn.classList.remove('hidden');
         
-        // Show appropriate navigation based on role
+        // Show appropriate navigation based on role (or redirect if admin)
         updateNavigationByRole(appState.currentUser.role);
     } else {
         // Show guest UI - user nav is hidden by default
         if (userNav) userNav.classList.add('hidden');
         
-        // Hide role-specific navigation
+        // Show customer navigation for guests
         const customerNav = document.getElementById('customer-nav');
         const washerNav = document.getElementById('washer-nav');
-        const adminNav = document.getElementById('admin-nav');
         
         if (customerNav) customerNav.classList.remove('hidden');
         if (washerNav) washerNav.classList.add('hidden');
-        if (adminNav) adminNav.classList.add('hidden');
         
-        // Update mobile navigation
+        // Update mobile navigation for guests
         const mobileCustomerNav = document.getElementById('mobile-customer-nav');
         const mobileWasherNav = document.getElementById('mobile-washer-nav');
-        const mobileAdminNav = document.getElementById('mobile-admin-nav');
         
         if (mobileCustomerNav) mobileCustomerNav.classList.add('hidden');
         if (mobileWasherNav) mobileWasherNav.classList.add('hidden');
-        if (mobileAdminNav) mobileAdminNav.classList.add('hidden');
         
         // Update mobile menu user info
         if (mobileUserInfo) {
@@ -270,19 +266,15 @@ function updateNavigationByRole(role) {
     // Hide all navigation types first
     const customerNav = document.getElementById('customer-nav');
     const washerNav = document.getElementById('washer-nav');
-    const adminNav = document.getElementById('admin-nav');
     const mobileCustomerNav = document.getElementById('mobile-customer-nav');
     const mobileWasherNav = document.getElementById('mobile-washer-nav');
-    const mobileAdminNav = document.getElementById('mobile-admin-nav');
     
     if (customerNav) customerNav.classList.add('hidden');
     if (washerNav) washerNav.classList.add('hidden');
-    if (adminNav) adminNav.classList.add('hidden');
     if (mobileCustomerNav) mobileCustomerNav.classList.add('hidden');
     if (mobileWasherNav) mobileWasherNav.classList.add('hidden');
-    if (mobileAdminNav) mobileAdminNav.classList.add('hidden');
     
-    // Show appropriate navigation
+    // Show appropriate navigation or redirect
     switch (role) {
         case 'customer':
             if (customerNav) customerNav.classList.remove('hidden');
@@ -293,8 +285,12 @@ function updateNavigationByRole(role) {
             if (mobileWasherNav) mobileWasherNav.classList.remove('hidden');
             break;
         case 'admin':
-            if (adminNav) adminNav.classList.remove('hidden');
-            if (mobileAdminNav) mobileAdminNav.classList.remove('hidden');
+            // Redirect admin users to admin panel instead of showing navigation
+            if (window.location.pathname !== '/admin/admin-dashboard.html' && 
+                !window.location.pathname.includes('/admin/')) {
+                window.location.href = 'admin/admin-dashboard.html';
+                return;
+            }
             break;
         default:
             if (customerNav) customerNav.classList.remove('hidden');
