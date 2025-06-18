@@ -116,7 +116,7 @@
         }
         
         .signout-btn-gradient {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            background: linear-gradient(to right, #dc2626, #b91c1c);
             box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
         }
         
@@ -540,5 +540,11 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="module" src="firebase.js"></script>
     <script type="module" src="script.js"></script>
+    <script>
+        // Signout/logout button
+        document.getElementById('signout-btn').addEventListener('click', () => {
+            window.location.href = 'landing.html';
+        });
+    </script>
 </body>
 </html>

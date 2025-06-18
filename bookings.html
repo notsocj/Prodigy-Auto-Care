@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings - Prodigy</title>
+    <title>My Bookings - Prodigy Auto Care</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,6 +11,8 @@
                 extend: {
                     colors: {
                         'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
                         'brown': '#954C2E'
                     },
                     fontFamily: {
@@ -24,785 +26,276 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .booking-card {
-            transition: all 0.3s ease;
-        }
-        .booking-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-        .status-pending { border-left: 4px solid #f59e0b; }
-        .status-ongoing { border-left: 4px solid #3b82f6; }
-        .status-completed { border-left: 4px solid #10b981; }
-        .status-cancelled { border-left: 4px solid #ef4444; }
-        
-        .star-rating {
-            display: flex;
-            gap: 4px;
-        }
-        .star {
-            color: #d1d5db;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .star.active {
-            color: #fbbf24;
-        }
-        .star:hover {
-            color: #fbbf24;
-        }
-        
-        /* Page Transition Animation */
         body {
-            animation: fadeIn 0.5s ease-in-out;
+            background-color: #EFE4D2;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
         }
         
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .btn-primary {
+            background-color: #254D70;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #131D4F;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #254D70 0%, #131D4F 100%);
         }
     </style>
 </head>
-<body class="bg-cream min-h-screen font-sans">
-    <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center py-5">
-                <div class="flex items-center space-x-3">
+<body>
+    <!-- Header/Navigation -->
+    <header class="bg-gradient-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo (Left) -->
+                <a href="landing.html" class="flex items-center space-x-3">
                     <div class="relative">
                         <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
                         <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
                     </div>
                     <div>
                         <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
-                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">AUTO CARE</p>
                     </div>
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="index.html" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Home</a>
+                    <a href="bookings.html" class="text-cream font-semibold border-b-2 border-cream pb-1">My Bookings</a>
+                    <a href="vehicles.html" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">My Vehicles</a>
+                    <a href="profile.html" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Profile</a>
                 </div>
                 
-                <div class="hidden lg:flex items-center space-x-6">
-                    <a href="index.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Home</a>
-                    <a href="#" class="text-cream font-semibold border-b-2 border-cream pb-1">My Bookings</a>
-                    <a href="vehicles.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Vehicles</a>
-                    <a href="profile.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Profile</a>
-                </div>
+                <!-- Sign Out Button -->
+                <button id="signout-btn" class="bg-brown text-white px-4 py-2 rounded-lg hover:bg-brown/90 transition-all duration-300 flex items-center space-x-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </button>
                 
-                <div class="flex items-center space-x-4">
-                    <div class="hidden md:block bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
-                        <div class="text-cream text-sm">
-                            <div id="user-name" class="font-semibold">Loading...</div>
-                            <div class="flex items-center space-x-1 text-xs opacity-90">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <span id="loyalty-points">0 points</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
-                    </button>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="lg:hidden text-white p-2">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="lg:hidden hidden py-4 border-t border-white/20">
+                <div class="flex flex-col space-y-4">
+                    <a href="index.html" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Home</a>
+                    <a href="bookings.html" class="text-cream font-semibold">My Bookings</a>
+                    <a href="vehicles.html" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">My Vehicles</a>
+                    <a href="profile.html" class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Profile</a>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Page Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold font-display text-navy mb-2">My Bookings</h1>
+        <!-- Bookings Header -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-navy mb-2">My Bookings</h1>
             <p class="text-gray-600">View and manage your car wash appointments</p>
         </div>
-
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
+        
+        <!-- Booking Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Total Bookings -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-blue-500"></i>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-navy" id="total-bookings">0</h3>
-                <p class="text-sm text-gray-600">Total Bookings</p>
+                <h2 class="text-3xl font-bold text-navy">3</h2>
+                <p class="text-sm text-gray-500">Total Bookings</p>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+            <!-- Completed -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-navy" id="completed-bookings">0</h3>
-                <p class="text-sm text-gray-600">Completed</p>
+                <h2 class="text-3xl font-bold text-navy">0</h2>
+                <p class="text-sm text-gray-500">Completed</p>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div class="w-12 h-12 bg-yellow-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+            <!-- Pending -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-500"></i>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-navy" id="pending-bookings">0</h3>
-                <p class="text-sm text-gray-600">Pending</p>
+                <h2 class="text-3xl font-bold text-navy">2</h2>
+                <p class="text-sm text-gray-500">Pending</p>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
-                <div class="w-12 h-12 bg-brown-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-peso-sign text-brown text-xl"></i>
+            <!-- Total Spent -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-10 h-10 rounded-lg bg-brown/10 flex items-center justify-center">
+                        <i class="fas fa-coins text-brown"></i>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-navy" id="total-spent">₱0</h3>
-                <p class="text-sm text-gray-600">Total Spent</p>
+                <h2 class="text-3xl font-bold text-navy">₱0</h2>
+                <p class="text-sm text-gray-500">Total Spent</p>
             </div>
         </div>
-
-        <!-- Filters and Search -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="search-bookings" placeholder="Search bookings..." 
-                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark w-full sm:w-64">
-                    </div>
-                    
-                    <select id="status-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
-                        <option value="">All Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Ongoing">Ongoing</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
+        
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="relative flex-grow">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Search bookings..." class="pl-10 w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-dark">
+                </div>
+                
+                <div class="flex gap-2">
+                    <select class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-dark">
+                        <option>All Status</option>
+                        <option>Pending</option>
+                        <option>Ongoing</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
                     </select>
                     
-                    <select id="service-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
-                        <option value="">All Services</option>
-                        <option value="Basic Wash">Basic Wash</option>
-                        <option value="Premium Wash">Premium Wash</option>
-                        <option value="Deluxe Wash">Deluxe Wash</option>
+                    <select class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-dark">
+                        <option>All Services</option>
+                        <option>Basic Wash</option>
+                        <option>Premium Wash</option>
+                        <option>Deluxe Wash</option>
                     </select>
                 </div>
                 
-                <button id="clear-filters" class="text-blue-dark hover:text-navy transition-colors font-medium">
-                    <i class="fas fa-times mr-1"></i>Clear Filters
+                <button class="text-blue-dark hover:text-navy flex items-center gap-1">
+                    <i class="fas fa-times"></i> Clear Filters
                 </button>
             </div>
         </div>
-
+        
         <!-- Bookings List -->
-        <div class="space-y-6">
-            <!-- Loading State -->
-            <div id="bookings-loading" class="text-center py-12">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-dark mx-auto mb-4"></div>
-                <p class="text-gray-500">Loading your bookings...</p>
-            </div>
-
-            <!-- Empty State -->
-            <div id="no-bookings" class="bg-white rounded-xl shadow-lg p-12 text-center hidden">
-                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-calendar-times text-4xl text-gray-400"></i>
+        <div class="space-y-4">
+            <!-- Booking Item - Ongoing -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-blue-500">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-navy mb-1">Premium Wash</h3>
+                            <p class="text-gray-600 text-sm">Mitsubishi Adventure (NCP-4012)</p>
+                        </div>
+                        <div class="mt-2 md:mt-0">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Ongoing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                        <div>
+                            <p class="text-xs text-gray-500">Date</p>
+                            <p class="font-medium">Friday, June 13, 2025</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Time</p>
+                            <p class="font-medium">09:00 AM</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Amount</p>
+                            <p class="font-medium text-brown">₱350</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Payment</p>
+                            <p class="font-medium">GCash</p>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-semibold text-navy mb-2">No Bookings Found</h3>
-                <p class="text-gray-600 mb-6">You haven't made any car wash bookings yet</p>
-                <a href="index.html#booking-section" class="bg-blue-dark text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
-                    <i class="fas fa-plus mr-2"></i>Book Your First Service
+            </div>
+            
+            <!-- Booking Item - Pending -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-yellow-500">
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-navy mb-1">Premium Wash</h3>
+                            <p class="text-gray-600 text-sm">Mitsubishi Adventure (NCP-4012)</p>
+                        </div>
+                        <div class="mt-2 md:mt-0">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">Pending</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                        <div>
+                            <p class="text-xs text-gray-500">Date</p>
+                            <p class="font-medium">Saturday, June 14, 2025</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Time</p>
+                            <p class="font-medium">11:00 AM</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Amount</p>
+                            <p class="font-medium text-brown">₱350</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Payment</p>
+                            <p class="font-medium">Cash</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- No bookings state (hidden by default) -->
+            <div id="no-bookings" class="hidden bg-white rounded-lg shadow-md p-10 text-center">
+                <i class="fas fa-calendar-times text-gray-400 text-4xl mb-4"></i>
+                <h3 class="text-xl font-bold text-navy mb-2">No Bookings Found</h3>
+                <p class="text-gray-600 mb-6">You don't have any car wash appointments yet.</p>
+                <a href="index.html" class="inline-block px-6 py-3 bg-blue-dark text-white rounded-lg hover:bg-navy transition-all">
+                    Book a Service Now
                 </a>
             </div>
-
-            <!-- Bookings Container -->
-            <div id="bookings-container">
-                <!-- Bookings will be populated by JavaScript -->
-            </div>
+        </div>
+        
+        <!-- New Booking Button (Fixed) -->
+        <div class="fixed bottom-8 right-8">
+            <a href="index.html" class="flex items-center justify-center w-14 h-14 bg-brown text-white rounded-full shadow-lg hover:bg-brown/90 transition-all">
+                <i class="fas fa-plus text-xl"></i>
+            </a>
         </div>
     </main>
-
-    <!-- Booking Details Modal -->
-    <div id="booking-details-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-navy">Booking Details</h3>
-                <button id="close-details-modal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div id="booking-details-content">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Rating Modal -->
-    <div id="rating-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-navy">Rate Your Service</h3>
-                <button id="close-rating-modal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <form id="rating-form" class="space-y-4">
-                <div class="text-center">
-                    <p class="text-gray-600 mb-4">How was your car wash experience?</p>
-                    <div class="star-rating justify-center mb-4">
-                        <i class="fas fa-star star text-3xl" data-rating="1"></i>
-                        <i class="fas fa-star star text-3xl" data-rating="2"></i>
-                        <i class="fas fa-star star text-3xl" data-rating="3"></i>
-                        <i class="fas fa-star star text-3xl" data-rating="4"></i>
-                        <i class="fas fa-star star text-3xl" data-rating="5"></i>
-                    </div>
-                </div>
-                
-                <div>
-                    <label for="review-text" class="block text-sm font-medium text-gray-700 mb-2">Review (Optional)</label>
-                    <textarea id="review-text" rows="3" placeholder="Share your experience..."
-                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"></textarea>
-                </div>
-                
-                <div class="flex space-x-4">
-                    <button type="button" id="cancel-rating" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" class="flex-1 bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
-                        Submit Rating
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Cancel Booking Modal -->
-    <div id="cancel-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
-            <div class="text-center">
-                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
-                </div>
-                <h3 class="text-xl font-bold text-navy mb-2">Cancel Booking</h3>
-                <p class="text-gray-600 mb-6">Are you sure you want to cancel this booking? This action cannot be undone.</p>
-                
-                <div class="flex space-x-4">
-                    <button id="cancel-booking-cancel" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
-                        Keep Booking
-                    </button>
-                    <button id="cancel-booking-confirm" class="flex-1 bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
-                        Cancel Booking
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <!-- Scripts -->
-    <script type="module" src="firebase.js"></script>
     <script type="module">
-        import { 
-            auth, 
-            onAuthChange, 
-            getCurrentUser, 
-            logoutUser,
-            getUserBookings,
-            getUserVehicles,
-            updateBookingRating,
-            cancelBooking
-        } from './firebase.js';
-
-        let currentUser = null;
-        let allBookings = [];
-        let filteredBookings = [];
-        let vehicles = [];
-        let currentBookingId = null;
-        let selectedRating = 0;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeBookingsPage();
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
         });
-
-        function initializeBookingsPage() {
-            onAuthChange(async (user) => {
-                if (user) {
-                    currentUser = await getCurrentUser();
-                    if (currentUser) {
-                        updateUserInfo();
-                        await loadBookingsData();
-                    }
-                } else {
-                    // Redirect to login if not authenticated
-                    window.location.href = 'login.html';
-                }
-            });
-
-            // Event listeners
-            initializeEventListeners();
-        }
-
-        function initializeEventListeners() {
-            // Logout
-            document.getElementById('logout-btn').addEventListener('click', async () => {
-                try {
-                    await logoutUser();
-                    window.location.href = 'index.html';
-                } catch (error) {
-                    console.error('Logout error:', error);
-                }
-            });
-
-            // Filters
-            document.getElementById('search-bookings').addEventListener('input', applyFilters);
-            document.getElementById('status-filter').addEventListener('change', applyFilters);
-            document.getElementById('service-filter').addEventListener('change', applyFilters);
-            document.getElementById('clear-filters').addEventListener('click', clearFilters);
-
-            // Modals
-            document.getElementById('close-details-modal').addEventListener('click', () => {
-                document.getElementById('booking-details-modal').classList.add('hidden');
-            });
-
-            document.getElementById('close-rating-modal').addEventListener('click', closeRatingModal);
-            document.getElementById('cancel-rating').addEventListener('click', closeRatingModal);
-
-            document.getElementById('cancel-booking-cancel').addEventListener('click', () => {
-                document.getElementById('cancel-modal').classList.add('hidden');
-            });
-
-            document.getElementById('cancel-booking-confirm').addEventListener('click', confirmCancelBooking);
-
-            // Rating system
-            initializeRatingSystem();
-
-            // Rating form
-            document.getElementById('rating-form').addEventListener('submit', submitRating);
-        }
-
-        function updateUserInfo() {
-            if (!currentUser) return;
+        
+        // Signout button
+        document.getElementById('signout-btn').addEventListener('click', () => {
+            window.location.href = 'landing.html';
+        });
+        
+        // Handle booking data and display
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would normally fetch data from Firebase
+            // For now we're using the static HTML
             
-            document.getElementById('user-name').textContent = currentUser.fullName;
-            document.getElementById('loyalty-points').textContent = `${currentUser.loyaltyPoints} points`;
-        }
-
-        async function loadBookingsData() {
-            try {
-                // Show loading state
-                document.getElementById('bookings-loading').classList.remove('hidden');
-                document.getElementById('no-bookings').classList.add('hidden');
-
-                // Load bookings and vehicles
-                [allBookings, vehicles] = await Promise.all([
-                    getUserBookings(),
-                    getUserVehicles()
-                ]);
-
-                // Hide loading state
-                document.getElementById('bookings-loading').classList.add('hidden');
-
-                // Update stats
-                updateStats();
-
-                // Display bookings
-                if (allBookings.length === 0) {
-                    document.getElementById('no-bookings').classList.remove('hidden');
-                } else {
-                    filteredBookings = [...allBookings];
-                    displayBookings();
-                }
-
-            } catch (error) {
-                console.error('Error loading bookings data:', error);
-                document.getElementById('bookings-loading').classList.add('hidden');
-                alert('Error loading bookings. Please try again.');
-            }
-        }
-
-        function updateStats() {
-            const totalBookings = allBookings.length;
-            const completedBookings = allBookings.filter(b => b.status === 'Completed').length;
-            const pendingBookings = allBookings.filter(b => b.status === 'Pending').length;
-            
-            let totalSpent = 0;
-            allBookings.forEach(booking => {
-                if (booking.payment && booking.payment.amount && booking.status === 'Completed') {
-                    totalSpent += booking.payment.amount;
-                }
-            });
-
-            document.getElementById('total-bookings').textContent = totalBookings;
-            document.getElementById('completed-bookings').textContent = completedBookings;
-            document.getElementById('pending-bookings').textContent = pendingBookings;
-            document.getElementById('total-spent').textContent = `₱${totalSpent.toLocaleString()}`;
-        }
-
-        function displayBookings() {
-            const container = document.getElementById('bookings-container');
-            container.innerHTML = '';
-
-            if (filteredBookings.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-lg p-12 text-center">
-                        <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
-                        <h3 class="text-xl font-semibold text-navy mb-2">No bookings match your filters</h3>
-                        <p class="text-gray-600">Try adjusting your search criteria</p>
-                    </div>
-                `;
-                return;
-            }
-
-            filteredBookings.forEach(booking => {
-                const bookingCard = createBookingCard(booking);
-                container.appendChild(bookingCard);
-            });
-        }
-
-        function createBookingCard(booking) {
-            const vehicle = vehicles.find(v => v.id === booking.vehicleId);
-            const vehicleText = vehicle ? `${vehicle.make} ${vehicle.model} (${vehicle.plateNumber})` : 'Unknown Vehicle';
-            
-            const statusColors = {
-                'Pending': 'yellow',
-                'Ongoing': 'blue',
-                'Completed': 'green',
-                'Cancelled': 'red'
-            };
-            
-            const statusColor = statusColors[booking.status] || 'gray';
-            
-            const card = document.createElement('div');
-            card.className = `booking-card bg-white rounded-xl shadow-lg p-6 status-${booking.status.toLowerCase()}`;
-            
-            const bookingDate = new Date(booking.date);
-            const formattedDate = bookingDate.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-
-            card.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-12 h-12 bg-blue-dark text-white rounded-lg flex items-center justify-center">
-                                <i class="fas fa-car"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-navy">${booking.service}</h3>
-                                <p class="text-sm text-gray-600">${vehicleText}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="px-3 py-1 bg-${statusColor}-100 text-${statusColor}-800 text-sm rounded-full font-medium">
-                        ${booking.status}
-                    </span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <p class="text-sm text-gray-600">Date</p>
-                        <p class="font-semibold text-navy">${formattedDate}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Time</p>
-                        <p class="font-semibold text-navy">${booking.time}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Amount</p>
-                        <p class="font-semibold text-brown">₱${booking.payment?.amount || 0}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Payment</p>
-                        <p class="font-semibold text-navy">${booking.payment?.method || 'N/A'}</p>
-                    </div>
-                </div>
-
-                ${booking.rating ? `
-                    <div class="mb-4 p-3 bg-yellow-50 rounded-lg">
-                        <div class="flex items-center space-x-2 mb-1">
-                            <span class="text-sm text-gray-600">Your Rating:</span>
-                            <div class="flex space-x-1">
-                                ${Array.from({length: 5}, (_, i) => 
-                                    `<i class="fas fa-star text-sm ${i < booking.rating ? 'text-yellow-400' : 'text-gray-300'}"></i>`
-                                ).join('')}
-                            </div>
-                        </div>
-                        ${booking.review ? `<p class="text-sm text-gray-700">"${booking.review}"</p>` : ''}
-                    </div>
-                ` : ''}
-
-                <div class="flex space-x-3">
-                    <button class="view-details-btn flex-1 bg-blue-dark text-white py-2 px-4 rounded-lg font-medium hover:bg-navy transition-colors" 
-                            data-booking-id="${booking.id}">
-                        <i class="fas fa-eye mr-2"></i>View Details
-                    </button>
-                    
-                    ${booking.status === 'Completed' && !booking.rating ? `
-                        <button class="rate-service-btn bg-yellow-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-yellow-600 transition-colors" 
-                                data-booking-id="${booking.id}">
-                            <i class="fas fa-star mr-2"></i>Rate
-                        </button>
-                    ` : ''}
-                    
-                    ${booking.status === 'Pending' ? `
-                        <button class="cancel-booking-btn bg-red-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-red-600 transition-colors" 
-                                data-booking-id="${booking.id}">
-                            <i class="fas fa-times mr-2"></i>Cancel
-                        </button>
-                    ` : ''}
-                </div>
-            `;
-
-            // Add event listeners
-            const viewDetailsBtn = card.querySelector('.view-details-btn');
-            viewDetailsBtn.addEventListener('click', () => viewBookingDetails(booking.id));
-
-            const rateBtn = card.querySelector('.rate-service-btn');
-            if (rateBtn) {
-                rateBtn.addEventListener('click', () => openRatingModal(booking.id));
-            }
-
-            const cancelBtn = card.querySelector('.cancel-booking-btn');
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => openCancelModal(booking.id));
-            }
-
-            return card;
-        }
-
-        function applyFilters() {
-            const searchTerm = document.getElementById('search-bookings').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-            const serviceFilter = document.getElementById('service-filter').value;
-
-            filteredBookings = allBookings.filter(booking => {
-                const vehicle = vehicles.find(v => v.id === booking.vehicleId);
-                const vehicleText = vehicle ? `${vehicle.make} ${vehicle.model} ${vehicle.plateNumber}`.toLowerCase() : '';
-                
-                const matchesSearch = !searchTerm || 
-                    booking.service.toLowerCase().includes(searchTerm) ||
-                    vehicleText.includes(searchTerm) ||
-                    booking.date.includes(searchTerm);
-                
-                const matchesStatus = !statusFilter || booking.status === statusFilter;
-                const matchesService = !serviceFilter || booking.service === serviceFilter;
-
-                return matchesSearch && matchesStatus && matchesService;
-            });
-
-            displayBookings();
-        }
-
-        function clearFilters() {
-            document.getElementById('search-bookings').value = '';
-            document.getElementById('status-filter').value = '';
-            document.getElementById('service-filter').value = '';
-            filteredBookings = [...allBookings];
-            displayBookings();
-        }
-
-        function viewBookingDetails(bookingId) {
-            const booking = allBookings.find(b => b.id === bookingId);
-            if (!booking) return;
-
-            const vehicle = vehicles.find(v => v.id === booking.vehicleId);
-            const vehicleText = vehicle ? `${vehicle.make} ${vehicle.model} (${vehicle.plateNumber})` : 'Unknown Vehicle';
-            
-            const bookingDate = new Date(booking.date);
-            const formattedDate = bookingDate.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-
-            const content = document.getElementById('booking-details-content');
-            content.innerHTML = `
-                <div class="space-y-6">
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h4 class="font-semibold text-navy mb-3">Service Information</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-600">Service</p>
-                                <p class="font-semibold">${booking.service}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Status</p>
-                                <p class="font-semibold">${booking.status}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Date</p>
-                                <p class="font-semibold">${formattedDate}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Time</p>
-                                <p class="font-semibold">${booking.time}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h4 class="font-semibold text-navy mb-3">Vehicle Details</h4>
-                        <p class="font-semibold">${vehicleText}</p>
-                        ${vehicle ? `<p class="text-sm text-gray-600">Type: ${vehicle.vehicle_type || 'Not specified'}</p>` : ''}
-                    </div>
-
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h4 class="font-semibold text-navy mb-3">Payment Information</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-600">Amount</p>
-                                <p class="font-semibold text-brown">₱${booking.payment?.amount || 0}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Method</p>
-                                <p class="font-semibold">${booking.payment?.method || 'N/A'}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Status</p>
-                                <p class="font-semibold">${booking.payment?.status || 'N/A'}</p>
-                            </div>
-                            ${booking.loyaltyPointsUsed ? `
-                                <div>
-                                    <p class="text-sm text-gray-600">Loyalty Points Used</p>
-                                    <p class="font-semibold">${booking.loyaltyPointsUsed}</p>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-
-                    ${booking.rating || booking.review ? `
-                        <div class="bg-yellow-50 rounded-lg p-4">
-                            <h4 class="font-semibold text-navy mb-3">Your Review</h4>
-                            ${booking.rating ? `
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <span class="text-sm text-gray-600">Rating:</span>
-                                    <div class="flex space-x-1">
-                                        ${Array.from({length: 5}, (_, i) => 
-                                            `<i class="fas fa-star text-sm ${i < booking.rating ? 'text-yellow-400' : 'text-gray-300'}"></i>`
-                                        ).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                            ${booking.review ? `<p class="text-gray-700">"${booking.review}"</p>` : ''}
-                        </div>
-                    ` : ''}
-
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h4 class="font-semibold text-navy mb-3">Booking Details</h4>
-                        <div class="text-sm text-gray-600">
-                            <p>Booking ID: ${booking.id}</p>
-                            <p>Created: ${new Date(booking.createdAt?.seconds * 1000).toLocaleString()}</p>
-                            ${booking.promoCode ? `<p>Promo Code: ${booking.promoCode}</p>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('booking-details-modal').classList.remove('hidden');
-        }
-
-        function openRatingModal(bookingId) {
-            currentBookingId = bookingId;
-            selectedRating = 0;
-            document.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
-            document.getElementById('review-text').value = '';
-            document.getElementById('rating-modal').classList.remove('hidden');
-        }
-
-        function closeRatingModal() {
-            document.getElementById('rating-modal').classList.add('hidden');
-            currentBookingId = null;
-            selectedRating = 0;
-        }
-
-        function initializeRatingSystem() {
-            const stars = document.querySelectorAll('.star');
-            
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    selectedRating = parseInt(star.dataset.rating);
-                    updateStarDisplay();
-                });
-                
-                star.addEventListener('mouseenter', () => {
-                    const rating = parseInt(star.dataset.rating);
-                    highlightStars(rating);
-                });
-            });
-            
-            document.querySelector('.star-rating').addEventListener('mouseleave', () => {
-                updateStarDisplay();
-            });
-        }
-
-        function highlightStars(rating) {
-            const stars = document.querySelectorAll('.star');
-            stars.forEach((star, index) => {
-                if (index < rating) {
-                    star.style.color = '#fbbf24';
-                } else {
-                    star.style.color = '#d1d5db';
-                }
-            });
-        }
-
-        function updateStarDisplay() {
-            highlightStars(selectedRating);
-        }
-
-        async function submitRating(e) {
-            e.preventDefault();
-            
-            if (selectedRating === 0) {
-                alert('Please select a rating');
-                return;
-            }
-            
-            const review = document.getElementById('review-text').value.trim();
-            
-            try {
-                await updateBookingRating(currentBookingId, selectedRating, review);
-                
-                // Update local booking data
-                const booking = allBookings.find(b => b.id === currentBookingId);
-                if (booking) {
-                    booking.rating = selectedRating;
-                    booking.review = review;
-                }
-                
-                // Refresh display
-                displayBookings();
-                closeRatingModal();
-                
-                alert('Thank you for your rating!');
-            } catch (error) {
-                console.error('Error submitting rating:', error);
-                alert('Error submitting rating. Please try again.');
-            }
-        }
-
-        function openCancelModal(bookingId) {
-            currentBookingId = bookingId;
-            document.getElementById('cancel-modal').classList.remove('hidden');
-        }
-
-        async function confirmCancelBooking() {
-            try {
-                await cancelBooking(currentBookingId);
-                
-                // Update local booking data
-                const booking = allBookings.find(b => b.id === currentBookingId);
-                if (booking) {
-                    booking.status = 'Cancelled';
-                }
-                
-                // Refresh display
-                displayBookings();
-                updateStats();
-                document.getElementById('cancel-modal').classList.add('hidden');
-                
-                alert('Booking cancelled successfully');
-            } catch (error) {
-                console.error('Error cancelling booking:', error);
-                alert('Error cancelling booking. Please try again.');
-            }
-        }
+            // Example of how you would handle no bookings:
+            // const hasBookings = true;
+            // if (!hasBookings) {
+            //     document.querySelectorAll('.booking-item').forEach(el => el.classList.add('hidden'));
+            //     document.getElementById('no-bookings').classList.remove('hidden');
+            // }
+        });
     </script>
 </body>
 </html>
