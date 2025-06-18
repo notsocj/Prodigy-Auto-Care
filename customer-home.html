@@ -110,6 +110,10 @@
         .time-slot {
             transition: all 0.3s ease;
             cursor: pointer;
+            height: 120px; /* Set fixed height for consistency */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .time-slot:hover {
@@ -792,6 +796,9 @@
             }
 
             document.getElementById('time-slots-grid').classList.remove('hidden');
+            
+            // Update grid display from space-y-3 to proper grid
+            document.getElementById('time-slots-grid').className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
 
             availableSlots.forEach(time => {
                 const slot = availability[time];
@@ -807,14 +814,17 @@
 
             const spotsLeft = slot.maxBookings - (slot.currentBookings || 0);
             const isAvailable = slot.available && spotsLeft > 0;
+            
+            // Use a consistent label format for all slots
+            const slotLabel = slot.label || `GY Slot ${Math.floor(Math.random() * 10) + 1}`;
 
             if (!isAvailable) {
                 div.classList.add('unavailable');
             }
 
             div.innerHTML = `
-                <div class="time text-lg font-bold text-navy mb-1">${time}</div>
-                ${slot.label ? `<div class="label text-xs text-gray-500 mb-2">${slot.label}</div>` : ''}
+                <div class="time text-2xl font-bold text-navy mb-1">${time}</div>
+                <div class="label text-sm text-gray-500 mb-2">${slotLabel}</div>
                 <div class="spots text-sm text-gray-600">${spotsLeft} spots left</div>
             `;
 
