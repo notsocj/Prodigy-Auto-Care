@@ -261,10 +261,7 @@
                         <select id="day-template" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                             <option value="">Select template</option>
                             <option value="24hours">24 Hours (Every Hour)</option>
-                            <option value="business-hours">Business Hours (8AM-8PM)</option>
-                            <option value="night-shift">Night Shift (8PM-8AM)</option>
-                            <option value="peak-hours">Peak Hours (6AM-10PM)</option>
-                            <option value="custom">Custom Hours</option>
+                            <option value="business-hours">Prodigy Operating Hours</option>
                         </select>
                     </div>
                     <div>
@@ -280,26 +277,6 @@
                     <div class="flex items-end">
                         <button id="load-availability-btn" class="w-full bg-blue-dark text-white py-2 px-4 rounded-lg hover:bg-navy transition-colors">
                             <i class="fas fa-search mr-2"></i>Load Day
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Range Selector for Custom Template -->
-            <div id="custom-time-range" class="bg-white rounded-xl shadow-lg p-6 mb-8 hidden">
-                <h3 class="text-lg font-bold text-navy mb-4">Custom Time Range</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="start-time" class="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
-                        <input type="time" id="start-time" value="08:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
-                    </div>
-                    <div>
-                        <label for="end-time" class="block text-sm font-medium text-gray-700 mb-2">End Time</label>
-                        <input type="time" id="end-time" value="18:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
-                    </div>
-                    <div class="flex items-end">
-                        <button id="apply-custom-range" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
-                            Apply Custom Range
                         </button>
                     </div>
                 </div>
@@ -486,10 +463,7 @@
                             <select id="bulk-template" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
                                 <option value="">Select template</option>
                                 <option value="24hours">24 Hours (All Day)</option>
-                                <option value="business-hours">Business Hours (8AM-8PM)</option>
-                                <option value="night-shift">Night Shift (8PM-8AM)</option>
-                                <option value="peak-hours">Peak Hours (6AM-10PM)</option>
-                                <option value="custom">Custom Time Range</option>
+                                <option value="business-hours">Prodigy Operating Hours</option>
                             </select>
                         </div>
                         <div>
@@ -501,18 +475,6 @@
                                 <option value="120">Every 2 hours</option>
                                 <option value="180">Every 3 hours</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <!-- Custom Time Range -->
-                    <div id="bulk-custom-range" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="bulk-start-time" class="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
-                            <input type="time" id="bulk-start-time" value="08:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
-                        </div>
-                        <div>
-                            <label for="bulk-end-time" class="block text-sm font-medium text-gray-700 mb-2">End Time</label>
-                            <input type="time" id="bulk-end-time" value="18:00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                         </div>
                     </div>
                 </div>
@@ -842,13 +804,29 @@
                     timeSlots = generateTimeSlots('00:00', '23:59', interval);
                     break;
                 case 'business-hours':
-                    timeSlots = generateTimeSlots('08:00', '20:00', interval);
-                    break;
-                case 'night-shift':
-                    timeSlots = generateTimeSlots('20:00', '08:00', interval);
-                    break;
-                case 'peak-hours':
-                    timeSlots = generateTimeSlots('06:00', '22:00', interval);
+                    // AM Slots
+                    timeSlots["6:00 AM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "AM Battle Plan" };
+                    timeSlots["6:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 1" };
+                    timeSlots["8:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 2" };
+                    timeSlots["9:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 3" };
+                    timeSlots["11:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 4" };
+                    timeSlots["12:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 5" };
+                    
+                    // PM Slots
+                    timeSlots["2:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "PM Battle Plan" };
+                    timeSlots["2:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 1" };
+                    timeSlots["4:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 2" };
+                    timeSlots["5:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 3" };
+                    timeSlots["7:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 4" };
+                    timeSlots["8:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 5" };
+                    
+                    // GY Slots
+                    timeSlots["10:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "GY Battle Plan" };
+                    timeSlots["10:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 1" };
+                    timeSlots["12:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 2" };
+                    timeSlots["1:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 3" };
+                    timeSlots["3:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 4" };
+                    timeSlots["4:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 5" };
                     break;
             }
             
@@ -919,15 +897,33 @@
                 case '24hours':
                     return generateTimeSlots('00:00', '23:59', intervalMinutes);
                 case 'business-hours':
-                    return generateTimeSlots('08:00', '20:00', intervalMinutes);
-                case 'night-shift':
-                    return generateTimeSlots('20:00', '08:00', intervalMinutes);
-                case 'peak-hours':
-                    return generateTimeSlots('06:00', '22:00', intervalMinutes);
-                case 'custom':
-                    const startTime = document.getElementById('bulk-start-time').value || '08:00';
-                    const endTime = document.getElementById('bulk-end-time').value || '18:00';
-                    return generateTimeSlots(startTime, endTime, intervalMinutes);
+                    let timeSlots = {};
+                    
+                    // AM Slots
+                    timeSlots["6:00 AM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "AM Battle Plan" };
+                    timeSlots["6:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 1" };
+                    timeSlots["8:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 2" };
+                    timeSlots["9:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 3" };
+                    timeSlots["11:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 4" };
+                    timeSlots["12:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 5" };
+                    
+                    // PM Slots
+                    timeSlots["2:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "PM Battle Plan" };
+                    timeSlots["2:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 1" };
+                    timeSlots["4:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 2" };
+                    timeSlots["5:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 3" };
+                    timeSlots["7:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 4" };
+                    timeSlots["8:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 5" };
+                    
+                    // GY Slots
+                    timeSlots["10:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "GY Battle Plan" };
+                    timeSlots["10:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 1" };
+                    timeSlots["12:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 2" };
+                    timeSlots["1:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 3" };
+                    timeSlots["3:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 4" };
+                    timeSlots["4:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 5" };
+                    
+                    return timeSlots;
                 default:
                     return {};
             }
@@ -1104,11 +1100,12 @@
             
             const availableClass = slot.available ? 'text-green-600' : 'text-red-600';
             const availableIcon = slot.available ? 'check-circle' : 'times-circle';
+            const slotLabel = slot.label ? `<span class="ml-2 text-sm text-gray-500">(${slot.label})</span>` : '';
             
             div.innerHTML = `
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
-                        <div class="text-lg font-bold text-navy">${time}</div>
+                        <div class="text-lg font-bold text-navy">${time}${slotLabel}</div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-${availableIcon} ${availableClass}"></i>
                             <span class="text-sm ${availableClass}">${slot.available ? 'Available' : 'Disabled'}</span>
