@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - Prodigy</title>
+  <link rel="icon" type="image/x-icon" href="../../public/assets/images/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'navy': '#131D4F',
+            'blue-dark': '#254D70',
+            'cream': '#EFE4D2',
+            'gold': '#D4AF37'
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'display': ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="../../public/assets/styles/global.css" rel="stylesheet">
+
+  <!-- Firebase Script -->
+  <script type="module" src="../../public/scripts/firebase.js"></script>
+</head>
+
+<body class="bg-cream min-h-screen font-sans">
+  <!-- Navigation -->
+  <nav class="bg-gradient-primary shadow-2xl border-b border-blue-dark/20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between items-center py-5">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-cream rounded-full flex items-center justify-center">
+            <i class="fas fa-car text-navy text-xl"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold font-display text-white">Prodigy</h1>
+            <p class="text-xs text-cream/80">Auto Care</p>
+          </div>
+        </div>
+        <a href="../landing.html" class="text-cream hover:text-white transition-colors">
+          <i class="fas fa-arrow-left mr-2"></i>Back to Home
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex items-center justify-center min-h-screen py-12 px-4">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-dark">
+          <i class="fas fa-user-plus text-white text-xl"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold font-display text-navy">
+          Create your account
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          Already have an account?
+          <a href="login.html" class="font-medium text-blue-dark hover:text-navy transition-colors">
+            Sign in here
+          </a>
+        </p>
+      </div>
+
+      <!-- Registration Form -->
+      <form id="register-form" class="mt-8 space-y-6">
+        <div>
+          <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">
+            Full Name
+          </label>
+          <input id="fullName" name="fullName" type="text" required
+            class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="Enter your full name">
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+            Email Address
+          </label>
+          <input id="email" name="email" type="email" required
+            class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="Enter your email">
+        </div>
+
+        <div>
+          <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
+            Phone Number
+          </label>
+          <input id="phoneNumber" name="phoneNumber" type="tel" required
+            class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="09XXXXXXXXX">
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <input id="password" name="password" type="password" required
+              class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 pr-12 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+              placeholder="Create a password">
+            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <i class="fas fa-eye text-gray-400 hover:text-gray-600" id="toggle-icon"></i>
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-gray-500">Must be at least 6 characters long</p>
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+            Confirm Password
+          </label>
+          <div class="relative">
+            <input id="confirmPassword" name="confirmPassword" type="password" required
+              class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 pr-12 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+              placeholder="Confirm your password">
+            <button type="button" id="toggle-confirm-password"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <i class="fas fa-eye text-gray-400 hover:text-gray-600" id="toggle-confirm-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          <span id="error-text">An error occurred during registration.</span>
+        </div>
+
+        <!-- Success Message -->
+        <div id="success-message"
+          class="hidden bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg">
+          <i class="fas fa-check-circle mr-2"></i>
+          <span>Account created successfully! Redirecting...</span>
+        </div>
+
+        <div>
+          <button type="submit" id="register-btn"
+            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
+            <span id="loading" class="hidden absolute left-3">
+              <div class="loading-spinner"></div>
+            </span>
+            <span id="register-text">Create Account</span>
+          </button>
+        </div>
+
+        <div class="text-center text-xs text-gray-600">
+          By creating an account, you agree to our
+          <a href="#" class="text-blue-dark hover:text-navy transition-colors">Terms of Service</a>
+          and
+          <a href="#" class="text-blue-dark hover:text-navy transition-colors">Privacy Policy</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script type="module" src="../../public/scripts/auth.js"></script>
+  <script type="module" src="../../public/scripts/utils.js"></script>
+  <script type="module">
+    import { registerUser } from '../../public/scripts/auth.js';
+    import { showError, hideError, showSuccess, hideSuccess, showLoading, hideLoading, validateEmail, validatePhoneNumber, validatePassword } from '../../public/scripts/utils.js';
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const registerForm = document.getElementById('register-form');
+      const registerBtn = document.getElementById('register-btn');
+      const registerText = document.getElementById('register-text');
+      const errorText = document.getElementById('error-text');
+
+      // Password toggle functionality
+      const togglePassword = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggle-icon');
+      const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const toggleConfirmIcon = document.getElementById('toggle-confirm-icon');
+
+      togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        toggleIcon.classList.toggle('fa-eye');
+        toggleIcon.classList.toggle('fa-eye-slash');
+      });
+
+      toggleConfirmPassword.addEventListener('click', function () {
+        const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.setAttribute('type', type);
+        toggleConfirmIcon.classList.toggle('fa-eye');
+        toggleConfirmIcon.classList.toggle('fa-eye-slash');
+      });
+
+      // Form validation
+      function validateForm() {
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!fullName) {
+          showError('Please enter your full name.', 'error-message');
+          return false;
+        }
+
+        if (!validateEmail(email)) {
+          showError('Please enter a valid email address.', 'error-message');
+          return false;
+        }
+
+        if (!validatePhoneNumber(phoneNumber)) {
+          showError('Please enter a valid Philippine phone number.', 'error-message');
+          return false;
+        }
+
+        if (!validatePassword(password)) {
+          showError('Password must be at least 6 characters long.', 'error-message');
+          return false;
+        }
+
+        if (password !== confirmPassword) {
+          showError('Passwords do not match.', 'error-message');
+          return false;
+        }
+
+        return true;
+      }
+
+      // Handle form submission
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!validateForm()) {
+          return;
+        }
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const password = document.getElementById('password').value;
+
+        // Show loading state
+        showLoading('loading');
+        registerBtn.disabled = true;
+        registerText.textContent = 'Creating account...';
+        hideError('error-message');
+        hideSuccess('success-message');
+
+        try {
+          const result = await registerUser(email, password, fullName, phoneNumber);
+
+          if (result.success) {
+            showSuccess('Account created successfully! Redirecting...', 'success-message');
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+              window.location.href = '../customer/home.html';
+            }, 2000);
+          } else {
+            showError(result.error || 'Registration failed. Please try again.', 'error-message');
+            errorText.textContent = result.error || 'Registration failed. Please try again.';
+          }
+        } catch (error) {
+          console.error('Registration error:', error);
+          showError('An unexpected error occurred. Please try again.', 'error-message');
+          errorText.textContent = 'An unexpected error occurred. Please try again.';
+        } finally {
+          hideLoading('loading');
+          registerBtn.disabled = false;
+          registerText.textContent = 'Create Account';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

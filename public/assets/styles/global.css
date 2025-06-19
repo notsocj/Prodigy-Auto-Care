@@ -1,0 +1,268 @@
+/* Global styles for Prodigy Auto Care */
+
+/* Custom CSS Variables */
+:root {
+    --navy: #131D4F;
+    --blue-dark: #254D70;
+    --cream: #EFE4D2;
+    --gold: #D4AF37;
+    --gray-light: #F8F9FA;
+    --gray-medium: #6B7280;
+    --gray-dark: #374151;
+}
+
+/* Base animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Utility classes */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-delay-1 {
+    animation-delay: 0.1s;
+}
+
+.animate-delay-2 {
+    animation-delay: 0.2s;
+}
+
+.animate-delay-3 {
+    animation-delay: 0.3s;
+}
+
+/* Hover effects */
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom button styles */
+.btn-primary {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--navy) 100%);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue-dark) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 77, 112, 0.3);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--navy);
+    color: white;
+}
+
+/* Custom gradients */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--navy) 100%);
+}
+
+.bg-gradient-cream {
+    background: linear-gradient(135deg, var(--cream) 0%, #F5F0E8 100%);
+}
+
+/* Loading spinner */
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Modal styles */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+    .mobile-padding {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .mobile-text-sm {
+        font-size: 0.875rem;
+    }
+
+    .mobile-stack {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Form styles */
+.form-input {
+    transition: all 0.3s ease;
+    border: 2px solid #E5E7EB;
+}
+
+.form-input:focus {
+    border-color: var(--blue-dark);
+    box-shadow: 0 0 0 3px rgba(37, 77, 112, 0.1);
+}
+
+.form-error {
+    border-color: #EF4444;
+}
+
+.form-error:focus {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Card styles */
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Status badges */
+.status-pending {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.status-confirmed {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.status-in-progress {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.status-completed {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.status-cancelled {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+/* Time slot styles */
+.time-slot {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid #E5E7EB;
+}
+
+.time-slot:hover {
+    border-color: var(--blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 77, 112, 0.15);
+}
+
+.time-slot.selected {
+    background: var(--blue-dark);
+    border-color: var(--blue-dark);
+    color: white;
+}
+
+.time-slot.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #F3F4F6;
+}
+
+.time-slot.unavailable:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Step indicator */
+.step-active {
+    background-color: var(--blue-dark);
+    color: white;
+}
+
+.step-completed {
+    background-color: #10B981;
+    color: white;
+}
+
+.step-inactive {
+    background-color: #E5E7EB;
+    color: var(--gray-medium);
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #E5E7EB !important;
+    }
+}

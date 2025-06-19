@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,19 +24,23 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../../public/assets/styles/global.css" rel="stylesheet">
     <style>
         /* Page Transition Animation */
         body {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -43,6 +48,7 @@
         }
     </style>
 </head>
+
 <body class="bg-cream min-h-screen font-sans">
     <!-- Navigation -->
     <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
@@ -50,24 +56,31 @@
             <div class="flex justify-between items-center py-5">
                 <div class="flex items-center space-x-3">
                     <div class="relative">
-                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                        <i class="fas fa-car text-cream text-3xl"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse">
+                        </div>
                     </div>
                     <div>
-                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
                         <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Admin Panel</p>
                     </div>
                 </div>
-                
                 <div class="flex items-center space-x-6">
-                    <a href="admin-dashboard.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
-                    <a href="admin-bookings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Bookings</a>
-                    <a href="admin-staff.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Staff</a>
-                    <a href="admin-reports.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Reports</a>
-                    <a href="admin-settings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
+                    <a href="dashboard.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
+                    <a href="bookings.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Bookings</a>
+                    <a href="staff.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Staff</a>
+                    <a href="reports.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Reports</a>
+                    <a href="settings.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
                 </div>
-                
-                <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+
+                <button id="logout-btn"
+                    class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
                     <i class="fas fa-user-shield mr-2"></i>Admin
                 </button>
             </div>
@@ -87,7 +100,8 @@
             <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <label class="font-medium text-gray-700">Time Period:</label>
-                    <select id="time-period" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    <select id="time-period"
+                        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                         <option value="today">Today</option>
                         <option value="week">This Week</option>
                         <option value="month" selected>This Month</option>
@@ -96,14 +110,15 @@
                         <option value="custom">Custom Range</option>
                     </select>
                 </div>
-                
+
                 <div id="custom-range" class="hidden flex items-center space-x-2">
                     <input type="date" id="start-date" class="px-3 py-2 border border-gray-300 rounded-lg">
                     <span class="text-gray-500">to</span>
                     <input type="date" id="end-date" class="px-3 py-2 border border-gray-300 rounded-lg">
                 </div>
-                
-                <button id="generate-report" class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
+
+                <button id="generate-report"
+                    class="bg-blue-dark text-white px-6 py-2 rounded-lg hover:bg-navy transition-colors">
                     <i class="fas fa-chart-bar mr-2"></i>Generate Report
                 </button>
             </div>
@@ -122,7 +137,7 @@
                     <span class="text-xs text-gray-500">vs previous period</span>
                 </div>
             </div>
-            
+
             <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                 <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
@@ -134,7 +149,7 @@
                     <span class="text-xs text-gray-500">vs previous period</span>
                 </div>
             </div>
-            
+
             <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                 <div class="w-12 h-12 bg-yellow-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <i class="fas fa-calculator text-yellow-600 text-xl"></i>
@@ -146,7 +161,7 @@
                     <span class="text-xs text-gray-500">vs previous period</span>
                 </div>
             </div>
-            
+
             <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                 <div class="w-12 h-12 bg-purple-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <i class="fas fa-star text-purple-600 text-xl"></i>
@@ -198,7 +213,7 @@
                     <div class="w-full bg-gray-200 rounded-full h-2">
                         <div class="bg-blue-500 h-2 rounded-full" style="width: 45%"></div>
                     </div>
-                    
+
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div class="w-4 h-4 bg-green-500 rounded"></div>
@@ -212,7 +227,7 @@
                     <div class="w-full bg-gray-200 rounded-full h-2">
                         <div class="bg-green-500 h-2 rounded-full" style="width: 35%"></div>
                     </div>
-                    
+
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div class="w-4 h-4 bg-yellow-500 rounded"></div>
@@ -238,7 +253,9 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-blue-dark text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                            <div
+                                class="w-8 h-8 bg-blue-dark text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                1</div>
                             <div>
                                 <p class="font-medium text-navy">Cj Sacdalan</p>
                                 <p class="text-sm text-gray-600">8 bookings</p>
@@ -246,10 +263,12 @@
                         </div>
                         <span class="font-bold text-brown">₱2,800</span>
                     </div>
-                    
+
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                            <div
+                                class="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                2</div>
                             <div>
                                 <p class="font-medium text-navy">Maria Santos</p>
                                 <p class="text-sm text-gray-600">6 bookings</p>
@@ -257,10 +276,12 @@
                         </div>
                         <span class="font-bold text-brown">₱2,100</span>
                     </div>
-                    
+
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                            <div
+                                class="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                3</div>
                             <div>
                                 <p class="font-medium text-navy">John Doe</p>
                                 <p class="text-sm text-gray-600">5 bookings</p>
@@ -299,7 +320,7 @@
                             <p class="text-sm text-gray-600">completed</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
@@ -349,11 +370,12 @@
     </main>
 
     <!-- Scripts -->
-    <script type="module" src="../admin-firebase.js"></script>
+    <script type="module" src="../../public/scripts/firebase.js"></script>
+    <script type="module" src="../../public/scripts/admin.js"></script>
     <script type="module">
-        import { onAdminAuthChange, getDashboardStats, getRecentBookings } from '../admin-firebase.js';
+        import { onAdminAuthChange, getDashboardStats, getRecentBookings } from '../../public/scripts/admin.js';
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeReportsPage();
         });
 
@@ -371,14 +393,14 @@
             document.getElementById('generate-report').addEventListener('click', generateReport);
             // Logout button
             document.getElementById('logout-btn').addEventListener('click', () => {
-    window.location.href = '../login.html';
-});
+                window.location.href = '../login.html';
+            });
         }
 
         function handleTimePeriodChange() {
             const timePeriod = document.getElementById('time-period').value;
             const customRange = document.getElementById('custom-range');
-            
+
             if (timePeriod === 'custom') {
                 customRange.classList.remove('hidden');
             } else {
@@ -391,18 +413,18 @@
                 // Load basic stats for this month
                 const stats = await getDashboardStats();
                 const bookings = await getRecentBookings(100);
-                
+
                 // Calculate metrics
                 const totalRevenue = bookings.reduce((sum, booking) => {
                     return sum + (booking.payment?.amount || 0);
                 }, 0);
-                
+
                 const completedBookings = bookings.filter(b => b.status === 'Completed');
                 const avgOrderValue = completedBookings.length > 0 ? totalRevenue / completedBookings.length : 0;
-                
+
                 // Calculate average rating
                 const ratingsBookings = bookings.filter(b => b.rating);
-                const avgRating = ratingsBookings.length > 0 ? 
+                const avgRating = ratingsBookings.length > 0 ?
                     ratingsBookings.reduce((sum, b) => sum + b.rating, 0) / ratingsBookings.length : 0;
 
                 // Update UI
@@ -410,10 +432,10 @@
                 document.getElementById('total-bookings').textContent = bookings.length;
                 document.getElementById('avg-order-value').textContent = `₱${Math.round(avgOrderValue)}`;
                 document.getElementById('avg-rating').textContent = avgRating.toFixed(1);
-                
+
                 // Mock percentage changes (would be calculated from previous period data)
                 updateChangeIndicators();
-                
+
             } catch (error) {
                 console.error('Error loading reports data:', error);
             }
@@ -433,7 +455,7 @@
                 const icon = change.isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
                 const color = change.isPositive ? 'text-green-600' : 'text-red-600';
                 const sign = change.isPositive ? '+' : '';
-                
+
                 element.className = `text-sm ${color}`;
                 element.innerHTML = `<i class="fas ${icon}"></i> ${sign}${Math.abs(change.value)}%`;
             });
@@ -442,23 +464,24 @@
         function generateReport() {
             const timePeriod = document.getElementById('time-period').value;
             let dateRange = '';
-            
+
             if (timePeriod === 'custom') {
                 const startDate = document.getElementById('start-date').value;
                 const endDate = document.getElementById('end-date').value;
-                
+
                 if (!startDate || !endDate) {
                     alert('Please select both start and end dates for custom range');
                     return;
                 }
-                
+
                 dateRange = `${startDate} to ${endDate}`;
             } else {
                 dateRange = timePeriod;
             }
-            
+
             alert(`Generating report for: ${dateRange}\n\nReport generation functionality will be implemented with proper data aggregation and chart libraries.`);
         }
     </script>
 </body>
+
 </html>

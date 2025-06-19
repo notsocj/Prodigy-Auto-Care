@@ -1,11 +1,47 @@
-"github.copilot.chat.codeGeneration.instructions": [
-  {
-    "text": "Always use the following Firebase Firestore structure when generating any booking, vehicle, washer, promo, or user-related code:"
-  },
-  {
-    "text": "Use this Firestore schema structure:\n\nusers (collection)\n└─ userId (document)\n├─ fullName: string\n├─ email: string\n├─ role: 'customer' | 'washer' | 'admin'\n├─ phoneNumber: string\n├─ loyaltyPoints: number\n├─ subscription: { active: boolean, type: string, startDate: timestamp, endDate: timestamp }\n├─ createdAt: timestamp\n\nvehicles (collection)\n└─ vehicleId (document)\n├─ userId: string\n├─ make: string\n├─ vehicle_type: string\n├─ model: string\n├─ plateNumber: string\n├─ createdAt: timestamp\n\nbookings (collection)\n└─ bookingId (document)\n├─ userId: string\n├─ washerId: string | null\n├─ vehicleId: string\n├─ service: string\n├─ date: string (e.g. '2025-06-10')\n├─ time: string (e.g. '10:00 AM')\n├─ status: 'Pending' | 'Ongoing' | 'Completed' | 'Cancelled'\n├─ payment: { method: string, status: string, amount: number }\n├─ promoCode: string | null\n├─ loyaltyPointsUsed: number\n├─ rating: number | null\n├─ review: string | null\n├─ createdAt: timestamp\n\nwashers (collection)\n└─ washerId (document)\n├─ userId: string (linked to users)\n├─ availability: 'On Work' | 'Unavailable'\n├─ assignedBookings: string[]\n\nservices (collection)\n└─ serviceId (document)\n├─ name: string\n├─ description: string\n├─ price: number\n├─ durationMinutes: number\n\npromoCodes (collection)\n└─ codeId (document)\n├─ code: string\n├─ discountPercent: number\n├─ maxUsage: number\n├─ expiryDate: timestamp\n├─ usedBy: string[]\n\nnotifications (collection)\n└─ notificationId (document)\n├─ userId: string\n├─ message: string\n├─ type: 'email' | 'push' | 'sms'\n├─ createdAt: timestamp\n\nadminSettings (collection)\n└─ settingsId (document)\n├─ bookingCutoffHours: number\n├─ subscriptionMonthlyPrice: number\n├─ paymentOptions: string[]\n\navailability (collection)\n└─ YYYY-MM-DD (document)\n├─ '10:00 AM': { available: boolean, maxBookings: number, currentBookings: number }\n├─ '11:00 AM': { ... }"
-  },
-  {
-    "text": "Follow this schema when generating backend logic, API handlers, Firebase Cloud Functions, or front-end Firestore hooks. Always validate Firestore writes/reads according to this structure."
-  }
-],
+{
+    "emmet.includeLanguages": {
+        "javascript": "html"
+    },
+    "files.associations": {
+        "*.js": "javascript"
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+    "html.format.enable": true,
+    "css.format.enable": true,
+    "javascript.format.enable": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "files.exclude": {
+        "node_modules": true,
+        ".git": true,
+        ".DS_Store": true,
+        "*.log": true
+    },
+    "search.exclude": {
+        "node_modules": true,
+        ".git": true,
+        "*.log": true
+    },
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": false,
+    "workbench.colorTheme": "McDark",
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "liveServer.settings.port": 3000,
+    "liveServer.settings.root": "/",
+    "liveServer.settings.CustomBrowser": "chrome",
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "text": "Always use the following Firebase Firestore structure when generating any booking, vehicle, washer, promo, or user-related code:"
+        },
+        {
+            "text": "Use this Firestore schema structure:\n\nusers (collection)\n└─ userId (document)\n├─ fullName: string\n├─ email: string\n├─ role: 'customer' | 'washer' | 'admin'\n├─ phoneNumber: string\n├─ loyaltyPoints: number\n├─ subscription: { active: boolean, type: string, startDate: timestamp, endDate: timestamp }\n├─ createdAt: timestamp\n\nvehicles (collection)\n└─ vehicleId (document)\n├─ userId: string\n├─ make: string\n├─ vehicle_type: string\n├─ model: string\n├─ plateNumber: string\n├─ createdAt: timestamp\n\nbookings (collection)\n└─ bookingId (document)\n├─ userId: string\n├─ washerId: string | null\n├─ vehicleId: string\n├─ service: string\n├─ date: string (e.g. '2025-06-10')\n├─ time: string (e.g. '10:00 AM')\n├─ status: 'Pending' | 'Ongoing' | 'Completed' | 'Cancelled'\n├─ payment: { method: string, status: string, amount: number }\n├─ promoCode: string | null\n├─ loyaltyPointsUsed: number\n├─ rating: number | null\n├─ review: string | null\n├─ createdAt: timestamp\n\nwashers (collection)\n└─ washerId (document)\n├─ userId: string (linked to users)\n├─ availability: 'On Work' | 'Unavailable'\n├─ assignedBookings: string[]\n\nservices (collection)\n└─ serviceId (document)\n├─ name: string\n├─ description: string\n├─ price: number\n├─ durationMinutes: number\n\npromoCodes (collection)\n└─ codeId (document)\n├─ code: string\n├─ discountPercent: number\n├─ maxUsage: number\n├─ expiryDate: timestamp\n├─ usedBy: string[]\n\nnotifications (collection)\n└─ notificationId (document)\n├─ userId: string\n├─ message: string\n├─ type: 'email' | 'push' | 'sms'\n├─ createdAt: timestamp\n\nadminSettings (collection)\n└─ settingsId (document)\n├─ bookingCutoffHours: number\n├─ subscriptionMonthlyPrice: number\n├─ paymentOptions: string[]\n\navailability (collection)\n└─ YYYY-MM-DD (document)\n├─ '10:00 AM': { available: boolean, maxBookings: number, currentBookings: number }\n├─ '11:00 AM': { ... }"
+        },
+        {
+            "text": "Follow this schema when generating backend logic, API handlers, Firebase Cloud Functions, or front-end Firestore hooks. Always validate Firestore writes/reads according to this structure."
+        }
+    ]
+}

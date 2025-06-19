@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Prodigy Auto Care</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cream': '#EFE4D2',
+                        'blue-dark': '#254D70',
+                        'navy': '#131D4F',
+                        'brown': '#954C2E'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../../public/assets/styles/global.css" rel="stylesheet">
+</head>
+
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Auth Loader Overlay -->
+    <div id="auth-loader" class="fixed inset-0 bg-navy bg-opacity-90 z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cream mx-auto mb-4"></div>
+            <p class="text-cream text-lg">Verifying access...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-5">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fas fa-car text-cream text-3xl"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse">
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care Admin</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Dashboard</a>
+                    <a href="bookings.html"
+                        class="text-cream/80 hover:text-cream transition-all duration-300">Bookings</a>
+                    <a href="staff.html" class="text-cream/80 hover:text-cream transition-all duration-300">Staff</a>
+                    <a href="settings.html"
+                        class="text-cream/80 hover:text-cream transition-all duration-300">Settings</a>
+                    <a href="reports.html"
+                        class="text-cream/80 hover:text-cream transition-all duration-300">Reports</a>
+                </div>
+
+                <!-- Logout Button -->
+                <button id="logout-btn"
+                    class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold font-display text-navy mb-2">
+                <span id="admin-greeting">Good morning</span>, Admin
+            </h1>
+            <p class="text-gray-600">Here's what's happening with your car wash business today</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <a href="bookings.html"
+                class="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-all duration-300 hover-lift">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-dark text-white rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-navy">Manage Bookings</h3>
+                        <p class="text-sm text-gray-500">View and update bookings</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="staff.html"
+                class="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-all duration-300 hover-lift">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center">
+                        <i class="fas fa-users text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-navy">Staff Management</h3>
+                        <p class="text-sm text-gray-500">Manage your team</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="reports.html"
+                class="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-all duration-300 hover-lift">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-purple-500 text-white rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-bar text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-navy">Reports</h3>
+                        <p class="text-sm text-gray-500">Business analytics</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="settings.html"
+                class="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-all duration-300 hover-lift">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-orange-500 text-white rounded-xl flex items-center justify-center">
+                        <i class="fas fa-cog text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-navy">Settings</h3>
+                        <p class="text-sm text-gray-500">System configuration</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Today's Bookings</p>
+                        <p id="total-bookings" class="text-3xl font-bold text-navy">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 text-blue-dark rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Today's Revenue</p>
+                        <p id="revenue" class="text-3xl font-bold text-green-600">₱0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-peso-sign text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Active Customers</p>
+                        <p id="active-customers" class="text-3xl font-bold text-purple-600">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Staff Online</p>
+                        <p id="staff-online" class="text-3xl font-bold text-orange-500">0</p>
+                    </div>
+                    <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-check text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Revenue Chart Placeholder -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Revenue Trend</h2>
+                <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <p class="text-gray-500">Chart will be implemented with Chart.js</p>
+                </div>
+            </div>
+
+            <!-- Bookings Chart Placeholder -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold font-display text-navy mb-4">Bookings Overview</h2>
+                <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <p class="text-gray-500">Chart will be implemented with Chart.js</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Bookings and Staff Status -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Recent Bookings -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold font-display text-navy">Recent Bookings</h2>
+                    <a href="bookings.html" class="text-blue-dark hover:text-navy font-medium">View All</a>
+                </div>
+                <div id="recent-bookings" class="space-y-4">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Staff Status -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold font-display text-navy">Staff Status</h2>
+                    <a href="staff.html" class="text-blue-dark hover:text-navy font-medium">Manage Staff</a>
+                </div>
+                <div id="staff-status" class="space-y-4">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Auth Error -->
+    <div id="auth-error" class="fixed inset-0 bg-navy flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md text-center">
+            <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-4"></i>
+            <h3 class="text-xl font-bold text-navy mb-2">Access Denied</h3>
+            <p class="text-gray-600 mb-6">You don't have permission to access this page.</p>
+            <a href="../auth/login.html" class="btn-primary">Go to Login</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../../public/scripts/firebase.js"></script>
+    <script type="module" src="../../public/scripts/admin.js"></script>
+</body>
+
+</html>

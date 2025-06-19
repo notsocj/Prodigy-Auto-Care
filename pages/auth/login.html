@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Prodigy</title>
+  <link rel="icon" type="image/x-icon" href="../../public/assets/images/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'navy': '#131D4F',
+            'blue-dark': '#254D70',
+            'cream': '#EFE4D2',
+            'gold': '#D4AF37'
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'display': ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="../../public/assets/styles/global.css" rel="stylesheet">
+
+  <!-- Firebase and Auth Scripts -->
+  <script type="module" src="../../public/scripts/firebase.js"></script>
+  <script type="module" src="../../public/scripts/auth.js"></script>
+</head>
+
+<body class="bg-cream min-h-screen font-sans">
+  <!-- Navigation -->
+  <nav class="bg-gradient-primary shadow-2xl border-b border-blue-dark/20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between items-center py-5">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-cream rounded-full flex items-center justify-center">
+            <i class="fas fa-car text-navy text-xl"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold font-display text-white">Prodigy</h1>
+            <p class="text-xs text-cream/80">Auto Care</p>
+          </div>
+        </div>
+        <a href="../landing.html" class="text-cream hover:text-white transition-colors">
+          <i class="fas fa-arrow-left mr-2"></i>Back to Home
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex items-center justify-center min-h-screen py-12 px-4">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-dark">
+          <i class="fas fa-sign-in-alt text-white text-xl"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold font-display text-navy">
+          Welcome back!
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          Don't have an account?
+          <a href="register.html" class="font-medium text-blue-dark hover:text-navy transition-colors">
+            Sign up here
+          </a>
+        </p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="mt-8 space-y-6">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+            Email Address
+          </label>
+          <input id="email" name="email" type="email" required
+            class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="Enter your email">
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <input id="password" name="password" type="password" required
+              class="form-input appearance-none rounded-lg relative block w-full px-4 py-3 pr-12 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+              placeholder="Enter your password">
+            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <i class="fas fa-eye text-gray-400 hover:text-gray-600" id="toggle-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          <span id="error-text">An error occurred during login.</span>
+        </div>
+
+        <div>
+          <button type="submit" id="loginBtn"
+            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
+            <span id="loading" class="hidden absolute left-3">
+              <div class="loading-spinner"></div>
+            </span>
+            <span id="login-text">Sign In</span>
+          </button>
+        </div>
+
+        <div class="text-center">
+          <a href="#" class="text-sm text-blue-dark hover:text-navy transition-colors">
+            Forgot your password?
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script type="module" src="../../public/scripts/auth.js"></script>
+  <script type="module" src="../../public/scripts/utils.js"></script>
+  <script type="module">    import { loginUser } from '../../public/scripts/auth.js';
+    import { showError, hideError, showLoading, hideLoading } from '../../public/scripts/utils.js';
+    import { db, doc, getDoc } from '../../public/scripts/firebase.js';
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const errorText = document.getElementById('error-text');
+      const togglePassword = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggle-icon');
+      const loginForm = document.getElementById('loginForm');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginText = document.getElementById('login-text');
+
+      // Toggle password visibility
+      togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        toggleIcon.classList.toggle('fa-eye');
+        toggleIcon.classList.toggle('fa-eye-slash');
+      });
+
+      // Handle form submission
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Validation
+        if (!email || !password) {
+          showError('Please fill in all fields.', 'errorMessage');
+          return;
+        }
+
+        // Show loading state
+        showLoading('loading');
+        loginBtn.disabled = true;
+        loginText.textContent = 'Signing in...';
+        hideError('errorMessage');
+
+        try {
+          const result = await loginUser(email, password);
+
+          if (result.success) {
+            // Check if user is admin
+            const userDoc = await getDoc(doc(db, "users", result.user.uid));
+            if (userDoc.exists() && userDoc.data().role === 'admin') {
+              window.location.href = '../admin/dashboard.html';
+            } else {
+              window.location.href = '../customer/home.html';
+            }
+          } else {
+            showError(result.error || 'Login failed. Please try again.', 'errorMessage');
+            errorText.textContent = result.error || 'Login failed. Please try again.';
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          showError('An unexpected error occurred. Please try again.', 'errorMessage');
+          errorText.textContent = 'An unexpected error occurred. Please try again.';
+        } finally {
+          hideLoading('loading');
+          loginBtn.disabled = false;
+          loginText.textContent = 'Sign In';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

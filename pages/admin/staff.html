@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,19 +24,23 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../../public/assets/styles/global.css" rel="stylesheet">
     <style>
         /* Page Transition Animation */
         body {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -43,6 +48,7 @@
         }
     </style>
 </head>
+
 <body class="bg-cream min-h-screen font-sans">
     <!-- Navigation -->
     <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
@@ -50,24 +56,31 @@
             <div class="flex justify-between items-center py-5">
                 <div class="flex items-center space-x-3">
                     <div class="relative">
-                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                        <i class="fas fa-car text-cream text-3xl"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse">
+                        </div>
                     </div>
                     <div>
-                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
                         <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Admin Panel</p>
                     </div>
                 </div>
-                
                 <div class="flex items-center space-x-6">
-                    <a href="admin-dashboard.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
-                    <a href="admin-bookings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Bookings</a>
-                    <a href="admin-staff.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Staff</a>
-                    <a href="admin-reports.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
-                    <a href="admin-settings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
+                    <a href="dashboard.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
+                    <a href="bookings.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Bookings</a>
+                    <a href="staff.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Staff</a>
+                    <a href="reports.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
+                    <a href="settings.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
                 </div>
-                
-                <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+
+                <button id="logout-btn"
+                    class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
                     <i class="fas fa-user-shield mr-2"></i>Admin
                 </button>
             </div>
@@ -84,7 +97,8 @@
 
         <!-- Quick Actions -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <button id="add-staff-btn" class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors text-left">
+            <button id="add-staff-btn"
+                class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors text-left">
                 <i class="fas fa-user-plus text-2xl mb-2"></i>
                 <p class="font-semibold">Add New Staff</p>
             </button>
@@ -107,7 +121,7 @@
                 <h3 class="text-2xl font-bold text-navy" id="total-staff">0</h3>
                 <p class="text-sm text-gray-600">Total Staff</p>
             </div>
-            
+
             <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                 <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <i class="fas fa-user-check text-green-600 text-xl"></i>
@@ -115,7 +129,7 @@
                 <h3 class="text-2xl font-bold text-navy" id="active-staff">0</h3>
                 <p class="text-sm text-gray-600">On Work</p>
             </div>
-            
+
             <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                 <div class="w-12 h-12 bg-red-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <i class="fas fa-user-times text-red-600 text-xl"></i>
@@ -123,7 +137,7 @@
                 <h3 class="text-2xl font-bold text-navy" id="unavailable-staff">0</h3>
                 <p class="text-sm text-gray-600">Unavailable</p>
             </div>
-            
+
             <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                 <div class="w-12 h-12 bg-yellow-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <i class="fas fa-tasks text-yellow-600 text-xl"></i>
@@ -140,10 +154,11 @@
                 <div class="flex space-x-4">
                     <div class="relative">
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="search-staff" placeholder="Search staff..." 
-                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <input type="text" id="search-staff" placeholder="Search staff..."
+                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                     </div>
-                    <select id="status-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    <select id="status-filter"
+                        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                         <option value="">All Status</option>
                         <option value="On Work">On Work</option>
                         <option value="Unavailable">Unavailable</option>
@@ -180,17 +195,22 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <form id="add-staff-form" class="space-y-4">
                 <div>
-                    <label for="staff-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                    <input type="email" id="staff-email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" placeholder="Enter staff email" required>
+                    <label for="staff-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address
+                        *</label>
+                    <input type="email" id="staff-email"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                        placeholder="Enter staff email" required>
                     <p class="text-xs text-gray-500 mt-1">Staff member must already have an account</p>
                 </div>
-                
+
                 <div>
                     <label for="staff-role" class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
-                    <select id="staff-role" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                    <select id="staff-role"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                        required>
                         <option value="">Select role</option>
                         <option value="washer">Washer</option>
                         <option value="admin">Admin</option>
@@ -198,18 +218,22 @@
                 </div>
 
                 <div>
-                    <label for="staff-availability" class="block text-sm font-medium text-gray-700 mb-1">Initial Availability</label>
-                    <select id="staff-availability" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    <label for="staff-availability" class="block text-sm font-medium text-gray-700 mb-1">Initial
+                        Availability</label>
+                    <select id="staff-availability"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                         <option value="Unavailable">Unavailable</option>
                         <option value="On Work">On Work</option>
                     </select>
                 </div>
 
                 <div class="flex space-x-4 pt-4">
-                    <button type="button" id="cancel-add-staff" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                    <button type="button" id="cancel-add-staff"
+                        class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                    <button type="submit"
+                        class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                         Add Staff Member
                     </button>
                 </div>
@@ -218,7 +242,8 @@
     </div>
 
     <!-- Edit Staff Modal -->
-    <div id="edit-staff-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div id="edit-staff-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold text-navy">Edit Staff Member</h3>
@@ -226,44 +251,47 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <form id="edit-staff-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Staff Member</label>
                     <p id="edit-staff-name" class="font-semibold text-navy"></p>
                     <p id="edit-staff-email" class="text-sm text-gray-600"></p>
                 </div>
-                
+
                 <div>
-                    <label for="edit-staff-availability" class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
-                    <select id="edit-staff-availability" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                    <label for="edit-staff-availability"
+                        class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                    <select id="edit-staff-availability"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                         <option value="On Work">On Work</option>
                         <option value="Unavailable">Unavailable</option>
                     </select>
                 </div>
 
                 <div class="flex space-x-4 pt-4">
-                    <button type="button" id="cancel-edit-staff" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                    <button type="button" id="cancel-edit-staff"
+                        class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" class="flex-1 bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
+                    <button type="submit"
+                        class="flex-1 bg-blue-dark text-white py-3 rounded-lg font-semibold hover:bg-navy transition-colors">
                         Update Staff
                     </button>
                 </div>
             </form>
         </div>
-    </div>
-
-    <!-- Scripts -->
-    <script type="module" src="../admin-firebase.js"></script>
+    </div> <!-- Scripts -->
+    <script type="module" src="../../public/scripts/firebase.js"></script>
+    <script type="module" src="../../public/scripts/admin.js"></script>
     <script type="module">
-        import { onAdminAuthChange, getActiveStaff, updateWasherAvailability } from '../admin-firebase.js';
-        
+        import { onAdminAuthChange, getActiveStaff, updateWasherAvailability } from '../../public/scripts/admin.js';
+
         let allStaff = [];
         let filteredStaff = [];
         let editingStaffId = null;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeStaffPage();
         });
 
@@ -319,7 +347,7 @@
                 displayStaff();
 
                 document.getElementById('staff-loading').classList.add('hidden');
-                
+
                 if (filteredStaff.length > 0) {
                     document.getElementById('staff-grid').classList.remove('hidden');
                 } else {
@@ -470,11 +498,11 @@
             filteredStaff = allStaff.filter(staff => {
                 const name = staff.user?.fullName?.toLowerCase() || '';
                 const email = staff.user?.email?.toLowerCase() || '';
-                
-                const matchesSearch = !searchTerm || 
-                    name.includes(searchTerm) || 
+
+                const matchesSearch = !searchTerm ||
+                    name.includes(searchTerm) ||
                     email.includes(searchTerm);
-                
+
                 const matchesStatus = !statusFilter || staff.availability === statusFilter;
 
                 return matchesSearch && matchesStatus;
@@ -509,22 +537,22 @@
 
         async function handleEditStaff(e) {
             e.preventDefault();
-            
+
             const newAvailability = document.getElementById('edit-staff-availability').value;
-            
+
             try {
                 await updateWasherAvailability(editingStaffId, newAvailability);
-                
+
                 // Update local data
                 const staff = allStaff.find(s => s.id === editingStaffId);
                 if (staff) {
                     staff.availability = newAvailability;
                 }
-                
+
                 updateStats();
                 displayStaff();
                 closeEditStaffModal();
-                
+
                 alert('Staff availability updated successfully');
             } catch (error) {
                 console.error('Error updating staff:', error);
@@ -534,16 +562,16 @@
 
         async function toggleStaffAvailability(staffId, currentStatus) {
             const newStatus = currentStatus === 'On Work' ? 'Unavailable' : 'On Work';
-            
+
             try {
                 await updateWasherAvailability(staffId, newStatus);
-                
+
                 // Update local data
                 const staff = allStaff.find(s => s.id === staffId);
                 if (staff) {
                     staff.availability = newStatus;
                 }
-                
+
                 updateStats();
                 displayStaff();
             } catch (error) {
@@ -559,13 +587,13 @@
 
         function formatDate(timestamp) {
             if (!timestamp) return 'Unknown';
-            
-            const date = timestamp.seconds ? 
-                new Date(timestamp.seconds * 1000) : 
+
+            const date = timestamp.seconds ?
+                new Date(timestamp.seconds * 1000) :
                 new Date(timestamp);
-                
-            return date.toLocaleDateString('en-US', { 
-                month: 'short', 
+
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
                 day: 'numeric',
                 year: 'numeric'
             });
@@ -579,4 +607,5 @@
         });
     </script>
 </body>
+
 </html>

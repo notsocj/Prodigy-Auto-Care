@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seed Data - Prodigy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'navy': '#131D4F',
+            'blue-dark': '#254D70',
+            'cream': '#EFE4D2',
+            'gold': '#D4AF37'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="../public/assets/styles/global.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6">Prodigy Data Seeding</h1>
+
+    <div class="space-y-4">
+      <button id="seed-services"
+        class="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+        Seed Services
+      </button>
+
+      <button id="seed-availability"
+        class="w-full bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 transition-colors">
+        Seed Availability (90 days)
+      </button>
+
+      <button id="seed-settings"
+        class="w-full bg-purple-500 text-white py-3 px-4 rounded-lg hover:bg-purple-600 transition-colors">
+        Seed Admin Settings
+      </button>
+
+      <button id="seed-all"
+        class="w-full bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition-colors font-bold">
+        Seed All Data
+      </button>
+    </div>
+
+    <div id="status" class="mt-6 p-4 rounded-lg hidden">
+      <p id="status-message" class="text-center"></p>
+    </div>
+    <div class="mt-6 text-center">
+      <a href="landing.html" class="text-blue-500 hover:text-blue-600">← Back to Home</a>
+    </div>
+  </div>
+
+  <script type="module" src="public/scripts/seed.js"></script>
+  <script type="module">
+    import { seedServices, seedAvailability, seedAdminSettings, seedAllData } from './public/scripts/seed.js';
+
+    const statusDiv = document.getElementById('status');
+    const statusMessage = document.getElementById('status-message');
+
+    function showStatus(message, isError = false) {
+      statusDiv.className = `mt-6 p-4 rounded-lg ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+      statusDiv.classList.remove('hidden');
+      statusMessage.textContent = message;
+    }
+
+    document.getElementById('seed-services').addEventListener('click', async () => {
+      try {
+        await seedServices();
+        showStatus('Services seeded successfully!');
+      } catch (error) {
+        console.error('Error seeding services:', error);
+        showStatus('Error seeding services: ' + error.message, true);
+      }
+    });
+
+    document.getElementById('seed-availability').addEventListener('click', async () => {
+      try {
+        const result = await seedAvailability();
+        showStatus(`Availability seeded successfully for ${result} days!`);
+      } catch (error) {
+        console.error('Error seeding availability:', error);
+        showStatus('Error seeding availability: ' + error.message, true);
+      }
+    });
+
+    document.getElementById('seed-settings').addEventListener('click', async () => {
+      try {
+        await seedAdminSettings();
+        showStatus('Admin settings seeded successfully!');
+      } catch (error) {
+        console.error('Error seeding settings:', error);
+        showStatus('Error seeding settings: ' + error.message, true);
+      }
+    });
+
+    document.getElementById('seed-all').addEventListener('click', async () => {
+      try {
+        const result = await seedAllData();
+        if (result.success) {
+          showStatus(`All data seeded successfully! ${result.availabilityCount} days of availability created.`);
+        } else {
+          showStatus('Error seeding data: ' + result.error, true);
+        }
+      } catch (error) {
+        console.error('Error seeding all data:', error);
+        showStatus('Error seeding all data: ' + error.message, true);
+      }
+    });
+  </script>
+</body>
+
+</html>

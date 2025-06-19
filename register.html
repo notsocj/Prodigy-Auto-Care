@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,19 +24,22 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* Page Transition Animation */
         body {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -43,6 +47,7 @@
         }
     </style>
 </head>
+
 <body class="bg-cream min-h-screen font-sans">
     <!-- Navigation -->
     <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
@@ -50,17 +55,21 @@
             <div class="flex justify-between items-center py-5">
                 <div class="flex items-center space-x-3">
                     <div class="relative">
-                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                        <i class="fas fa-car text-cream text-3xl"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse">
+                        </div>
                     </div>
                     <div>
-                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
                         <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
                     </div>
                 </div>
-                
+
                 <div class="flex items-center space-x-4">
-                    <a href="customer-home.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium px-4 py-2 rounded-lg hover:bg-white/10 backdrop-blur-sm">
+                    <a href="customer-home.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium px-4 py-2 rounded-lg hover:bg-white/10 backdrop-blur-sm">
                         <i class="fas fa-arrow-left mr-2"></i>Back to Home
                     </a>
                 </div>
@@ -85,7 +94,7 @@
                     </a>
                 </p>
             </div>
-            
+
             <!-- Registration Form -->
             <form id="register-form" class="mt-8 space-y-6">
                 <div class="rounded-md shadow-sm space-y-4">
@@ -93,53 +102,56 @@
                         <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
                             Full Name
                         </label>
-                        <input id="fullName" name="fullName" type="text" autocomplete="name" required 
-                               class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm"
-                               placeholder="Enter your full name">
+                        <input id="fullName" name="fullName" type="text" autocomplete="name" required
+                            class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm"
+                            placeholder="Enter your full name">
                     </div>
-                    
+
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
                             Email address
                         </label>
-                        <input id="email" name="email" type="email" autocomplete="email" required 
-                               class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm"
-                               placeholder="Enter your email">
+                        <input id="email" name="email" type="email" autocomplete="email" required
+                            class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm"
+                            placeholder="Enter your email">
                     </div>
-                    
+
                     <div>
                         <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">
                             Phone Number
                         </label>
-                        <input id="phoneNumber" name="phoneNumber" type="tel" autocomplete="tel" required 
-                               class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm"
-                               placeholder="+63 XXX XXX XXXX">
+                        <input id="phoneNumber" name="phoneNumber" type="tel" autocomplete="tel" required
+                            class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm"
+                            placeholder="+63 XXX XXX XXXX">
                     </div>
-                    
+
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
                             Password
                         </label>
                         <div class="relative">
-                            <input id="password" name="password" type="password" autocomplete="new-password" required 
-                                   class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10"
-                                   placeholder="Create a password">
-                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <input id="password" name="password" type="password" autocomplete="new-password" required
+                                class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10"
+                                placeholder="Create a password">
+                            <button type="button" id="toggle-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                 <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
                             </button>
                         </div>
                         <p class="mt-1 text-xs text-gray-500">Must be at least 6 characters long</p>
                     </div>
-                    
+
                     <div>
                         <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">
                             Confirm Password
                         </label>
                         <div class="relative">
-                            <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required 
-                                   class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10"
-                                   placeholder="Confirm your password">
-                            <button type="button" id="toggle-confirm-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <input id="confirmPassword" name="confirmPassword" type="password"
+                                autocomplete="new-password" required
+                                class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10"
+                                placeholder="Confirm your password">
+                            <button type="button" id="toggle-confirm-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                 <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
                             </button>
                         </div>
@@ -147,17 +159,19 @@
                 </div>
 
                 <div class="flex items-center">
-                    <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-blue-dark focus:ring-blue-dark border-gray-300 rounded">
+                    <input id="terms" name="terms" type="checkbox" required
+                        class="h-4 w-4 text-blue-dark focus:ring-blue-dark border-gray-300 rounded">
                     <label for="terms" class="ml-2 block text-sm text-gray-900">
-                        I agree to the 
-                        <a href="#" class="text-blue-dark hover:text-navy transition-colors">Terms of Service</a> 
-                        and 
+                        I agree to the
+                        <a href="#" class="text-blue-dark hover:text-navy transition-colors">Terms of Service</a>
+                        and
                         <a href="#" class="text-blue-dark hover:text-navy transition-colors">Privacy Policy</a>
                     </label>
                 </div>
 
                 <div>
-                    <button type="submit" id="register-btn" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
+                    <button type="submit" id="register-btn"
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
                         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                             <i class="fas fa-user-plus text-blue-200 group-hover:text-blue-100"></i>
                         </span>
@@ -196,129 +210,101 @@
                 </div>
             </form>
         </div>
-    </main>
-
-    <!-- Scripts -->
-    <script type="module" src="firebase.js"></script>
-    <script type="module">
-        import { registerUser } from './firebase.js';
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const registerForm = document.getElementById('register-form');
-            const registerBtn = document.getElementById('register-btn');
-            const loading = document.getElementById('loading');
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
-            const errorText = document.getElementById('error-text');
-
-            // Password toggle functionality
-            const togglePassword = document.getElementById('toggle-password');
-            const passwordInput = document.getElementById('password');
-            const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-
-            togglePassword.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                
-                const icon = togglePassword.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            });
-
-            toggleConfirmPassword.addEventListener('click', function() {
-                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                confirmPasswordInput.setAttribute('type', type);
-                
-                const icon = toggleConfirmPassword.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            });
-
-            // Form validation
-            function validateForm() {
-                const fullName = document.getElementById('fullName').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const phoneNumber = document.getElementById('phoneNumber').value.trim();
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                const termsAccepted = document.getElementById('terms').checked;
-
-                if (!fullName || fullName.length < 2) {
-                    showError('Please enter a valid full name');
-                    return false;
-                }
-
-                if (!email || !email.includes('@')) {
-                    showError('Please enter a valid email address');
-                    return false;
-                }
-
-                if (!phoneNumber || phoneNumber.length < 10) {
-                    showError('Please enter a valid phone number');
-                    return false;
-                }
-
-                if (password.length < 6) {
-                    showError('Password must be at least 6 characters long');
-                    return false;
-                }
-
-                if (password !== confirmPassword) {
-                    showError('Passwords do not match');
-                    return false;
-                }
-
-                if (!termsAccepted) {
-                    showError('Please accept the Terms of Service and Privacy Policy');
-                    return false;
-                }
-
-                return true;
-            }
-
-            // Handle form submission
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                if (!validateForm()) return;
-                
-                const fullName = document.getElementById('fullName').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const phoneNumber = document.getElementById('phoneNumber').value.trim();
-                const password = document.getElementById('password').value;
-                
-                // Show loading state
-                registerBtn.style.display = 'none';
-                loading.classList.remove('hidden');
-                errorMessage.classList.add('hidden');
-                successMessage.classList.add('hidden');
-                
-                try {
-                    const result = await registerUser(email, password, fullName, phoneNumber);
-                    
-                    if (result.success) {
-                        successMessage.classList.remove('hidden');
-                        setTimeout(() => {
-                            window.location.href = 'customer-home.html';
-                        }, 2000);
-                    } else {
-                        showError(result.error);
-                    }
-                } catch (error) {
-                    showError(error.message);
-                }
-                
-                // Hide loading state
-                registerBtn.style.display = 'block';
-                loading.classList.add('hidden');
-            });
-
-            function showError(message) {
-                errorText.textContent = message;
-                errorMessage.classList.remove('hidden');
-            }
-        });
+    </main> <!-- Scripts -->
+    <script>
+        // Redirect to new register page
+        window.location.href = 'pages/auth/register.html';
     </script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('register-form');
+    const registerBtn = document.getElementById('register-btn');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+    const errorText = document.getElementById('error-text');
+
+    // Password toggle functionality
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+    const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    togglePassword.addEventListener('click', function() {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+
+    const icon = togglePassword.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+    });
+
+    toggleConfirmPassword.addEventListener('click', function() {
+    const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    confirmPasswordInput.setAttribute('type', type);
+
+    const icon = toggleConfirmPassword.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+    });
+
+    // Form validation
+    function validateForm() {
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const termsAccepted = document.getElementById('terms').checked;
+
+    if (!fullName || fullName.length < 2) { showError('Please enter a valid full name'); return false; } if (!email ||
+        !email.includes('@')) { showError('Please enter a valid email address'); return false; } if (!phoneNumber ||
+        phoneNumber.length < 10) { showError('Please enter a valid phone number'); return false; } if (password.length <
+        6) { showError('Password must be at least 6 characters long'); return false; } if (password !==confirmPassword)
+        { showError('Passwords do not match'); return false; } if (!termsAccepted) { showError('Please accept the Terms
+        of Service and Privacy Policy'); return false; } return true; } // Handle form submission
+        registerForm.addEventListener('submit', async (e)=> {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const password = document.getElementById('password').value;
+
+        // Show loading state
+        registerBtn.style.display = 'none';
+        loading.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+        successMessage.classList.add('hidden');
+
+        try {
+        const result = await registerUser(email, password, fullName, phoneNumber);
+
+        if (result.success) {
+        successMessage.classList.remove('hidden');
+        setTimeout(() => {
+        window.location.href = 'customer-home.html';
+        }, 2000);
+        } else {
+        showError(result.error);
+        }
+        } catch (error) {
+        showError(error.message);
+        }
+
+        // Hide loading state
+        registerBtn.style.display = 'block';
+        loading.classList.add('hidden');
+        });
+
+        function showError(message) {
+        errorText.textContent = message;
+        errorMessage.classList.remove('hidden');
+        }
+        });
+        </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,54 +24,59 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../../public/assets/styles/global.css" rel="stylesheet">
     <style>
         /* Page Transition Animation */
         body {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         /* Compact Time Slots Grid */
         .time-slot-card {
             @apply border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow bg-white;
         }
-        
+
         @media (max-width: 768px) {
             .time-slot-card {
                 @apply p-2;
             }
-            
+
             .time-slot-actions {
                 @apply flex flex-col space-y-1;
             }
-            
+
             .time-slot-actions .btn {
                 @apply text-xs px-2 py-1;
             }
         }
-        
+
         /* Progress bar styling */
         .progress-bar {
             @apply bg-gray-200 rounded-full h-1.5;
         }
-        
+
         .progress-fill {
             @apply bg-blue-600 h-1.5 rounded-full transition-all duration-300;
         }
     </style>
 </head>
+
 <body class="bg-cream min-h-screen font-sans">
     <!-- Navigation -->
     <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
@@ -78,24 +84,31 @@
             <div class="flex justify-between items-center py-5">
                 <div class="flex items-center space-x-3">
                     <div class="relative">
-                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                        <i class="fas fa-car text-cream text-3xl"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse">
+                        </div>
                     </div>
                     <div>
-                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
                         <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Admin Panel</p>
                     </div>
                 </div>
-                
                 <div class="flex items-center space-x-6">
-                    <a href="admin-dashboard.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
-                    <a href="admin-bookings.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Bookings</a>
-                    <a href="admin-staff.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Staff</a>
-                    <a href="admin-reports.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
-                    <a href="admin-settings.html" class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
+                    <a href="dashboard.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Dashboard</a>
+                    <a href="bookings.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Bookings</a>
+                    <a href="staff.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Staff</a>
+                    <a href="reports.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Reports</a>
+                    <a href="settings.html"
+                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Settings</a>
                 </div>
-                
-                <button id="logout-btn" class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
+
+                <button id="logout-btn"
+                    class="bg-gradient-to-r from-brown to-brown/80 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium">
                     <i class="fas fa-user-shield mr-2"></i>Admin
                 </button>
             </div>
@@ -114,10 +127,12 @@
         <div class="bg-white rounded-xl shadow-lg mb-8">
             <div class="border-b border-gray-200">
                 <nav class="flex space-x-8 px-6" aria-label="Tabs">
-                    <button id="bookings-tab" class="tab-button border-b-2 border-blue-dark text-blue-dark py-4 px-1 text-sm font-medium">
+                    <button id="bookings-tab"
+                        class="tab-button border-b-2 border-blue-dark text-blue-dark py-4 px-1 text-sm font-medium">
                         <i class="fas fa-calendar-check mr-2"></i>Manage Bookings
                     </button>
-                    <button id="availability-tab" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                    <button id="availability-tab"
+                        class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
                         <i class="fas fa-clock mr-2"></i>Manage Availability
                     </button>
                 </nav>
@@ -135,7 +150,7 @@
                     <h3 class="text-2xl font-bold text-navy" id="total-bookings">0</h3>
                     <p class="text-sm text-gray-600">Total Bookings</p>
                 </div>
-                
+
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-clock text-yellow-600 text-xl"></i>
@@ -143,7 +158,7 @@
                     <h3 class="text-2xl font-bold text-navy" id="pending-bookings">0</h3>
                     <p class="text-sm text-gray-600">Pending</p>
                 </div>
-                
+
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-play text-blue-600 text-xl"></i>
@@ -151,7 +166,7 @@
                     <h3 class="text-2xl font-bold text-navy" id="ongoing-bookings">0</h3>
                     <p class="text-sm text-gray-600">Ongoing</p>
                 </div>
-                
+
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                     <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -159,7 +174,7 @@
                     <h3 class="text-2xl font-bold text-navy" id="completed-bookings">0</h3>
                     <p class="text-sm text-gray-600">Completed</p>
                 </div>
-                
+
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center">
                     <div class="w-12 h-12 bg-red-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-times-circle text-red-600 text-xl"></i>
@@ -175,15 +190,17 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
                         <div class="relative">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="search-bookings" placeholder="Search bookings..." 
-                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark w-full">
+                            <i
+                                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="search-bookings" placeholder="Search bookings..."
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark w-full">
                         </div>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select id="status-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <select id="status-filter"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                             <option value="">All Status</option>
                             <option value="Pending">Pending</option>
                             <option value="Ongoing">Ongoing</option>
@@ -191,24 +208,27 @@
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Service</label>
-                        <select id="service-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <select id="service-filter"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                             <option value="">All Services</option>
                             <option value="Basic Wash">Basic Wash</option>
                             <option value="Premium Wash">Premium Wash</option>
                             <option value="Deluxe Wash">Deluxe Wash</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                        <input type="date" id="date-filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <input type="date" id="date-filter"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                     </div>
-                    
+
                     <div>
-                        <button id="clear-filters" class="w-full bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+                        <button id="clear-filters"
+                            class="w-full bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
                             Clear Filters
                         </button>
                     </div>
@@ -220,7 +240,7 @@
                 <div class="p-6 border-b border-gray-200">
                     <h2 class="text-xl font-bold font-display text-navy">All Bookings</h2>
                 </div>
-                
+
                 <!-- Loading State -->
                 <div id="bookings-loading" class="text-center py-12">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-dark mx-auto mb-4"></div>
@@ -233,14 +253,30 @@
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Washer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Customer</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Service</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Vehicle</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date & Time</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Amount</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Washer</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="bookings-table-body" class="bg-white divide-y divide-gray-200">
@@ -266,13 +302,16 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-xl font-bold font-display text-navy">Availability Management</h2>
-                        <p class="text-gray-600">Manage time slots and booking capacity for each day (24/7 Operations)</p>
+                        <p class="text-gray-600">Manage time slots and booking capacity for each day (24/7 Operations)
+                        </p>
                     </div>
                     <div class="flex space-x-4">
-                        <button id="bulk-create-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        <button id="bulk-create-btn"
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
                             <i class="fas fa-plus mr-2"></i>Bulk Create Slots
                         </button>
-                        <button id="copy-template-btn" class="bg-blue-dark text-white px-4 py-2 rounded-lg hover:bg-navy transition-colors">
+                        <button id="copy-template-btn"
+                            class="bg-blue-dark text-white px-4 py-2 rounded-lg hover:bg-navy transition-colors">
                             <i class="fas fa-copy mr-2"></i>Copy Template
                         </button>
                     </div>
@@ -281,20 +320,26 @@
                 <!-- Date Selection for Availability -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                        <label for="availability-date" class="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
-                        <input type="date" id="availability-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <label for="availability-date" class="block text-sm font-medium text-gray-700 mb-2">Select
+                            Date</label>
+                        <input type="date" id="availability-date"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                     </div>
                     <div>
-                        <label for="day-template" class="block text-sm font-medium text-gray-700 mb-2">Day Template</label>
-                        <select id="day-template" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <label for="day-template" class="block text-sm font-medium text-gray-700 mb-2">Day
+                            Template</label>
+                        <select id="day-template"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                             <option value="">Select template</option>
                             <option value="24hours">24 Hours (Every Hour)</option>
                             <option value="business-hours">Prodigy Operating Hours</option>
                         </select>
                     </div>
                     <div>
-                        <label for="time-interval" class="block text-sm font-medium text-gray-700 mb-2">Time Interval</label>
-                        <select id="time-interval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+                        <label for="time-interval" class="block text-sm font-medium text-gray-700 mb-2">Time
+                            Interval</label>
+                        <select id="time-interval"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                             <option value="30">Every 30 minutes</option>
                             <option value="60" selected>Every hour</option>
                             <option value="90">Every 1 ½ hours</option>
@@ -303,7 +348,8 @@
                         </select>
                     </div>
                     <div class="flex items-end">
-                        <button id="load-availability-btn" class="w-full bg-blue-dark text-white py-2 px-4 rounded-lg hover:bg-navy transition-colors">
+                        <button id="load-availability-btn"
+                            class="w-full bg-blue-dark text-white py-2 px-4 rounded-lg hover:bg-navy transition-colors">
                             <i class="fas fa-search mr-2"></i>Load Day
                         </button>
                     </div>
@@ -313,7 +359,8 @@
             <!-- Current Month Calendar Preview -->
             <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-navy">Calendar Overview - <span id="calendar-month-year"></span></h3>
+                    <h3 class="text-lg font-bold text-navy">Calendar Overview - <span id="calendar-month-year"></span>
+                    </h3>
                     <div class="flex space-x-2">
                         <button id="prev-month" class="p-2 text-gray-600 hover:text-navy transition-colors">
                             <i class="fas fa-chevron-left"></i>
@@ -347,10 +394,12 @@
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-lg font-bold text-navy">Time Slots Configuration</h3>
                     <div class="flex space-x-2">
-                        <button id="add-time-slot-btn" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                        <button id="add-time-slot-btn"
+                            class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
                             <i class="fas fa-plus mr-1"></i>Add Slot
                         </button>
-                        <button id="save-availability-btn" class="bg-blue-dark text-white px-3 py-2 rounded-lg hover:bg-navy transition-colors text-sm">
+                        <button id="save-availability-btn"
+                            class="bg-blue-dark text-white px-3 py-2 rounded-lg hover:bg-navy transition-colors text-sm">
                             <i class="fas fa-save mr-1"></i>Save Changes
                         </button>
                     </div>
@@ -382,7 +431,8 @@
     </main>
 
     <!-- Add Time Slot Modal -->
-    <div id="add-time-slot-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div id="add-time-slot-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold text-navy">Add Time Slot</h3>
@@ -390,30 +440,38 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <form id="add-time-slot-form" class="space-y-4">
                 <div>
                     <label for="slot-time" class="block text-sm font-medium text-gray-700 mb-2">Time</label>
-                    <input type="time" id="slot-time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                    <input type="time" id="slot-time"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                        required>
                 </div>
-                
+
                 <div>
-                    <label for="slot-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max Bookings</label>
-                    <input type="number" id="slot-max-bookings" min="1" max="20" value="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                    <label for="slot-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max
+                        Bookings</label>
+                    <input type="number" id="slot-max-bookings" min="1" max="20" value="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                        required>
                 </div>
-                
+
                 <div>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="slot-available" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                        <input type="checkbox" id="slot-available" checked
+                            class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
                         <span class="text-sm font-medium text-gray-700">Available for booking</span>
                     </label>
                 </div>
 
                 <div class="flex space-x-4 pt-4">
-                    <button type="button" id="cancel-add-slot" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                    <button type="button" id="cancel-add-slot"
+                        class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                    <button type="submit"
+                        class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                         Add Slot
                     </button>
                 </div>
@@ -422,7 +480,8 @@
     </div>
 
     <!-- Bulk Create Modal -->
-    <div id="bulk-create-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div id="bulk-create-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold text-navy">Bulk Create Availability</h3>
@@ -430,19 +489,25 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <form id="bulk-create-form" class="space-y-6">
                 <!-- Date Range Selection -->
                 <div class="bg-gray-50 rounded-lg p-4">
                     <h4 class="font-semibold text-navy mb-3">Date Range</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="bulk-start-date" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-                            <input type="date" id="bulk-start-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                            <label for="bulk-start-date" class="block text-sm font-medium text-gray-700 mb-2">Start
+                                Date</label>
+                            <input type="date" id="bulk-start-date"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                                required>
                         </div>
                         <div>
-                            <label for="bulk-end-date" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
-                            <input type="date" id="bulk-end-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                            <label for="bulk-end-date" class="block text-sm font-medium text-gray-700 mb-2">End
+                                Date</label>
+                            <input type="date" id="bulk-end-date"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                                required>
                         </div>
                     </div>
                 </div>
@@ -487,16 +552,22 @@
                     <h4 class="font-semibold text-navy mb-3">Time Configuration</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label for="bulk-template" class="block text-sm font-medium text-gray-700 mb-2">Template</label>
-                            <select id="bulk-template" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                            <label for="bulk-template"
+                                class="block text-sm font-medium text-gray-700 mb-2">Template</label>
+                            <select id="bulk-template"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                                required>
                                 <option value="">Select template</option>
                                 <option value="24hours">24 Hours (All Day)</option>
                                 <option value="business-hours">Prodigy Operating Hours</option>
                             </select>
                         </div>
                         <div>
-                            <label for="bulk-interval" class="block text-sm font-medium text-gray-700 mb-2">Time Interval</label>
-                            <select id="bulk-interval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                            <label for="bulk-interval" class="block text-sm font-medium text-gray-700 mb-2">Time
+                                Interval</label>
+                            <select id="bulk-interval"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                                required>
                                 <option value="30">Every 30 minutes</option>
                                 <option value="60" selected>Every hour</option>
                                 <option value="90">Every 1 ½ hours</option>
@@ -512,13 +583,18 @@
                     <h4 class="font-semibold text-navy mb-3">Booking Settings</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="bulk-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max Bookings per Slot</label>
-                            <input type="number" id="bulk-max-bookings" min="1" max="20" value="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark" required>
+                            <label for="bulk-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max
+                                Bookings per Slot</label>
+                            <input type="number" id="bulk-max-bookings" min="1" max="20" value="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                                required>
                         </div>
                         <div class="flex items-end">
                             <label class="flex items-center space-x-2">
-                                <input type="checkbox" id="bulk-skip-existing" checked class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
-                                <span class="text-sm font-medium text-gray-700">Skip dates with existing availability</span>
+                                <input type="checkbox" id="bulk-skip-existing" checked
+                                    class="rounded border-gray-300 text-blue-dark focus:ring-blue-dark">
+                                <span class="text-sm font-medium text-gray-700">Skip dates with existing
+                                    availability</span>
                             </label>
                         </div>
                     </div>
@@ -533,13 +609,16 @@
                 </div>
 
                 <div class="flex space-x-4">
-                    <button type="button" id="cancel-bulk-create" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                    <button type="button" id="cancel-bulk-create"
+                        class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
                         Cancel
                     </button>
-                    <button type="button" id="preview-bulk-create" class="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    <button type="button" id="preview-bulk-create"
+                        class="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                         Preview
                     </button>
-                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                    <button type="submit"
+                        class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                         Create Availability
                     </button>
                 </div>
@@ -548,10 +627,11 @@
     </div>
 
     <!-- Scripts -->
-    <script type="module" src="../admin-firebase.js"></script>
+    <script type="module" src="../../public/scripts/firebase.js"></script>
+    <script type="module" src="../../public/scripts/admin.js"></script>
     <script type="module">
-        import { onAdminAuthChange, getRecentBookings, updateBookingStatus, assignWasherToBooking, getActiveStaff, getAvailability, updateDateAvailability } from '../admin-firebase.js';
-        
+        import { onAdminAuthChange, getRecentBookings, updateBookingStatus, assignWasherToBooking, getActiveStaff, getAvailability, updateDateAvailability } from '../../public/scripts/admin.js';
+
         let allBookings = [];
         let filteredBookings = [];
         let washers = [];
@@ -559,7 +639,7 @@
         let currentTimeSlots = {};
         let currentCalendarDate = new Date();
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeBookingsPage();
         });
 
@@ -598,7 +678,7 @@
                 displayBookings();
 
                 document.getElementById('bookings-loading').classList.add('hidden');
-                
+
                 if (filteredBookings.length > 0) {
                     document.getElementById('bookings-table-container').classList.remove('hidden');
                 } else {
@@ -620,14 +700,14 @@
 
             filteredBookings = allBookings.filter(booking => {
                 const customerName = booking.user?.fullName?.toLowerCase() || '';
-                const vehicleInfo = booking.vehicle ? 
+                const vehicleInfo = booking.vehicle ?
                     `${booking.vehicle.make} ${booking.vehicle.model} ${booking.vehicle.plateNumber}`.toLowerCase() : '';
-                
-                const matchesSearch = !searchTerm || 
-                    customerName.includes(searchTerm) || 
+
+                const matchesSearch = !searchTerm ||
+                    customerName.includes(searchTerm) ||
                     booking.service.toLowerCase().includes(searchTerm) ||
                     vehicleInfo.includes(searchTerm);
-                
+
                 const matchesStatus = !statusFilter || booking.status === statusFilter;
                 const matchesService = !serviceFilter || booking.service === serviceFilter;
                 const matchesDate = !dateFilter || booking.date === dateFilter;
@@ -644,7 +724,7 @@
             document.getElementById('status-filter').value = '';
             document.getElementById('service-filter').value = '';
             document.getElementById('date-filter').value = '';
-            
+
             filteredBookings = [...allBookings];
             displayBookings();
         }
@@ -690,12 +770,12 @@
             row.className = 'hover:bg-gray-50';
 
             const customerName = booking.user?.fullName || 'Unknown Customer';
-            const vehicleInfo = booking.vehicle ? 
-                `${booking.vehicle.make} ${booking.vehicle.model} - ${booking.vehicle.plateNumber}` : 
+            const vehicleInfo = booking.vehicle ?
+                `${booking.vehicle.make} ${booking.vehicle.model} - ${booking.vehicle.plateNumber}` :
                 'Unknown Vehicle';
-            
-            const washerName = booking.washerId ? 
-                (washers.find(w => w.id === booking.washerId)?.user?.fullName || 'Assigned') : 
+
+            const washerName = booking.washerId ?
+                (washers.find(w => w.id === booking.washerId)?.user?.fullName || 'Assigned') :
                 'Unassigned';
 
             const statusColors = {
@@ -743,9 +823,9 @@
                         </select>
                         <select class="washer-assign-select text-xs p-1 border rounded" data-booking-id="${booking.id}">
                             <option value="">Assign Washer</option>
-                            ${washers.map(washer => 
-                                `<option value="${washer.id}" ${booking.washerId === washer.id ? 'selected' : ''}>${washer.user?.fullName || 'Unknown'}</option>`
-                            ).join('')}
+                            ${washers.map(washer =>
+                `<option value="${washer.id}" ${booking.washerId === washer.id ? 'selected' : ''}>${washer.user?.fullName || 'Unknown'}</option>`
+            ).join('')}
                         </select>
                     </div>
                 </td>
@@ -781,16 +861,16 @@
         async function handleStatusUpdate(bookingId, newStatus) {
             try {
                 await updateBookingStatus(bookingId, newStatus);
-                
+
                 // Update local data
                 const booking = allBookings.find(b => b.id === bookingId);
                 if (booking) {
                     booking.status = newStatus;
                 }
-                
+
                 updateBookingStats();
                 applyFilters(); // Re-apply current filters
-                
+
                 alert('Booking status updated successfully');
             } catch (error) {
                 console.error('Error updating booking status:', error);
@@ -801,15 +881,15 @@
         async function handleWasherAssignment(bookingId, washerId) {
             try {
                 await assignWasherToBooking(bookingId, washerId);
-                
+
                 // Update local data
                 const booking = allBookings.find(b => b.id === bookingId);
                 if (booking) {
                     booking.washerId = washerId;
                 }
-                
+
                 applyFilters(); // Re-apply current filters
-                
+
                 alert('Washer assigned successfully');
             } catch (error) {
                 console.error('Error assigning washer:', error);
@@ -827,7 +907,7 @@
                 // Show bookings section
                 bookingsSection.classList.remove('hidden');
                 availabilitySection.classList.add('hidden');
-                
+
                 // Update tab styles
                 bookingsTab.classList.add('border-blue-dark', 'text-blue-dark');
                 bookingsTab.classList.remove('border-transparent', 'text-gray-500');
@@ -839,13 +919,13 @@
                 // Show availability section
                 availabilitySection.classList.remove('hidden');
                 bookingsSection.classList.add('hidden');
-                
+
                 // Update tab styles
                 availabilityTab.classList.add('border-blue-dark', 'text-blue-dark');
                 availabilityTab.classList.remove('border-transparent', 'text-gray-500');
                 bookingsTab.classList.remove('border-blue-dark', 'text-blue-dark');
                 bookingsTab.classList.add('border-transparent', 'text-gray-500');
-                
+
                 // Initialize availability management
                 initializeAvailabilityManagement();
             });
@@ -922,37 +1002,37 @@
 
         async function handleAddTimeSlot(e) {
             e.preventDefault();
-            
+
             const time = document.getElementById('slot-time').value;
             const maxBookings = parseInt(document.getElementById('slot-max-bookings').value);
             const available = document.getElementById('slot-available').checked;
-            
+
             if (!time) {
                 alert('Please select a time');
                 return;
             }
-            
+
             // Convert to 12-hour format
             const timeObj = new Date(`2025-01-01T${time}:00`);
-            const timeString = timeObj.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
+            const timeString = timeObj.toLocaleTimeString('en-US', {
+                hour: '2-digit',
                 minute: '2-digit',
-                hour12: true 
+                hour12: true
             });
-            
+
             // Check if time slot already exists
             if (currentTimeSlots[timeString]) {
                 alert('A time slot for this time already exists');
                 return;
             }
-            
+
             // Add new time slot
             currentTimeSlots[timeString] = {
                 available: available,
                 maxBookings: maxBookings,
                 currentBookings: 0
             };
-            
+
             displayAvailability();
             updateSlotStats();
             closeAddTimeSlotModal();
@@ -963,7 +1043,7 @@
                 alert('Please select a date first');
                 return;
             }
-            
+
             try {
                 await updateDateAvailability(currentAvailabilityDate, currentTimeSlots);
                 alert('Availability saved successfully');
@@ -979,16 +1059,16 @@
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('availability-date').value = tomorrow.toISOString().split('T')[0];
-            
+
             // Set bulk create dates to next week
             const nextWeek = new Date();
             nextWeek.setDate(nextWeek.getDate() + 7);
             const monthLater = new Date();
             monthLater.setMonth(monthLater.getMonth() + 1);
-            
+
             document.getElementById('bulk-start-date').value = nextWeek.toISOString().split('T')[0];
             document.getElementById('bulk-end-date').value = monthLater.toISOString().split('T')[0];
-            
+
             // Initialize calendar
             renderCalendar();
         }
@@ -996,16 +1076,16 @@
         function renderCalendar() {
             const calendarGrid = document.getElementById('calendar-grid');
             const monthYearElement = document.getElementById('calendar-month-year');
-            
+
             // Clear previous calendar
             calendarGrid.innerHTML = '';
-            
+
             // Set month/year display
-            monthYearElement.textContent = currentCalendarDate.toLocaleDateString('en-US', { 
-                month: 'long', 
-                year: 'numeric' 
+            monthYearElement.textContent = currentCalendarDate.toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric'
             });
-            
+
             // Create day headers
             const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             dayHeaders.forEach(day => {
@@ -1014,35 +1094,35 @@
                 dayHeader.textContent = day;
                 calendarGrid.appendChild(dayHeader);
             });
-            
+
             // Get first day of month and number of days
             const firstDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 1);
             const lastDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 0);
             const startDay = firstDay.getDay();
             const daysInMonth = lastDay.getDate();
-            
+
             // Add empty cells for days before the first day of the month
             for (let i = 0; i < startDay; i++) {
                 const emptyDay = document.createElement('div');
                 emptyDay.className = 'p-2';
                 calendarGrid.appendChild(emptyDay);
             }
-            
+
             // Add days of the month
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayElement = document.createElement('div');
                 const dateString = `${currentCalendarDate.getFullYear()}-${(currentCalendarDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-                
+
                 dayElement.className = 'p-2 text-center cursor-pointer border rounded hover:bg-blue-100 transition-colors relative';
                 dayElement.textContent = day;
                 dayElement.dataset.date = dateString;
-                
+
                 // Highlight today
                 const today = new Date();
                 if (dateString === today.toISOString().split('T')[0]) {
                     dayElement.classList.add('bg-brown', 'text-white', 'font-bold');
                 }
-                
+
                 // Check if date has availability (you can implement this async)
                 checkDateAvailabilityAsync(dateString).then(hasAvailability => {
                     if (hasAvailability) {
@@ -1050,19 +1130,19 @@
                         dayElement.style.borderColor = '#10b981';
                     }
                 });
-                
+
                 // Add click handler
                 dayElement.addEventListener('click', () => {
                     document.getElementById('availability-date').value = dateString;
                     loadAvailabilityForDate();
-                    
+
                     // Update calendar selection
                     document.querySelectorAll('[data-date]').forEach(el => {
                         el.classList.remove('bg-blue-500', 'text-white');
                     });
                     dayElement.classList.add('bg-blue-500', 'text-white');
                 });
-                
+
                 calendarGrid.appendChild(dayElement);
             }
         }
@@ -1078,7 +1158,7 @@
 
         function handleTemplateChange() {
             const template = document.getElementById('day-template').value;
-            
+
             if (template) {
                 applyTemplate(template);
             }
@@ -1093,37 +1173,37 @@
             const slots = {};
             const start = new Date(`2025-01-01T${startTime}:00`);
             const end = new Date(`2025-01-01T${endTime}:00`);
-            
+
             // Handle overnight shifts (end time is next day)
             if (end <= start) {
                 end.setDate(end.getDate() + 1);
             }
-            
+
             const current = new Date(start);
-            
+
             while (current < end) {
-                const timeString = current.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
+                const timeString = current.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
                     minute: '2-digit',
-                    hour12: true 
+                    hour12: true
                 });
-                
+
                 slots[timeString] = {
                     available: true,
                     maxBookings: maxBookings,
                     currentBookings: 0
                 };
-                
+
                 current.setMinutes(current.getMinutes() + intervalMinutes);
             }
-            
+
             return slots;
         }
 
         function applyTemplate(template) {
             const interval = parseInt(document.getElementById('time-interval').value);
             let timeSlots = {};
-            
+
             switch (template) {
                 case '24hours':
                     timeSlots = generateTimeSlots('00:00', '23:59', interval);
@@ -1136,7 +1216,7 @@
                     timeSlots["9:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 3" };
                     timeSlots["11:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 4" };
                     timeSlots["12:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 5" };
-                    
+
                     // PM Slots
                     timeSlots["2:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "PM Battle Plan" };
                     timeSlots["2:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 1" };
@@ -1144,7 +1224,7 @@
                     timeSlots["5:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 3" };
                     timeSlots["7:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 4" };
                     timeSlots["8:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 5" };
-                    
+
                     // GY Slots
                     timeSlots["10:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "GY Battle Plan" };
                     timeSlots["10:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 1" };
@@ -1154,7 +1234,7 @@
                     timeSlots["4:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 5" };
                     break;
             }
-            
+
             if (Object.keys(timeSlots).length > 0) {
                 currentTimeSlots = timeSlots;
                 displayAvailability();
@@ -1168,15 +1248,15 @@
             const template = document.getElementById('bulk-template').value;
             const interval = parseInt(document.getElementById('bulk-interval').value);
             const selectedDays = Array.from(document.querySelectorAll('input[name="days"]:checked')).map(cb => parseInt(cb.value));
-            
+
             if (!template || selectedDays.length === 0) {
                 alert('Please select a template and at least one day of the week');
                 return;
             }
-            
+
             let previewText = `Date Range: ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}\n`;
             previewText += `Template: ${template}\n`;
-            
+
             // Format interval display
             let intervalText;
             if (interval === 30) {
@@ -1192,27 +1272,27 @@
             } else {
                 intervalText = `Every ${interval} minutes`;
             }
-            
+
             previewText += `Interval: ${intervalText}\n`;
             previewText += `Days: ${selectedDays.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}\n\n`;
-            
+
             // Calculate number of dates that will be affected
             let dateCount = 0;
             const currentDate = new Date(startDate);
-            
+
             while (currentDate <= endDate) {
                 if (selectedDays.includes(currentDate.getDay())) {
                     dateCount++;
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
             }
-            
+
             previewText += `Total dates to be created: ${dateCount}\n`;
-            
+
             // Get sample time slots for preview
             const sampleSlots = getSampleTimeSlots(template, interval);
             previewText += `Sample time slots: ${Object.keys(sampleSlots).slice(0, 5).join(', ')}${Object.keys(sampleSlots).length > 5 ? '...' : ''}`;
-            
+
             document.getElementById('preview-content').innerHTML = previewText.replace(/\n/g, '<br>');
             document.getElementById('bulk-preview').classList.remove('hidden');
         }
@@ -1223,7 +1303,7 @@
                     return generateTimeSlots('00:00', '23:59', intervalMinutes);
                 case 'business-hours':
                     let timeSlots = {};
-                    
+
                     // AM Slots
                     timeSlots["6:00 AM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "AM Battle Plan" };
                     timeSlots["6:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 1" };
@@ -1231,7 +1311,7 @@
                     timeSlots["9:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 3" };
                     timeSlots["11:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 4" };
                     timeSlots["12:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 5" };
-                    
+
                     // PM Slots
                     timeSlots["2:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "PM Battle Plan" };
                     timeSlots["2:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 1" };
@@ -1239,7 +1319,7 @@
                     timeSlots["5:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 3" };
                     timeSlots["7:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 4" };
                     timeSlots["8:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 5" };
-                    
+
                     // GY Slots
                     timeSlots["10:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "GY Battle Plan" };
                     timeSlots["10:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 1" };
@@ -1247,7 +1327,7 @@
                     timeSlots["1:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 3" };
                     timeSlots["3:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 4" };
                     timeSlots["4:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 5" };
-                    
+
                     return timeSlots;
                 default:
                     return {};
@@ -1256,7 +1336,7 @@
 
         async function handleBulkCreate(e) {
             e.preventDefault();
-            
+
             const startDate = new Date(document.getElementById('bulk-start-date').value);
             const endDate = new Date(document.getElementById('bulk-end-date').value);
             const template = document.getElementById('bulk-template').value;
@@ -1264,12 +1344,12 @@
             const maxBookings = parseInt(document.getElementById('bulk-max-bookings').value);
             const skipExisting = document.getElementById('bulk-skip-existing').checked;
             const selectedDays = Array.from(document.querySelectorAll('input[name="days"]:checked')).map(cb => parseInt(cb.value));
-            
+
             if (startDate >= endDate) {
                 alert('End date must be after start date');
                 return;
             }
-            
+
             if (!template || selectedDays.length === 0) {
                 alert('Please select a template and at least one day of the week');
                 return;
@@ -1279,21 +1359,21 @@
                 let createdCount = 0;
                 let skippedCount = 0;
                 const currentDate = new Date(startDate);
-                
+
                 // Show progress
                 const originalText = e.target.textContent;
                 e.target.textContent = 'Creating...';
                 e.target.disabled = true;
-                
+
                 while (currentDate <= endDate) {
                     // Check if this day of week is selected
                     if (!selectedDays.includes(currentDate.getDay())) {
                         currentDate.setDate(currentDate.getDate() + 1);
                         continue;
                     }
-                    
+
                     const dateString = currentDate.toISOString().split('T')[0];
-                    
+
                     // Check if availability already exists
                     if (skipExisting) {
                         const existing = await getAvailability(dateString);
@@ -1303,37 +1383,37 @@
                             continue;
                         }
                     }
-                    
+
                     // Generate time slots based on template
                     let timeSlots = getSampleTimeSlots(template, interval);
-                    
+
                     // Update max bookings for all slots
                     Object.keys(timeSlots).forEach(time => {
                         if (timeSlots[time].available) {
                             timeSlots[time].maxBookings = maxBookings;
                         }
                     });
-                    
+
                     // Create availability for this date
                     await updateDateAvailability(dateString, timeSlots);
                     createdCount++;
-                    
+
                     currentDate.setDate(currentDate.getDate() + 1);
-                    
+
                     // Add small delay to prevent overwhelming Firebase
                     if (createdCount % 10 === 0) {
                         await new Promise(resolve => setTimeout(resolve, 100));
                     }
                 }
-                
+
                 // Restore button
                 e.target.textContent = originalText;
                 e.target.disabled = false;
-                
+
                 closeBulkCreateModal();
                 renderCalendar(); // Refresh calendar
                 alert(`Bulk creation completed!\nCreated: ${createdCount} days\nSkipped: ${skippedCount} days`);
-                
+
             } catch (error) {
                 console.error('Error in bulk creation:', error);
                 e.target.textContent = originalText;
@@ -1345,7 +1425,7 @@
         async function loadAvailabilityForDate() {
             const dateInput = document.getElementById('availability-date');
             const selectedDate = dateInput.value;
-            
+
             if (!selectedDate) {
                 alert('Please select a date');
                 return;
@@ -1354,7 +1434,7 @@
             try {
                 currentAvailabilityDate = selectedDate;
                 const availability = await getAvailability(selectedDate);
-                
+
                 if (availability) {
                     currentTimeSlots = { ...availability };
                 } else {
@@ -1362,22 +1442,22 @@
                 }
 
                 displayAvailability();
-                
+
                 // Show selected date info
                 const selectedDateInfo = document.getElementById('selected-date-info');
                 const selectedDateDisplay = document.getElementById('selected-date-display');
                 const date = new Date(selectedDate);
-                
+
                 selectedDateDisplay.textContent = date.toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
-                
+
                 selectedDateInfo.classList.remove('hidden');
                 updateSlotStats();
-                
+
             } catch (error) {
                 console.error('Error loading availability:', error);
                 alert('Error loading availability for selected date');
@@ -1422,12 +1502,12 @@
         function createTimeSlotElement(time, slot) {
             const div = document.createElement('div');
             div.className = 'time-slot-card';
-            
+
             const availableClass = slot.available ? 'text-green-600' : 'text-red-600';
             const availableIcon = slot.available ? 'check-circle' : 'times-circle';
             const slotLabel = slot.label ? `<span class="ml-1 text-xs text-gray-500">(${slot.label})</span>` : '';
             const percentage = ((slot.currentBookings || 0) / slot.maxBookings) * 100;
-            
+
             div.innerHTML = `
                 <!-- Mobile Layout -->
                 <div class="block md:hidden">
@@ -1511,14 +1591,14 @@
         function updateSlotStats() {
             const totalSlots = Object.keys(currentTimeSlots).length;
             const totalCapacity = Object.values(currentTimeSlots).reduce((sum, slot) => sum + slot.maxBookings, 0);
-            
+
             document.getElementById('total-slots-count').textContent = totalSlots;
             document.getElementById('total-capacity').textContent = totalCapacity;
         }
 
         function editTimeSlot(time) {
             const slot = currentTimeSlots[time];
-            
+
             const newMaxBookings = prompt(`Edit max bookings for ${time}:`, slot.maxBookings);
             if (newMaxBookings !== null && !isNaN(newMaxBookings) && newMaxBookings > 0) {
                 slot.maxBookings = parseInt(newMaxBookings);
@@ -1529,12 +1609,12 @@
 
         function deleteTimeSlot(time) {
             const slot = currentTimeSlots[time];
-            
+
             if (slot.currentBookings > 0) {
                 alert(`Cannot delete time slot with ${slot.currentBookings} existing booking(s)`);
                 return;
             }
-            
+
             if (confirm(`Are you sure you want to delete the ${time} time slot?`)) {
                 delete currentTimeSlots[time];
                 displayAvailability();
@@ -1546,15 +1626,16 @@
             const [time, ampm] = time12.split(' ');
             const [hours, minutes] = time.split(':');
             let hour = parseInt(hours);
-            
+
             if (ampm === 'PM' && hour !== 12) {
                 hour += 12;
             } else if (ampm === 'AM' && hour === 12) {
                 hour = 0;
             }
-            
+
             return `${hour.toString().padStart(2, '0')}:${minutes}`;
         }
     </script>
 </body>
+
 </html>

@@ -1,5 +1,5 @@
-import { 
-    auth, 
+import {
+    auth,
     onAuthChange,
     registerUser,
     loginUser,
@@ -14,26 +14,9 @@ import {
     checkDateAvailability
 } from './firebase.js';
 
-// Booking flow state
-let bookingState = {
-    step: 1,
-    service: null,
-    serviceName: null,
-    vehicle: null,
-    vehicleDetails: null,
-    date: null,
-    time: null,
-    price: 0
-};
-
-// Global app state
-let appState = {
-    currentUser: null,
-    services: [],
-    vehicles: [],
-    bookings: [],
-    isLoading: true
-};
+// This file has been moved to the new structure
+// Redirecting to the new customer home page
+window.location.href = 'pages/customer/home.html';
 
 // Flatpickr instance
 let calendarInstance = null;
@@ -59,7 +42,7 @@ const mobileSignInBtn = document.getElementById('mobile-signin-btn');
 const mobileSignUpBtn = document.getElementById('mobile-signup-btn');
 
 // Initialize app
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeAuth();
     initializeBookingFlow();
     initializeMobileMenu();
@@ -70,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize guest buttons
 function initializeGuestButtons() {
     // Remove desktop guest button functionality since they're removed
-    
+
     // Mobile guest buttons
     if (mobileSignInBtn) {
         mobileSignInBtn.addEventListener('click', () => {
@@ -80,7 +63,7 @@ function initializeGuestButtons() {
             document.getElementById('mobile-menu-overlay').classList.add('hidden');
         });
     }
-    
+
     if (mobileSignUpBtn) {
         mobileSignUpBtn.addEventListener('click', () => {
             // Switch to register tab
@@ -99,16 +82,16 @@ function initializeAuth() {
         if (user) {
             const userData = await getCurrentUser();
             appState.currentUser = userData;
-            
+
             // Update UI for authenticated user
             updateAuthUI(true);
-            
+
             // Load user data
             await loadUserData();
         } else {
             appState.currentUser = null;
             updateAuthUI(false);
-            
+
             // Load services for guest users
             try {
                 appState.services = await getServices();
@@ -117,19 +100,19 @@ function initializeAuth() {
                 console.error('Error loading services for guest:', error);
             }
         }
-        
+
         appState.isLoading = false;
     });
-    
+
     // Handle sign in form submission
     const signinForm = document.getElementById('signin-form');
     if (signinForm) {
         signinForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
-            
+
             try {
                 const result = await loginUser(email, password);
                 if (result.success) {
@@ -144,24 +127,24 @@ function initializeAuth() {
             }
         });
     }
-    
+
     // Handle register form submission
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const name = document.getElementById('register-name').value;
             const email = document.getElementById('register-email').value;
             const phone = document.getElementById('register-phone').value;
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
-            
+
             if (password !== confirmPassword) {
                 alert('Passwords do not match');
                 return;
             }
-            
+
             try {
                 const result = await registerUser(email, password, name, phone);
                 if (result.success) {
@@ -176,7 +159,7 @@ function initializeAuth() {
             }
         });
     }
-    
+
     // Handle sign out
     if (signOutButton) {
         signOutButton.addEventListener('click', async () => {
@@ -188,7 +171,7 @@ function initializeAuth() {
             }
         });
     }
-    
+
     // Mobile sign out
     if (mobileSignOutBtn) {
         mobileSignOutBtn.addEventListener('click', async () => {
@@ -207,11 +190,11 @@ function updateAuthUI(isAuthenticated) {
     if (isAuthenticated && appState.currentUser) {
         // Show authenticated user UI
         if (userNav) userNav.classList.remove('hidden');
-        
+
         // Update user info
         if (userNameElement) userNameElement.textContent = appState.currentUser.fullName;
         if (loyaltyPointsElement) loyaltyPointsElement.textContent = `${appState.currentUser.loyaltyPoints} points`;
-        
+
         // Update mobile menu user info
         if (mobileUserInfo) {
             mobileUserInfo.innerHTML = `
@@ -221,31 +204,31 @@ function updateAuthUI(isAuthenticated) {
                 </div>
             `;
         }
-        
+
         // Hide mobile guest nav and show sign out
         if (mobileGuestNav) mobileGuestNav.classList.add('hidden');
         if (mobileSignOutBtn) mobileSignOutBtn.classList.remove('hidden');
-        
+
         // Show appropriate navigation based on role (or redirect if admin)
         updateNavigationByRole(appState.currentUser.role);
     } else {
         // Show guest UI - user nav is hidden by default
         if (userNav) userNav.classList.add('hidden');
-        
+
         // Show customer navigation for guests
         const customerNav = document.getElementById('customer-nav');
         const washerNav = document.getElementById('washer-nav');
-        
+
         if (customerNav) customerNav.classList.remove('hidden');
         if (washerNav) washerNav.classList.add('hidden');
-        
+
         // Update mobile navigation for guests
         const mobileCustomerNav = document.getElementById('mobile-customer-nav');
         const mobileWasherNav = document.getElementById('mobile-washer-nav');
-        
+
         if (mobileCustomerNav) mobileCustomerNav.classList.add('hidden');
         if (mobileWasherNav) mobileWasherNav.classList.add('hidden');
-        
+
         // Update mobile menu user info
         if (mobileUserInfo) {
             mobileUserInfo.innerHTML = `
@@ -255,7 +238,7 @@ function updateAuthUI(isAuthenticated) {
                 </div>
             `;
         }
-        
+
         // Show mobile guest nav and hide sign out
         if (mobileGuestNav) mobileGuestNav.classList.remove('hidden');
         if (mobileSignOutBtn) mobileSignOutBtn.classList.add('hidden');
@@ -268,12 +251,12 @@ function updateNavigationByRole(role) {
     const washerNav = document.getElementById('washer-nav');
     const mobileCustomerNav = document.getElementById('mobile-customer-nav');
     const mobileWasherNav = document.getElementById('mobile-washer-nav');
-    
+
     if (customerNav) customerNav.classList.add('hidden');
     if (washerNav) washerNav.classList.add('hidden');
     if (mobileCustomerNav) mobileCustomerNav.classList.add('hidden');
     if (mobileWasherNav) mobileWasherNav.classList.add('hidden');
-    
+
     // Show appropriate navigation or redirect
     switch (role) {
         case 'customer':
@@ -284,11 +267,10 @@ function updateNavigationByRole(role) {
             if (washerNav) washerNav.classList.remove('hidden');
             if (mobileWasherNav) mobileWasherNav.classList.remove('hidden');
             break;
-        case 'admin':
-            // Redirect admin users to admin panel instead of showing navigation
-            if (window.location.pathname !== '/admin/admin-dashboard.html' && 
-                !window.location.pathname.includes('/admin/')) {
-                window.location.href = 'admin/admin-dashboard.html';
+        case 'admin':            // Redirect admin users to admin panel instead of showing navigation
+            if (window.location.pathname !== '/pages/admin/dashboard.html' &&
+                !window.location.pathname.includes('/pages/admin/')) {
+                window.location.href = 'pages/admin/dashboard.html';
                 return;
             }
             break;
@@ -303,13 +285,13 @@ async function loadUserData() {
     try {
         // Load services
         appState.services = await getServices();
-        
+
         // Load user vehicles
         appState.vehicles = await getUserVehicles();
-        
+
         // Load user bookings
         appState.bookings = await getUserBookings();
-        
+
         // Update UI with data
         updateServicesUI();
         updateVehiclesUI();
@@ -323,24 +305,24 @@ async function loadUserData() {
 function updateServicesUI() {
     const serviceContainer = document.querySelector('#service-step .grid');
     serviceContainer.innerHTML = '';
-    
+
     appState.services.forEach(service => {
         const serviceCard = document.createElement('div');
         serviceCard.className = 'service-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-dark transition-colors';
         serviceCard.dataset.service = service.id;
         serviceCard.dataset.serviceName = service.name;
-        
+
         serviceCard.innerHTML = `
             <h4 class="font-semibold text-navy">${service.name}</h4>
             <p class="text-sm text-gray-600 mb-2">${service.description}</p>
             <p class="text-lg font-bold text-brown">₱${service.price}</p>
             <p class="text-xs text-gray-500">${service.durationMinutes} minutes</p>
         `;
-        
+
         serviceCard.addEventListener('click', () => {
             selectService(service.id, service.name, service.price);
         });
-        
+
         serviceContainer.appendChild(serviceCard);
     });
 }
@@ -349,13 +331,13 @@ function updateServicesUI() {
 function updateVehiclesUI() {
     const vehicleContainer = document.querySelector('#vehicle-step .grid');
     vehicleContainer.innerHTML = '';
-    
+
     // Add user vehicles
     appState.vehicles.forEach(vehicle => {
         const vehicleCard = document.createElement('div');
         vehicleCard.className = 'vehicle-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-dark transition-colors';
         vehicleCard.dataset.vehicle = vehicle.id;
-        
+
         vehicleCard.innerHTML = `
             <div class="flex items-center space-x-3">
                 <i class="fas fa-car text-2xl text-blue-dark"></i>
@@ -365,14 +347,14 @@ function updateVehiclesUI() {
                 </div>
             </div>
         `;
-        
+
         vehicleCard.addEventListener('click', () => {
             selectVehicle(vehicle.id, `${vehicle.make} ${vehicle.model}`, vehicle.plateNumber);
         });
-        
+
         vehicleContainer.appendChild(vehicleCard);
     });
-    
+
     // Add "Add Vehicle" card
     const addVehicleCard = document.createElement('div');
     addVehicleCard.className = 'border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-blue-dark transition-colors flex items-center justify-center';
@@ -382,11 +364,11 @@ function updateVehiclesUI() {
             <p class="text-sm text-gray-600">Add New Vehicle</p>
         </div>
     `;
-    
+
     addVehicleCard.addEventListener('click', () => {
         vehicleModal.classList.remove('hidden');
     });
-    
+
     vehicleContainer.appendChild(addVehicleCard);
 }
 
@@ -394,9 +376,9 @@ function updateVehiclesUI() {
 function updateBookingsUI() {
     const bookingsContainer = document.getElementById('recent-bookings-container');
     if (!bookingsContainer) return;
-    
+
     bookingsContainer.innerHTML = '';
-    
+
     if (!appState.currentUser) {
         bookingsContainer.innerHTML = `
             <div class="text-center py-8">
@@ -407,7 +389,7 @@ function updateBookingsUI() {
                 </button>
             </div>
         `;
-        
+
         // Add event listener for the sign in button
         const bookingsSignInBtn = document.getElementById('bookings-signin-btn');
         if (bookingsSignInBtn) {
@@ -417,30 +399,30 @@ function updateBookingsUI() {
         }
         return;
     }
-    
+
     if (appState.bookings.length === 0) {
         bookingsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">No recent bookings</p>';
         return;
     }
-    
+
     // Take only the most recent 3 bookings
     const recentBookings = appState.bookings.slice(0, 3);
-    
+
     recentBookings.forEach(booking => {
         // Find vehicle details
         const vehicle = appState.vehicles.find(v => v.id === booking.vehicleId);
         const vehicleText = vehicle ? `${vehicle.make} ${vehicle.model}` : 'Vehicle';
-        
+
         // Get status color
         let statusColor = 'gray';
         if (booking.status === 'Completed') statusColor = 'green';
         if (booking.status === 'Pending') statusColor = 'yellow';
         if (booking.status === 'Ongoing') statusColor = 'blue';
         if (booking.status === 'Cancelled') statusColor = 'red';
-        
+
         const bookingElement = document.createElement('div');
         bookingElement.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
-        
+
         bookingElement.innerHTML = `
             <div class="flex items-center space-x-3">
                 <div class="w-3 h-3 bg-${statusColor}-500 rounded-full"></div>
@@ -451,7 +433,7 @@ function updateBookingsUI() {
             </div>
             <span class="px-3 py-1 bg-${statusColor}-100 text-${statusColor}-800 text-sm rounded-full">${booking.status}</span>
         `;
-        
+
         bookingsContainer.appendChild(bookingElement);
     });
 }
@@ -459,7 +441,7 @@ function updateBookingsUI() {
 // Initialize modals
 function initializeModals() {
     // Remove profile button dropdown functionality since it's now a direct link
-    
+
     // Sign out functionality
     if (signOutButton) {
         signOutButton.addEventListener('click', async () => {
@@ -471,7 +453,7 @@ function initializeModals() {
             }
         });
     }
-    
+
     // Auth modal
     const closeAuthModal = document.getElementById('close-auth-modal');
     if (closeAuthModal) {
@@ -479,37 +461,37 @@ function initializeModals() {
             authModal.classList.add('hidden');
         });
     }
-    
+
     // Toggle between sign in and register tabs
     const signinTab = document.getElementById('signin-tab');
     const registerTab = document.getElementById('register-tab');
     const signinForm = document.getElementById('signin-form');
     const registerForm = document.getElementById('register-form');
-    
+
     if (signinTab) {
         signinTab.addEventListener('click', () => {
             signinTab.classList.add('text-blue-dark', 'border-blue-dark');
             signinTab.classList.remove('text-gray-500');
             registerTab.classList.remove('text-blue-dark', 'border-blue-dark');
             registerTab.classList.add('text-gray-500');
-            
+
             if (signinForm) signinForm.classList.remove('hidden');
             if (registerForm) registerForm.classList.add('hidden');
         });
     }
-    
+
     if (registerTab) {
         registerTab.addEventListener('click', () => {
             registerTab.classList.add('text-blue-dark', 'border-blue-dark');
             registerTab.classList.remove('text-gray-500');
             signinTab.classList.remove('text-blue-dark', 'border-blue-dark');
             signinTab.classList.add('text-gray-500');
-            
+
             if (registerForm) registerForm.classList.remove('hidden');
             if (signinForm) signinForm.classList.add('hidden');
         });
     }
-    
+
     // Guest CTA modal
     if (guestCtaModal) {
         const closeGuestModal = document.getElementById('close-guest-modal');
@@ -519,7 +501,7 @@ function initializeModals() {
             });
         }
     }
-    
+
     // Vehicle modal
     if (vehicleModal) {
         const closeVehicleModal = document.getElementById('close-vehicle-modal');
@@ -528,23 +510,23 @@ function initializeModals() {
                 vehicleModal.classList.add('hidden');
             });
         }
-        
+
         const addVehicleForm = document.getElementById('add-vehicle-form');
         if (addVehicleForm) {
             addVehicleForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
                 const make = document.getElementById('vehicle-make').value;
                 const model = document.getElementById('vehicle-model').value;
                 const plateNumber = document.getElementById('vehicle-plate').value;
-                
+
                 try {
                     await addVehicle(make, model, plateNumber);
-                    
+
                     // Reload vehicles
                     appState.vehicles = await getUserVehicles();
                     updateVehiclesUI();
-                    
+
                     // Close modal and reset form
                     vehicleModal.classList.add('hidden');
                     addVehicleForm.reset();
@@ -560,28 +542,28 @@ function initializeModals() {
 function initializeBookingFlow() {
     // Initialize Flatpickr
     initializeFlatpickr();
-    
+
     // Step navigation buttons
     const vehicleBackBtn = document.getElementById('vehicle-back-btn');
     const datetimeBackBtn = document.getElementById('datetime-back-btn');
     const confirmBookingBtn = document.getElementById('confirm-booking');
-    
+
     if (vehicleBackBtn) {
         vehicleBackBtn.addEventListener('click', () => {
             prevStep();
         });
     }
-    
+
     if (datetimeBackBtn) {
         datetimeBackBtn.addEventListener('click', () => {
             prevStep();
         });
     }
-    
+
     if (confirmBookingBtn) {
         confirmBookingBtn.addEventListener('click', confirmBooking);
     }
-    
+
     // Initialize the first step
     updateStepUI();
 }
@@ -590,16 +572,16 @@ function initializeBookingFlow() {
 async function initializeFlatpickr() {
     const calendarInput = document.getElementById('booking-calendar');
     if (!calendarInput) return;
-    
+
     // Get disabled dates (dates with no availability)
     const disabledDates = await getDisabledDates();
-    
+
     calendarInstance = flatpickr(calendarInput, {
         minDate: "today",
         maxDate: new Date().fp_incr(90), // 90 days from today
         disable: [
             // Disable Sundays (business closed)
-            function(date) {
+            function (date) {
                 return date.getDay() === 0;
             },
             // Disable dates with no availability
@@ -612,12 +594,12 @@ async function initializeFlatpickr() {
         inline: false,
         allowInput: false,
         clickOpens: true,
-        onChange: async function(selectedDates, dateStr, instance) {
+        onChange: async function (selectedDates, dateStr, instance) {
             if (selectedDates.length > 0) {
                 await selectDate(dateStr);
             }
         },
-        onReady: function(selectedDates, dateStr, instance) {
+        onReady: function (selectedDates, dateStr, instance) {
             // Customize the calendar after it's ready
             const calendar = instance.calendarContainer;
             calendar.style.fontFamily = 'Inter, system-ui, sans-serif';
@@ -629,17 +611,17 @@ async function initializeFlatpickr() {
 async function getDisabledDates() {
     const disabledDates = [];
     const today = new Date();
-    
+
     // Check next 90 days for availability
     for (let i = 1; i <= 90; i++) {
         const checkDate = new Date(today);
         checkDate.setDate(today.getDate() + i);
-        
+
         // Skip Sundays (they're already disabled by function above)
         if (checkDate.getDay() === 0) continue;
-        
+
         const dateString = checkDate.toISOString().split('T')[0];
-        
+
         try {
             const hasAvailability = await checkDateAvailability(dateString);
             if (!hasAvailability) {
@@ -651,7 +633,7 @@ async function getDisabledDates() {
             disabledDates.push(dateString);
         }
     }
-    
+
     return disabledDates;
 }
 
@@ -661,20 +643,20 @@ async function selectDate(dateString) {
         authModal.classList.remove('hidden');
         return;
     }
-    
+
     bookingState.date = dateString;
-    
+
     // Update selected date display
     const selectedDate = new Date(dateString);
-    const formattedDate = selectedDate.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    const formattedDate = selectedDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
-    
+
     document.getElementById('selected-date-display').textContent = `Available times for ${formattedDate}`;
-    
+
     // Generate time slots from Firebase
     await generateTimeSlots(dateString);
     document.getElementById('time-slots').classList.remove('hidden');
@@ -684,7 +666,7 @@ async function selectDate(dateString) {
 // Update time slots function for compact layout
 async function generateTimeSlots(dateString) {
     const timeSlotsGrid = document.querySelector('#time-slots .grid');
-    
+
     // Show loading state in the time slots area
     document.getElementById('time-slots-container').innerHTML = `
         <div class="text-center">
@@ -694,10 +676,10 @@ async function generateTimeSlots(dateString) {
     `;
     document.getElementById('time-slots-container').style.display = 'flex';
     document.getElementById('time-slots').classList.add('hidden');
-    
+
     try {
         const availability = await getAvailability(dateString);
-        
+
         if (!availability) {
             document.getElementById('time-slots-container').innerHTML = `
                 <div class="text-center text-gray-400">
@@ -707,16 +689,16 @@ async function generateTimeSlots(dateString) {
             `;
             return;
         }
-        
+
         // Define time slot order for consistent display
         const timeOrder = [
             "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
             "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
         ];
-        
+
         // Filter and sort available times
         const availableTimes = timeOrder.filter(time => availability[time]);
-        
+
         if (availableTimes.length === 0) {
             document.getElementById('time-slots-container').innerHTML = `
                 <div class="text-center text-gray-400">
@@ -726,18 +708,18 @@ async function generateTimeSlots(dateString) {
             `;
             return;
         }
-        
+
         // Clear and populate time slots
         timeSlotsGrid.innerHTML = '';
-        
+
         availableTimes.forEach(time => {
             const slot = availability[time];
             const timeElement = document.createElement('div');
             timeElement.className = 'text-center py-3 px-3 rounded-lg border-2 cursor-pointer transition-all duration-200 font-medium text-sm';
-            
+
             const slotsLeft = slot.maxBookings - slot.currentBookings;
             const isAvailable = slot.available && slotsLeft > 0;
-            
+
             if (isAvailable) {
                 timeElement.className += ' border-gray-200 hover:border-blue-dark hover:bg-blue-50 hover:shadow-sm';
                 timeElement.innerHTML = `
@@ -752,14 +734,14 @@ async function generateTimeSlots(dateString) {
                     <div class="text-xs text-red-500 mt-1">Full</div>
                 `;
             }
-            
+
             timeSlotsGrid.appendChild(timeElement);
         });
-        
+
         // Show the time slots grid
         document.getElementById('time-slots-container').style.display = 'none';
         document.getElementById('time-slots').classList.remove('hidden');
-        
+
     } catch (error) {
         console.error('Error generating time slots:', error);
         document.getElementById('time-slots-container').innerHTML = `
@@ -773,7 +755,7 @@ async function generateTimeSlots(dateString) {
 
 function selectTime(time, timeElement) {
     bookingState.time = time;
-    
+
     // Update UI
     document.querySelectorAll('#time-slots .grid > div').forEach(slot => {
         slot.classList.remove('border-blue-dark', 'bg-blue-50', 'shadow-sm');
@@ -781,28 +763,28 @@ function selectTime(time, timeElement) {
     });
     timeElement.classList.remove('border-gray-200');
     timeElement.classList.add('border-blue-dark', 'bg-blue-50', 'shadow-sm');
-    
+
     // Show booking summary
     updateBookingSummary();
     document.getElementById('booking-summary').classList.remove('hidden');
 }
 
 function resetBookingFlow() {
-    bookingState = { 
-        step: 1, 
-        service: null, 
-        serviceName: null, 
-        vehicle: null, 
-        vehicleDetails: null, 
-        date: null, 
-        time: null, 
-        price: 0 
+    bookingState = {
+        step: 1,
+        service: null,
+        serviceName: null,
+        vehicle: null,
+        vehicleDetails: null,
+        date: null,
+        time: null,
+        price: 0
     };
-    
+
     updateStepUI();
     document.getElementById('booking-summary').classList.add('hidden');
     document.getElementById('time-slots').classList.add('hidden');
-    
+
     // Reset time slots display
     document.getElementById('time-slots-container').style.display = 'flex';
     document.getElementById('time-slots-container').innerHTML = `
@@ -812,12 +794,12 @@ function resetBookingFlow() {
         </div>
     `;
     document.getElementById('selected-date-display').textContent = 'Select a date to view available times';
-    
+
     // Clear Flatpickr selection
     if (calendarInstance) {
         calendarInstance.clear();
     }
-    
+
     // Clear all selections
     document.querySelectorAll('.service-card').forEach(card => {
         card.classList.remove('border-blue-dark', 'bg-blue-50');
@@ -840,7 +822,7 @@ function initializeMobileMenu() {
     const mobileSignOutButton = document.querySelector('#mobile-menu .bottom-6 button');
 
     // Open mobile menu
-    mobileMenuButton.addEventListener('click', function() {
+    mobileMenuButton.addEventListener('click', function () {
         mobileMenu.classList.add('open');
         mobileMenuOverlay.classList.remove('hidden');
         menuIcon.classList.remove('fa-bars');
@@ -873,14 +855,14 @@ function initializeMobileMenu() {
     }
 
     // Close menu on escape key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
             closeMobileMenuHandler();
         }
     });
 
     // Close menu on window resize if it gets too big
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         if (window.innerWidth >= 1024 && mobileMenu.classList.contains('open')) {
             closeMobileMenuHandler();
         }
@@ -894,11 +876,11 @@ function formatDate(date) {
 
 function formatDateDisplay(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
 }
 
@@ -908,17 +890,17 @@ function selectService(serviceId, serviceName, price) {
         authModal.classList.remove('hidden');
         return;
     }
-    
+
     bookingState.service = serviceId;
     bookingState.serviceName = serviceName;
     bookingState.price = price;
-    
+
     // Update UI
     document.querySelectorAll('.service-card').forEach(card => {
         card.classList.remove('border-blue-dark', 'bg-blue-50');
     });
     document.querySelector(`[data-service="${serviceId}"]`).classList.add('border-blue-dark', 'bg-blue-50');
-    
+
     // Move to next step
     setTimeout(() => {
         nextStep();
@@ -928,13 +910,13 @@ function selectService(serviceId, serviceName, price) {
 function selectVehicle(vehicleId, vehicleName, plateNumber) {
     bookingState.vehicle = vehicleId;
     bookingState.vehicleDetails = { name: vehicleName, plateNumber };
-    
+
     // Update UI
     document.querySelectorAll('.vehicle-card').forEach(card => {
         card.classList.remove('border-blue-dark', 'bg-blue-50');
     });
     document.querySelector(`[data-vehicle="${vehicleId}"]`).classList.add('border-blue-dark', 'bg-blue-50');
-    
+
     // Move to next step
     setTimeout(() => {
         nextStep();
@@ -960,12 +942,12 @@ function updateStepUI() {
     document.getElementById('service-step').classList.add('hidden');
     document.getElementById('vehicle-step').classList.add('hidden');
     document.getElementById('datetime-step').classList.add('hidden');
-    
+
     // Update step indicators
     for (let i = 1; i <= 3; i++) {
         const stepEl = document.getElementById(`step${i}`);
         const stepText = stepEl.nextElementSibling;
-        
+
         if (i < bookingState.step) {
             // Completed step
             stepEl.classList.remove('bg-gray-200', 'text-gray-500', 'bg-blue-dark', 'text-white');
@@ -989,7 +971,7 @@ function updateStepUI() {
             stepText.classList.add('text-gray-500');
         }
     }
-    
+
     // Show current step
     switch (bookingState.step) {
         case 1:
@@ -1015,20 +997,20 @@ function updateStepUI() {
 // Refresh calendar availability
 async function refreshCalendarAvailability() {
     if (!calendarInstance) return;
-    
+
     try {
         const disabledDates = await getDisabledDates();
-        
+
         // Update Flatpickr disable option
         calendarInstance.set('disable', [
             // Disable Sundays
-            function(date) {
+            function (date) {
                 return date.getDay() === 0;
             },
             // Disable dates with no availability
             ...disabledDates
         ]);
-        
+
         // Redraw calendar
         calendarInstance.redraw();
     } catch (error) {
@@ -1049,7 +1031,7 @@ function showAddVehiclePrompt() {
             </button>
         </div>
     `;
-    
+
     document.getElementById('add-first-vehicle').addEventListener('click', () => {
         vehicleModal.classList.remove('hidden');
     });

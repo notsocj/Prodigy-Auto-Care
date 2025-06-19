@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,19 +24,22 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* Page Transition Animation */
         body {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -43,6 +47,7 @@
         }
     </style>
 </head>
+
 <body class="bg-cream min-h-screen font-sans">
     <!-- Navigation -->
     <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
@@ -50,11 +55,14 @@
             <div class="flex justify-between items-center py-5">
                 <div class="flex items-center space-x-3">
                     <div class="relative">
-                        <i class="fas fa-car text-cream text-3xl" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse"></div>
+                        <i class="fas fa-car text-cream text-3xl"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-brown rounded-full opacity-75 animate-pulse">
+                        </div>
                     </div>
                     <div>
-                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide" style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
+                        <h1 class="text-cream text-3xl font-bold font-display tracking-wide"
+                            style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);">Prodigy</h1>
                         <p class="text-cream/70 text-xs font-medium tracking-widest uppercase">Auto Care</p>
                     </div>
                 </div>
@@ -79,7 +87,7 @@
                     </a>
                 </p>
             </div>
-            
+
             <!-- Login Form -->
             <form id="loginForm" class="mt-8 space-y-6">
                 <div class="rounded-md shadow-sm space-y-4">
@@ -87,18 +95,20 @@
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
                             Email address
                         </label>
-                        <input id="email" name="email" type="email" autocomplete="email" required 
-                               class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm">
+                        <input id="email" name="email" type="email" autocomplete="email" required
+                            class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm">
                     </div>
-                    
+
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
                             Password
                         </label>
                         <div class="relative">
-                            <input id="password" name="password" type="password" autocomplete="current-password" required 
-                                   class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10">
-                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <input id="password" name="password" type="password" autocomplete="current-password"
+                                required
+                                class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-dark focus:border-blue-dark focus:z-10 sm:text-sm pr-10">
+                            <button type="button" id="toggle-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                 <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
                             </button>
                         </div>
@@ -107,21 +117,24 @@
 
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-dark focus:ring-blue-dark border-gray-300 rounded">
+                        <input id="remember-me" name="remember-me" type="checkbox"
+                            class="h-4 w-4 text-blue-dark focus:ring-blue-dark border-gray-300 rounded">
                         <label for="remember-me" class="ml-2 block text-sm text-gray-900">
                             Remember me
                         </label>
                     </div>
 
                     <div class="text-sm">
-                        <a href="forgot-password.html" class="font-medium text-blue-dark hover:text-navy transition-colors">
+                        <a href="forgot-password.html"
+                            class="font-medium text-blue-dark hover:text-navy transition-colors">
                             Forgot your password?
                         </a>
                     </div>
                 </div>
 
                 <div>
-                    <button type="submit" id="loginBtn" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
+                    <button type="submit" id="loginBtn"
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-dark hover:bg-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-dark transition-colors">
                         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                             <i class="fas fa-sign-in-alt text-blue-200 group-hover:text-blue-100"></i>
                         </span>
@@ -148,77 +161,77 @@
                 </div>
             </form>
         </div>
-    </main>
+    </main> <!-- Scripts -->
+    <script>
+        // Redirect to new login page
+        window.location.href = 'pages/auth/login.html';
+    </script>
 
-    <!-- Scripts -->
-    <script type="module" src="firebase.js"></script>
-    <script type="module">
-        import { loginUser, getCurrentUser } from './firebase.js';
+    document.addEventListener('DOMContentLoaded', function () {
+    const errorText = document.getElementById('error-text');
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('errorMessage');
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const errorText = document.getElementById('error-text');
-            const togglePassword = document.getElementById('toggle-password');
-            const passwordInput = document.getElementById('password');
-            const loginForm = document.getElementById('loginForm');
-            const loginBtn = document.getElementById('loginBtn');
-            const loading = document.getElementById('loading');
-            const errorMessage = document.getElementById('errorMessage');
+    // Toggle password visibility
+    togglePassword.addEventListener('click', function () {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
 
-            // Toggle password visibility
-            togglePassword.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                
-                const icon = togglePassword.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            });
+    const icon = togglePassword.querySelector('i');
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+    });
 
-            // Handle form submission
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                
-                // Show loading state
-                loginBtn.style.display = 'none';
-                loading.classList.remove('hidden');
-                errorMessage.classList.add('hidden');
-                
-                try {
-                    const result = await loginUser(email, password);
-                    
-                    if (result.success) {
-                        // Get current user data to check role
-                        const userData = await getCurrentUser();
-                        
-                        // Redirect based on user role
-                        if (userData && userData.role === 'admin') {
-                            window.location.href = 'admin/admin-dashboard.html';
-                        } else if (userData && userData.role === 'washer') {
-                            window.location.href = 'washer-dashboard.html'; // When you create washer pages
-                        } else {
-                            // Customer or default redirect to main page
-                            window.location.href = 'customer-home.html';
-                        }
-                    } else {
-                        showError(result.error);
-                    }
-                } catch (error) {
-                    showError(error.message);
-                }
-                
-                // Hide loading state
-                loginBtn.style.display = 'block';
-                loading.classList.add('hidden');
-            });
+    // Handle form submission
+    loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            function showError(message) {
-                errorText.textContent = message;
-                errorMessage.classList.remove('hidden');
-            }
-        });
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // Show loading state
+    loginBtn.style.display = 'none';
+    loading.classList.remove('hidden');
+    errorMessage.classList.add('hidden');
+
+    try {
+    const result = await loginUser(email, password);
+
+    if (result.success) {
+    // Get current user data to check role
+    const userData = await getCurrentUser();
+
+    // Redirect based on user role
+    if (userData && userData.role === 'admin') {
+    window.location.href = 'pages/admin/dashboard.html';
+    } else if (userData && userData.role === 'washer') {
+    window.location.href = 'washer-dashboard.html'; // When you create washer pages
+    } else {
+    // Customer or default redirect to main page
+    window.location.href = 'customer-home.html';
+    }
+    } else {
+    showError(result.error);
+    }
+    } catch (error) {
+    showError(error.message);
+    }
+
+    // Hide loading state
+    loginBtn.style.display = 'block';
+    loading.classList.add('hidden');
+    });
+
+    function showError(message) {
+    errorText.textContent = message;
+    errorMessage.classList.remove('hidden');
+    }
+    });
     </script>
 </body>
+
 </html>
