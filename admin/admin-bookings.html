@@ -577,6 +577,246 @@
             initializeEventListeners();
         }
 
+        // Add missing loadBookingsData function
+        async function loadBookingsData() {
+            try {
+                document.getElementById('bookings-loading').classList.remove('hidden');
+                document.getElementById('bookings-table-container').classList.add('hidden');
+                document.getElementById('no-bookings').classList.add('hidden');
+
+                // Load bookings and staff
+                const [bookings, staffList] = await Promise.all([
+                    getRecentBookings(100), // Get more bookings for admin
+                    getActiveStaff()
+                ]);
+
+                allBookings = bookings;
+                filteredBookings = [...allBookings];
+                washers = staffList;
+
+                updateBookingStats();
+                displayBookings();
+
+                document.getElementById('bookings-loading').classList.add('hidden');
+                
+                if (filteredBookings.length > 0) {
+                    document.getElementById('bookings-table-container').classList.remove('hidden');
+                } else {
+                    document.getElementById('no-bookings').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading bookings data:', error);
+                document.getElementById('bookings-loading').classList.add('hidden');
+                document.getElementById('no-bookings').classList.remove('hidden');
+            }
+        }
+
+        // Add missing applyFilters function
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-bookings').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const serviceFilter = document.getElementById('service-filter').value;
+            const dateFilter = document.getElementById('date-filter').value;
+
+            filteredBookings = allBookings.filter(booking => {
+                const customerName = booking.user?.fullName?.toLowerCase() || '';
+                const vehicleInfo = booking.vehicle ? 
+                    `${booking.vehicle.make} ${booking.vehicle.model} ${booking.vehicle.plateNumber}`.toLowerCase() : '';
+                
+                const matchesSearch = !searchTerm || 
+                    customerName.includes(searchTerm) || 
+                    booking.service.toLowerCase().includes(searchTerm) ||
+                    vehicleInfo.includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || booking.status === statusFilter;
+                const matchesService = !serviceFilter || booking.service === serviceFilter;
+                const matchesDate = !dateFilter || booking.date === dateFilter;
+
+                return matchesSearch && matchesStatus && matchesService && matchesDate;
+            });
+
+            displayBookings();
+        }
+
+        // Add missing clearFilters function
+        function clearFilters() {
+            document.getElementById('search-bookings').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('service-filter').value = '';
+            document.getElementById('date-filter').value = '';
+            
+            filteredBookings = [...allBookings];
+            displayBookings();
+        }
+
+        // Add missing updateBookingStats function
+        function updateBookingStats() {
+            const totalBookings = allBookings.length;
+            const pendingBookings = allBookings.filter(b => b.status === 'Pending').length;
+            const ongoingBookings = allBookings.filter(b => b.status === 'Ongoing').length;
+            const completedBookings = allBookings.filter(b => b.status === 'Completed').length;
+            const cancelledBookings = allBookings.filter(b => b.status === 'Cancelled').length;
+
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('pending-bookings').textContent = pendingBookings;
+            document.getElementById('ongoing-bookings').textContent = ongoingBookings;
+            document.getElementById('completed-bookings').textContent = completedBookings;
+            document.getElementById('cancelled-bookings').textContent = cancelledBookings;
+        }
+
+        // Add missing displayBookings function
+        function displayBookings() {
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = '';
+
+            if (filteredBookings.length === 0) {
+                document.getElementById('bookings-table-container').classList.add('hidden');
+                document.getElementById('no-bookings').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('bookings-table-container').classList.remove('hidden');
+            document.getElementById('no-bookings').classList.add('hidden');
+
+            filteredBookings.forEach(booking => {
+                const row = createBookingRow(booking);
+                tbody.appendChild(row);
+            });
+        }
+
+        // Add missing createBookingRow function
+        function createBookingRow(booking) {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+
+            const customerName = booking.user?.fullName || 'Unknown Customer';
+            const vehicleInfo = booking.vehicle ? 
+                `${booking.vehicle.make} ${booking.vehicle.model} - ${booking.vehicle.plateNumber}` : 
+                'Unknown Vehicle';
+            
+            const washerName = booking.washerId ? 
+                (washers.find(w => w.id === booking.washerId)?.user?.fullName || 'Assigned') : 
+                'Unassigned';
+
+            const statusColors = {
+                'Pending': 'yellow',
+                'Ongoing': 'blue',
+                'Completed': 'green',
+                'Cancelled': 'red'
+            };
+            const statusColor = statusColors[booking.status] || 'gray';
+
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">${customerName}</div>
+                    <div class="text-sm text-gray-500">${booking.user?.email || ''}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${booking.service}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${vehicleInfo}</div>
+                    <div class="text-sm text-gray-500">${booking.vehicle?.vehicle_type || ''}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${formatDate(booking.date)}</div>
+                    <div class="text-sm text-gray-500">${booking.time}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-${statusColor}-100 text-${statusColor}-800">
+                        ${booking.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    ₱${booking.payment?.amount || 0}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${washerName}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                        <select class="status-update-select text-xs p-1 border rounded" data-booking-id="${booking.id}">
+                            <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Ongoing" ${booking.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                            <option value="Completed" ${booking.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                            <option value="Cancelled" ${booking.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                        <select class="washer-assign-select text-xs p-1 border rounded" data-booking-id="${booking.id}">
+                            <option value="">Assign Washer</option>
+                            ${washers.map(washer => 
+                                `<option value="${washer.id}" ${booking.washerId === washer.id ? 'selected' : ''}>${washer.user?.fullName || 'Unknown'}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                </td>
+            `;
+
+            // Add event listeners for dropdowns
+            const statusSelect = row.querySelector('.status-update-select');
+            const washerSelect = row.querySelector('.washer-assign-select');
+
+            statusSelect.addEventListener('change', async (e) => {
+                await handleStatusUpdate(booking.id, e.target.value);
+            });
+
+            washerSelect.addEventListener('change', async (e) => {
+                if (e.target.value) {
+                    await handleWasherAssignment(booking.id, e.target.value);
+                }
+            });
+
+            return row;
+        }
+
+        // Add missing utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        async function handleStatusUpdate(bookingId, newStatus) {
+            try {
+                await updateBookingStatus(bookingId, newStatus);
+                
+                // Update local data
+                const booking = allBookings.find(b => b.id === bookingId);
+                if (booking) {
+                    booking.status = newStatus;
+                }
+                
+                updateBookingStats();
+                applyFilters(); // Re-apply current filters
+                
+                alert('Booking status updated successfully');
+            } catch (error) {
+                console.error('Error updating booking status:', error);
+                alert('Error updating booking status');
+            }
+        }
+
+        async function handleWasherAssignment(bookingId, washerId) {
+            try {
+                await assignWasherToBooking(bookingId, washerId);
+                
+                // Update local data
+                const booking = allBookings.find(b => b.id === bookingId);
+                if (booking) {
+                    booking.washerId = washerId;
+                }
+                
+                applyFilters(); // Re-apply current filters
+                
+                alert('Washer assigned successfully');
+            } catch (error) {
+                console.error('Error assigning washer:', error);
+                alert('Error assigning washer');
+            }
+        }
+
         function initializeTabs() {
             const bookingsTab = document.getElementById('bookings-tab');
             const availabilityTab = document.getElementById('availability-tab');
@@ -648,8 +888,90 @@
             // Template change handlers
             document.getElementById('day-template').addEventListener('change', handleTemplateChange);
             document.getElementById('bulk-template').addEventListener('change', handleBulkTemplateChange);
-            document.getElementById('apply-custom-range').addEventListener('click', applyCustomTemplate);
             document.getElementById('preview-bulk-create').addEventListener('click', previewBulkCreate);
+
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                window.location.href = '../login.html';
+            });
+        }
+
+        // Add all missing modal and availability functions
+        function openBulkCreateModal() {
+            document.getElementById('bulk-create-modal').classList.remove('hidden');
+        }
+
+        function closeBulkCreateModal() {
+            document.getElementById('bulk-create-modal').classList.add('hidden');
+            document.getElementById('bulk-create-form').reset();
+            document.getElementById('bulk-preview').classList.add('hidden');
+        }
+
+        function openAddTimeSlotModal() {
+            if (!currentAvailabilityDate) {
+                alert('Please select a date first');
+                return;
+            }
+            document.getElementById('add-time-slot-modal').classList.remove('hidden');
+        }
+
+        function closeAddTimeSlotModal() {
+            document.getElementById('add-time-slot-modal').classList.add('hidden');
+            document.getElementById('add-time-slot-form').reset();
+        }
+
+        async function handleAddTimeSlot(e) {
+            e.preventDefault();
+            
+            const time = document.getElementById('slot-time').value;
+            const maxBookings = parseInt(document.getElementById('slot-max-bookings').value);
+            const available = document.getElementById('slot-available').checked;
+            
+            if (!time) {
+                alert('Please select a time');
+                return;
+            }
+            
+            // Convert to 12-hour format
+            const timeObj = new Date(`2025-01-01T${time}:00`);
+            const timeString = timeObj.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            // Check if time slot already exists
+            if (currentTimeSlots[timeString]) {
+                alert('A time slot for this time already exists');
+                return;
+            }
+            
+            // Add new time slot
+            currentTimeSlots[timeString] = {
+                available: available,
+                maxBookings: maxBookings,
+                currentBookings: 0
+            };
+            
+            displayAvailability();
+            updateSlotStats();
+            closeAddTimeSlotModal();
+        }
+
+        async function saveAvailability() {
+            if (!currentAvailabilityDate) {
+                alert('Please select a date first');
+                return;
+            }
+            
+            try {
+                await updateDateAvailability(currentAvailabilityDate, currentTimeSlots);
+                alert('Availability saved successfully');
+                renderCalendar(); // Refresh calendar
+            } catch (error) {
+                console.error('Error saving availability:', error);
+                alert('Error saving availability');
+            }
         }
 
         function initializeAvailabilityManagement() {
@@ -757,39 +1079,14 @@
         function handleTemplateChange() {
             const template = document.getElementById('day-template').value;
             
-            if (template === 'custom') {
-                document.getElementById('custom-time-range').classList.remove('hidden');
-            } else {
-                document.getElementById('custom-time-range').classList.add('hidden');
-                if (template) {
-                    applyTemplate(template);
-                }
+            if (template) {
+                applyTemplate(template);
             }
         }
 
         function handleBulkTemplateChange() {
-            const template = document.getElementById('bulk-template').value;
-            
-            if (template === 'custom') {
-                document.getElementById('bulk-custom-range').classList.remove('hidden');
-            } else {
-                document.getElementById('bulk-custom-range').classList.add('hidden');
-            }
-        }
-
-        function applyCustomTemplate() {
-            const startTime = document.getElementById('start-time').value;
-            const endTime = document.getElementById('end-time').value;
-            const interval = parseInt(document.getElementById('time-interval').value);
-            
-            if (!startTime || !endTime) {
-                alert('Please select both start and end times');
-                return;
-            }
-            
-            currentTimeSlots = generateTimeSlots(startTime, endTime, interval);
-            displayAvailability();
-            updateSlotStats();
+            // This function can be used for custom templates in the future
+            console.log('Bulk template changed');
         }
 
         function generateTimeSlots(startTime, endTime, intervalMinutes, maxBookings = 3) {
@@ -1008,18 +1305,14 @@
                     }
                     
                     // Generate time slots based on template
-                    let timeSlots;
-                    if (template === 'custom') {
-                        const startTime = document.getElementById('bulk-start-time').value;
-                        const endTime = document.getElementById('bulk-end-time').value;
-                        timeSlots = generateTimeSlots(startTime, endTime, interval, maxBookings);
-                    } else {
-                        timeSlots = getSampleTimeSlots(template, interval);
-                        // Update max bookings for all slots
-                        Object.keys(timeSlots).forEach(time => {
+                    let timeSlots = getSampleTimeSlots(template, interval);
+                    
+                    // Update max bookings for all slots
+                    Object.keys(timeSlots).forEach(time => {
+                        if (timeSlots[time].available) {
                             timeSlots[time].maxBookings = maxBookings;
-                        });
-                    }
+                        }
+                    });
                     
                     // Create availability for this date
                     await updateDateAvailability(dateString, timeSlots);
@@ -1048,8 +1341,6 @@
                 alert('Error creating bulk availability. Please try again.');
             }
         }
-
-        // ...existing code for other functions...
 
         async function loadAvailabilityForDate() {
             const dateInput = document.getElementById('availability-date');
@@ -1217,7 +1508,53 @@
             return div;
         }
 
-        // ...existing code...
+        function updateSlotStats() {
+            const totalSlots = Object.keys(currentTimeSlots).length;
+            const totalCapacity = Object.values(currentTimeSlots).reduce((sum, slot) => sum + slot.maxBookings, 0);
+            
+            document.getElementById('total-slots-count').textContent = totalSlots;
+            document.getElementById('total-capacity').textContent = totalCapacity;
+        }
+
+        function editTimeSlot(time) {
+            const slot = currentTimeSlots[time];
+            
+            const newMaxBookings = prompt(`Edit max bookings for ${time}:`, slot.maxBookings);
+            if (newMaxBookings !== null && !isNaN(newMaxBookings) && newMaxBookings > 0) {
+                slot.maxBookings = parseInt(newMaxBookings);
+                displayAvailability();
+                updateSlotStats();
+            }
+        }
+
+        function deleteTimeSlot(time) {
+            const slot = currentTimeSlots[time];
+            
+            if (slot.currentBookings > 0) {
+                alert(`Cannot delete time slot with ${slot.currentBookings} existing booking(s)`);
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete the ${time} time slot?`)) {
+                delete currentTimeSlots[time];
+                displayAvailability();
+                updateSlotStats();
+            }
+        }
+
+        function convertTo24Hour(time12) {
+            const [time, ampm] = time12.split(' ');
+            const [hours, minutes] = time.split(':');
+            let hour = parseInt(hours);
+            
+            if (ampm === 'PM' && hour !== 12) {
+                hour += 12;
+            } else if (ampm === 'AM' && hour === 12) {
+                hour = 0;
+            }
+            
+            return `${hour.toString().padStart(2, '0')}:${minutes}`;
+        }
     </script>
 </body>
 </html>
