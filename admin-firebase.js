@@ -1,20 +1,21 @@
-import { 
-    getAuth, 
-    onAuthStateChanged 
+import {
+    getAuth,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
-import { 
-    getFirestore, 
-    collection, 
-    doc, 
-    getDoc, 
-    getDocs, 
-    setDoc, 
-    updateDoc, 
-    query, 
+import {
+    getFirestore,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    deleteDoc,
+    query,
     where,
     orderBy,
     limit,
-    serverTimestamp 
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
 
@@ -57,7 +58,7 @@ export async function getDashboardStats() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
-    
+
     // Get today's bookings
     const bookingsQuery = query(
         collection(db, "bookings"),
@@ -65,7 +66,7 @@ export async function getDashboardStats() {
     );
     const bookingsSnapshot = await getDocs(bookingsQuery);
     const todayBookings = bookingsSnapshot.size;
-    
+
     // Calculate today's revenue
     let todayRevenue = 0;
     bookingsSnapshot.forEach(doc => {
@@ -74,7 +75,7 @@ export async function getDashboardStats() {
             todayRevenue += booking.payment.amount;
         }
     });
-    
+
     // Get active staff (washers with "On Work" status)
     const washersQuery = query(
         collection(db, "washers"),
@@ -82,7 +83,7 @@ export async function getDashboardStats() {
     );
     const washersSnapshot = await getDocs(washersQuery);
     const activeStaff = washersSnapshot.size;
-    
+
     // Get average rating
     const ratingsQuery = query(
         collection(db, "bookings"),
@@ -91,7 +92,7 @@ export async function getDashboardStats() {
     const ratingsSnapshot = await getDocs(ratingsQuery);
     let totalRating = 0;
     let ratingCount = 0;
-    
+
     ratingsSnapshot.forEach(doc => {
         const booking = doc.data();
         if (booking.rating) {
@@ -99,9 +100,9 @@ export async function getDashboardStats() {
             ratingCount++;
         }
     });
-    
+
     const avgRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : "N/A";
-    
+
     return {
         todayBookings,
         todayRevenue,
@@ -117,13 +118,13 @@ export async function getRecentBookings(count = 5) {
         orderBy("createdAt", "desc"),
         limit(count)
     );
-    
+
     const bookingsSnapshot = await getDocs(bookingsQuery);
     const bookings = [];
-    
+
     for (const docSnapshot of bookingsSnapshot.docs) {
         const booking = { id: docSnapshot.id, ...docSnapshot.data() };
-        
+
         // Get user details
         if (booking.userId) {
             const userDoc = await getDoc(doc(db, "users", booking.userId));
@@ -131,7 +132,7 @@ export async function getRecentBookings(count = 5) {
                 booking.user = userDoc.data();
             }
         }
-        
+
         // Get vehicle details
         if (booking.vehicleId) {
             const vehicleDoc = await getDoc(doc(db, "vehicles", booking.vehicleId));
@@ -139,10 +140,10 @@ export async function getRecentBookings(count = 5) {
                 booking.vehicle = vehicleDoc.data();
             }
         }
-        
+
         bookings.push(booking);
     }
-    
+
     return bookings;
 }
 
@@ -150,12 +151,12 @@ export async function getRecentBookings(count = 5) {
 export async function getActiveStaff() {
     const washersQuery = query(collection(db, "washers"));
     const washersSnapshot = await getDocs(washersQuery);
-    
+
     const washers = [];
-    
+
     for (const docSnapshot of washersSnapshot.docs) {
         const washer = { id: docSnapshot.id, ...docSnapshot.data() };
-        
+
         // Get user details
         if (washer.userId) {
             const userDoc = await getDoc(doc(db, "users", washer.userId));
@@ -163,10 +164,10 @@ export async function getActiveStaff() {
                 washer.user = userDoc.data();
             }
         }
-        
+
         washers.push(washer);
     }
-    
+
     return washers;
 }
 
@@ -191,13 +192,13 @@ export async function assignWasherToBooking(bookingId, washerId) {
     await updateDoc(doc(db, "bookings", bookingId), {
         washerId: washerId
     });
-    
+
     // Update washer's assigned bookings
     const washerDoc = await getDoc(doc(db, "washers", washerId));
     if (washerDoc.exists()) {
         const washer = washerDoc.data();
         const assignedBookings = washer.assignedBookings || [];
-        
+
         if (!assignedBookings.includes(bookingId)) {
             assignedBookings.push(bookingId);
             await updateDoc(doc(db, "washers", washerId), {
@@ -205,7 +206,7 @@ export async function assignWasherToBooking(bookingId, washerId) {
             });
         }
     }
-    
+
     return true;
 }
 
@@ -214,11 +215,11 @@ export async function getAvailability(dateString) {
     try {
         const availabilityRef = doc(db, "availability", dateString);
         const availabilityDoc = await getDoc(availabilityRef);
-        
+
         if (availabilityDoc.exists()) {
             return availabilityDoc.data();
         }
-        
+
         return null;
     } catch (error) {
         console.error('Error getting availability for', dateString, ':', error);
@@ -254,18 +255,18 @@ export async function getAvailabilityRange(startDate, endDate) {
         const availabilityData = {};
         const currentDate = new Date(startDate);
         const end = new Date(endDate);
-        
+
         while (currentDate <= end) {
             const dateString = currentDate.toISOString().split('T')[0];
             const availability = await getAvailability(dateString);
-            
+
             if (availability) {
                 availabilityData[dateString] = availability;
             }
-            
+
             currentDate.setDate(currentDate.getDate() + 1);
         }
-        
+
         return availabilityData;
     } catch (error) {
         console.error('Error getting availability range:', error);
@@ -278,30 +279,30 @@ export async function updateTimeSlotBookingCount(dateString, timeSlot, increment
     try {
         const availabilityRef = doc(db, "availability", dateString);
         const availabilityDoc = await getDoc(availabilityRef);
-        
+
         if (availabilityDoc.exists()) {
             const availability = availabilityDoc.data();
-            
+
             if (availability[timeSlot]) {
                 const currentBookings = availability[timeSlot].currentBookings || 0;
                 const maxBookings = availability[timeSlot].maxBookings;
-                
+
                 let newBookingCount;
                 if (increment) {
                     newBookingCount = Math.min(currentBookings + 1, maxBookings);
                 } else {
                     newBookingCount = Math.max(currentBookings - 1, 0);
                 }
-                
+
                 await updateDoc(availabilityRef, {
                     [`${timeSlot}.currentBookings`]: newBookingCount,
                     [`${timeSlot}.available`]: newBookingCount < maxBookings
                 });
-                
+
                 return true;
             }
         }
-        
+
         throw new Error(`Time slot ${timeSlot} not found for date ${dateString}`);
     } catch (error) {
         console.error('Error updating time slot booking count:', error);
@@ -313,11 +314,11 @@ export async function updateTimeSlotBookingCount(dateString, timeSlot, increment
 export async function checkTimeSlotAvailability(dateString, timeSlot) {
     try {
         const availability = await getAvailability(dateString);
-        
+
         if (!availability || !availability[timeSlot]) {
             return false;
         }
-        
+
         const slot = availability[timeSlot];
         return slot.available && (slot.currentBookings || 0) < slot.maxBookings;
     } catch (error) {
@@ -334,13 +335,13 @@ export async function getBookingsForDate(dateString) {
             where("date", "==", dateString),
             orderBy("time", "asc")
         );
-        
+
         const bookingsSnapshot = await getDocs(bookingsQuery);
         const bookings = [];
-        
+
         for (const docSnapshot of bookingsSnapshot.docs) {
             const booking = { id: docSnapshot.id, ...docSnapshot.data() };
-            
+
             // Get user details
             if (booking.userId) {
                 const userDoc = await getDoc(doc(db, "users", booking.userId));
@@ -348,7 +349,7 @@ export async function getBookingsForDate(dateString) {
                     booking.user = userDoc.data();
                 }
             }
-            
+
             // Get vehicle details
             if (booking.vehicleId) {
                 const vehicleDoc = await getDoc(doc(db, "vehicles", booking.vehicleId));
@@ -356,10 +357,10 @@ export async function getBookingsForDate(dateString) {
                     booking.vehicle = vehicleDoc.data();
                 }
             }
-            
+
             bookings.push(booking);
         }
-        
+
         return bookings;
     } catch (error) {
         console.error('Error getting bookings for date:', error);

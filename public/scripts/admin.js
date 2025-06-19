@@ -1,6 +1,7 @@
 // Admin-specific services
 import { auth, db } from './firebase.js';
 import {
+    onAdminAuthChange as adminOnAdminAuthChange,
     getDashboardStats as adminGetDashboardStats,
     getRecentBookings as adminGetRecentBookings,
     getActiveStaff as adminGetActiveStaff,
@@ -15,6 +16,11 @@ import {
     checkTimeSlotAvailability as adminCheckTimeSlotAvailability,
     getBookingsForDate as adminGetBookingsForDate
 } from '../../admin-firebase.js';
+
+// Auth functions
+export function onAdminAuthChange(callback) {
+    return adminOnAdminAuthChange(callback);
+}
 
 // Dashboard statistics
 export async function getDashboardStats() {

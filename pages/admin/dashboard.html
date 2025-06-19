@@ -32,13 +32,6 @@
 </head>
 
 <body class="bg-cream min-h-screen font-sans">
-    <!-- Auth Loader Overlay -->
-    <div id="auth-loader" class="fixed inset-0 bg-navy bg-opacity-90 z-50 flex items-center justify-center">
-        <div class="text-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cream mx-auto mb-4"></div>
-            <p class="text-cream text-lg">Verifying access...</p>
-        </div>
-    </div>
 
     <!-- Navigation -->
     <nav class="bg-gradient-to-r from-navy via-blue-dark to-navy shadow-2xl border-b border-blue-dark/20">
@@ -142,15 +135,13 @@
                     </div>
                 </div>
             </a>
-        </div>
-
-        <!-- Stats Cards -->
+        </div> <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-sm">Today's Bookings</p>
-                        <p id="total-bookings" class="text-3xl font-bold text-navy">0</p>
+                        <p id="today-bookings" class="text-3xl font-bold text-navy">0</p>
                     </div>
                     <div class="w-12 h-12 bg-blue-100 text-blue-dark rounded-xl flex items-center justify-center">
                         <i class="fas fa-calendar-check text-xl"></i>
@@ -162,7 +153,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-sm">Today's Revenue</p>
-                        <p id="revenue" class="text-3xl font-bold text-green-600">₱0</p>
+                        <p id="today-revenue" class="text-3xl font-bold text-green-600">₱0</p>
                     </div>
                     <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-peso-sign text-xl"></i>
@@ -173,8 +164,8 @@
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Active Customers</p>
-                        <p id="active-customers" class="text-3xl font-bold text-purple-600">0</p>
+                        <p class="text-gray-500 text-sm">Active Staff</p>
+                        <p id="active-staff" class="text-3xl font-bold text-purple-600">0</p>
                     </div>
                     <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-users text-xl"></i>
@@ -185,11 +176,11 @@
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Staff Online</p>
-                        <p id="staff-online" class="text-3xl font-bold text-orange-500">0</p>
+                        <p class="text-gray-500 text-sm">Average Rating</p>
+                        <p id="avg-rating" class="text-3xl font-bold text-orange-500">0</p>
                     </div>
                     <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-user-check text-xl"></i>
+                        <i class="fas fa-star text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -248,11 +239,131 @@
             <p class="text-gray-600 mb-6">You don't have permission to access this page.</p>
             <a href="../auth/login.html" class="btn-primary">Go to Login</a>
         </div>
-    </div>
-
-    <!-- Scripts -->
+    </div> <!-- Scripts -->
     <script type="module" src="../../public/scripts/firebase.js"></script>
     <script type="module" src="../../public/scripts/admin.js"></script>
+    <script type="module">
+        import { onAdminAuthChange, getDashboardStats, getRecentBookings, getActiveStaff } from '../../public/scripts/admin.js';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeDashboard();
+        });
+
+        function initializeDashboard() {
+            // Check admin authentication
+            onAdminAuthChange(async (user, isAdmin) => {
+                if (user && isAdmin) {
+                    await loadDashboardData();
+                } else {
+                    showAuthError();
+                }
+            });
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Load dashboard statistics
+                const stats = await getDashboardStats();
+                updateStatsUI(stats);
+
+                // Load recent bookings
+                const recentBookings = await getRecentBookings(5);
+                updateRecentBookingsUI(recentBookings);
+
+                // Load staff status
+                const staff = await getActiveStaff();
+                updateStaffStatusUI(staff);
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        function updateStatsUI(stats) {
+            document.getElementById('today-bookings').textContent = stats.todayBookings;
+            document.getElementById('today-revenue').textContent = `₱${stats.todayRevenue.toLocaleString()}`;
+            document.getElementById('active-staff').textContent = stats.activeStaff;
+            document.getElementById('avg-rating').textContent = stats.avgRating;
+        }
+
+        function updateRecentBookingsUI(bookings) {
+            const container = document.getElementById('recent-bookings');
+            container.innerHTML = '';
+
+            if (bookings.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No recent bookings</p>';
+                return;
+            }
+
+            bookings.forEach(booking => {
+                const bookingElement = createBookingElement(booking);
+                container.appendChild(bookingElement);
+            });
+        }
+
+        function createBookingElement(booking) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg';
+
+            const statusColor = {
+                'Pending': 'bg-yellow-100 text-yellow-800',
+                'Ongoing': 'bg-blue-100 text-blue-800',
+                'Completed': 'bg-green-100 text-green-800',
+                'Cancelled': 'bg-red-100 text-red-800'
+            }[booking.status] || 'bg-gray-100 text-gray-800';
+
+            div.innerHTML = `
+                <div>
+                    <div class="font-semibold text-navy">${booking.user?.fullName || 'Unknown Customer'}</div>
+                    <div class="text-sm text-gray-600">${booking.service} - ${booking.date} ${booking.time}</div>
+                </div>
+                <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColor}">
+                    ${booking.status}
+                </span>
+            `;
+
+            return div;
+        }
+
+        function updateStaffStatusUI(staff) {
+            const container = document.getElementById('staff-status');
+            container.innerHTML = '';
+
+            if (staff.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No staff members found</p>';
+                return;
+            }
+
+            staff.forEach(washer => {
+                const staffElement = createStaffElement(washer);
+                container.appendChild(staffElement);
+            });
+        }
+
+        function createStaffElement(washer) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg';
+
+            const statusColor = washer.availability === 'On Work' ?
+                'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+
+            div.innerHTML = `
+                <div>
+                    <div class="font-semibold text-navy">${washer.user?.fullName || 'Unknown Staff'}</div>
+                    <div class="text-sm text-gray-600">Assigned Bookings: ${washer.assignedBookings?.length || 0}</div>
+                </div>
+                <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColor}">
+                    ${washer.availability || 'Unknown'}
+                </span>
+            `;
+
+            return div;
+        }
+
+        function showAuthError() {
+            document.getElementById('auth-error').classList.remove('hidden');
+        }
+    </script>
 </body>
 
 </html>
