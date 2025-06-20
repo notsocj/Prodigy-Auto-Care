@@ -42,6 +42,12 @@
         },
         {
             "text": "Follow this schema when generating backend logic, API handlers, Firebase Cloud Functions, or front-end Firestore hooks. Always validate Firestore writes/reads according to this structure."
-        }
+        },
+        {
+        "text": "Always follow this Firebase Firestore structure for booking availability. Each document in the `availability` collection is named as a date (e.g., '2025-06-15'). Inside each document, time slots are used as keys (e.g., '10:00 PM'), and each time slot contains the following fields: `label` (string), `available` (boolean), `currentBookings` (number), `currentPremiumBookings` (number), `maxBookings` (number), and `maxPremiumBookings` (number). Premium detailers can only be booked once per time slot. Regular bookings allow up to 3 bookings per time slot."
+    },
+    {
+        "text": "When implementing booking logic, always check if `currentBookings < maxBookings` for regular users or `currentPremiumBookings < maxPremiumBookings` for premium detailers. Then increment the appropriate counter. Optionally, mark the time slot as unavailable (`available: false`) if both types reach their limits."
+    }
     ]
 }

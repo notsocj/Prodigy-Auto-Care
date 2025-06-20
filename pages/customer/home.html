@@ -135,10 +135,8 @@
     }
 
     .time-slot.selected {
-      background: linear-gradient(135deg, #254D70, #131D4F);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(37, 77, 112, 0.3);
+      border-color: #254D70 !important;
+      background-color: #dbeafe !important;
     }
 
     /* Make all text elements white when time slot is selected */
@@ -149,11 +147,51 @@
     .time-slot.unavailable {
       opacity: 0.5;
       cursor: not-allowed;
+      background-color: #f9fafb;
     }
 
     .time-slot.unavailable:hover {
       transform: none;
       box-shadow: none;
+    }
+
+    /* Premium Service Styling */
+    .premium-service {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .premium-service::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+
+    .premium-service:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
+    }
+
+    .premium-indicator {
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.8;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
 
     /* Step indicator */
@@ -627,43 +665,67 @@
       } catch (error) {
         console.error('Error loading initial data:', error);
       }
-    }
-
-    function displayServices() {
+    } function displayServices() {
       const grid = document.getElementById('services-grid');
       grid.innerHTML = '';
 
       availableServices.forEach(service => {
         const serviceCard = document.createElement('div');
-        serviceCard.className = 'bg-gray-50 rounded-xl p-6 hover-lift cursor-pointer border-2 border-transparent transition-all duration-300';
+        const isPremium = service.isPremium || false;
+        const premiumClass = isPremium ? 'premium-service border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50' : '';
+
+        serviceCard.className = `bg-gray-50 rounded-xl p-6 hover-lift cursor-pointer border-2 border-transparent transition-all duration-300 ${premiumClass}`;
         serviceCard.dataset.serviceId = service.id;
 
+        const premiumBadge = isPremium ? `
+          <div class="absolute top-3 right-3">
+            <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+              <i class="fas fa-crown mr-1"></i>PREMIUM
+            </span>
+          </div>
+        ` : '';
+
+        const iconClass = isPremium ? 'bg-gradient-to-r from-orange-500 to-amber-500' : 'bg-blue-dark';
+        const priceClass = isPremium ? 'text-orange-600' : 'text-brown';
+
         serviceCard.innerHTML = `
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-blue-dark text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-car text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-navy mb-2">${service.name}</h3>
-                        <p class="text-gray-600 text-sm mb-4">${service.description}</p>
-                        <div class="text-2xl font-bold text-brown">₱${service.price}</div>
-                        <div class="text-sm text-gray-500 mt-1">${service.duration} minutes</div>
-                    </div>
-                `;
+          <div class="relative text-center">
+            ${premiumBadge}
+            <div class="w-16 h-16 ${iconClass} text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <i class="fas fa-${isPremium ? 'star' : 'car'} text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">${service.name}</h3>
+            <p class="text-gray-600 text-sm mb-4">${service.description}</p>
+            <div class="text-2xl font-bold ${priceClass}">₱${service.price}</div>
+            <div class="text-sm text-gray-500 mt-1">${service.durationMinutes} minutes</div>
+            ${isPremium ? '<div class="text-xs text-orange-600 mt-2 font-medium">Specialized Equipment & Expert Detailers</div>' : ''}
+          </div>
+        `;
 
         serviceCard.addEventListener('click', () => selectService(service, serviceCard));
         grid.appendChild(serviceCard);
       });
-    }
-
-    function selectService(service, element) {
+    } function selectService(service, element) {
       // Remove previous selection
       document.querySelectorAll('#services-grid > div').forEach(card => {
-        card.classList.remove('border-blue-dark', 'bg-blue-50');
+        card.classList.remove('border-blue-dark', 'bg-blue-50', 'border-orange-500', 'bg-orange-50');
         card.classList.add('border-transparent');
+
+        // Restore premium styling if applicable
+        if (card.classList.contains('premium-service')) {
+          card.classList.add('border-orange-200', 'bg-gradient-to-br', 'from-orange-50', 'to-amber-50');
+          card.classList.remove('border-transparent');
+        }
       });
 
       // Select current service
-      element.classList.add('border-blue-dark', 'bg-blue-50');
+      const isPremium = service.isPremium || false;
+      if (isPremium) {
+        element.classList.add('border-orange-500', 'bg-orange-50');
+        element.classList.remove('border-orange-200', 'bg-gradient-to-br', 'from-orange-50', 'to-amber-50');
+      } else {
+        element.classList.add('border-blue-dark', 'bg-blue-50');
+      }
       element.classList.remove('border-transparent');
 
       selectedService = service;
@@ -823,9 +885,7 @@
         document.getElementById('time-slots-loading').classList.add('hidden');
         document.getElementById('no-slots-available').classList.remove('hidden');
       }
-    }
-
-    function displayTimeSlots(availability) {
+    } function displayTimeSlots(availability) {
       const grid = document.getElementById('time-slots-grid');
       grid.innerHTML = '';
 
@@ -834,16 +894,32 @@
         return new Date('1970/01/01 ' + convertTo24Hour(a)) - new Date('1970/01/01 ' + convertTo24Hour(b));
       });
 
+      const isPremiumService = selectedService && selectedService.isPremium;
+
       const availableSlots = sortedTimes.filter(time => {
         const slot = availability[time];
-        return slot.available && (slot.currentBookings || 0) < slot.maxBookings;
+        if (!slot.available) return false;
+
+        if (isPremiumService) {
+          // Check premium availability
+          const currentPremium = slot.currentPremiumBookings || 0;
+          const maxPremium = slot.maxPremiumBookings || 1;
+          return currentPremium < maxPremium;
+        } else {
+          // Check regular availability
+          const currentRegular = slot.currentBookings || 0;
+          const maxRegular = slot.maxBookings || 3;
+          return currentRegular < maxRegular;
+        }
       });
 
       if (availableSlots.length === 0) {
         document.getElementById('no-slots-available').classList.remove('hidden');
+        document.getElementById('time-slots-grid').classList.add('hidden');
         return;
       }
 
+      document.getElementById('no-slots-available').classList.add('hidden');
       document.getElementById('time-slots-grid').classList.remove('hidden');
 
       // Update grid display from space-y-3 to proper grid
@@ -851,31 +927,49 @@
 
       availableSlots.forEach(time => {
         const slot = availability[time];
-        const timeSlotElement = createTimeSlotElement(time, slot);
+        const timeSlotElement = createTimeSlotElement(time, slot, isPremiumService);
         grid.appendChild(timeSlotElement);
       });
-    }
-
-    function createTimeSlotElement(time, slot) {
+    } function createTimeSlotElement(time, slot, isPremiumService = false) {
       const div = document.createElement('div');
       div.className = 'time-slot bg-white border-2 border-gray-200 rounded-xl p-4 text-center w-full';
       div.dataset.time = time;
 
-      const spotsLeft = slot.maxBookings - (slot.currentBookings || 0);
-      const isAvailable = slot.available && spotsLeft > 0;
+      let spotsLeft, totalSlots;
+      if (isPremiumService) {
+        const currentPremium = slot.currentPremiumBookings || 0;
+        const maxPremium = slot.maxPremiumBookings || 1;
+        spotsLeft = maxPremium - currentPremium;
+        totalSlots = maxPremium;
+      } else {
+        const currentRegular = slot.currentBookings || 0;
+        const maxRegular = slot.maxBookings || 3;
+        spotsLeft = maxRegular - currentRegular;
+        totalSlots = maxRegular;
+      }
 
-      // Use a consistent label format for all slots
-      const slotLabel = slot.label || `GY Slot ${Math.floor(Math.random() * 10) + 1}`;
+      const isAvailable = slot.available && spotsLeft > 0;
+      const slotLabel = slot.label || time;
+
+      // Premium service styling
+      const premiumIndicator = isPremiumService ? `
+        <div class="premium-indicator bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full mb-2">
+          <i class="fas fa-crown mr-1"></i>PREMIUM SLOT
+        </div>
+      ` : '';
 
       if (!isAvailable) {
         div.classList.add('unavailable');
       }
 
       div.innerHTML = `
-                <div class="time text-2xl font-bold text-navy mb-1">${time}</div>
-                <div class="label text-sm text-gray-500 mb-2">${slotLabel}</div>
-                <div class="spots text-sm text-gray-600">${spotsLeft} spots left</div>
-            `;
+        ${premiumIndicator}
+        <div class="time text-2xl font-bold text-navy mb-1">${time}</div>
+        <div class="label text-sm text-gray-500 mb-2">${slotLabel}</div>
+        <div class="spots text-sm text-gray-600">
+          ${spotsLeft} of ${totalSlots} ${isPremiumService ? 'premium ' : ''}spots available
+        </div>
+      `;
 
       if (isAvailable) {
         div.addEventListener('click', () => selectTimeSlot(time, div));
@@ -897,11 +991,12 @@
       // Show confirm button
       document.getElementById('confirm-booking-btn').classList.remove('hidden');
       updateBookingSummary();
-    }
-
-    function updateBookingSummary() {
+    } function updateBookingSummary() {
       if (selectedService && selectedVehicle && selectedDate && selectedTime) {
-        document.getElementById('summary-service').textContent = selectedService.name;
+        const isPremium = selectedService.isPremium || false;
+        const premiumBadge = isPremium ? ' <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full ml-2"><i class="fas fa-crown mr-1"></i>PREMIUM</span>' : '';
+
+        document.getElementById('summary-service').innerHTML = selectedService.name + premiumBadge;
         document.getElementById('summary-vehicle').textContent = `${selectedVehicle.make} ${selectedVehicle.model} (${selectedVehicle.plateNumber})`;
 
         const date = new Date(selectedDate);
@@ -912,7 +1007,8 @@
           day: 'numeric'
         })} at ${selectedTime}`;
 
-        document.getElementById('summary-price').textContent = `₱${selectedService.price}`;
+        const priceClass = isPremium ? 'text-orange-600' : 'text-brown';
+        document.getElementById('summary-price').innerHTML = `<span class="${priceClass} font-bold">₱${selectedService.price}</span>`;
         document.getElementById('booking-summary').classList.remove('hidden');
       }
     }
@@ -954,9 +1050,7 @@
         button.innerHTML = '<i class="fas fa-check mr-2"></i>Confirm Booking';
         button.disabled = false;
       }
-    }
-
-    function resetBookingForm() {
+    } function resetBookingForm() {
       selectedService = null;
       selectedVehicle = null;
       selectedDate = null;
@@ -970,10 +1064,21 @@
         flatpickrInstance.clear();
       }
 
-      // Clear selections
-      document.querySelectorAll('.border-blue-dark').forEach(el => {
-        el.classList.remove('border-blue-dark', 'bg-blue-50');
+      // Clear selections - handle both regular and premium services
+      document.querySelectorAll('.border-blue-dark, .border-orange-500').forEach(el => {
+        el.classList.remove('border-blue-dark', 'bg-blue-50', 'border-orange-500', 'bg-orange-50');
         el.classList.add('border-transparent');
+
+        // Restore premium styling if applicable
+        if (el.classList.contains('premium-service')) {
+          el.classList.add('border-orange-200', 'bg-gradient-to-br', 'from-orange-50', 'to-amber-50');
+          el.classList.remove('border-transparent');
+        }
+      });
+
+      // Clear time slot selections
+      document.querySelectorAll('.time-slot.selected').forEach(el => {
+        el.classList.remove('selected');
       });
     }
 

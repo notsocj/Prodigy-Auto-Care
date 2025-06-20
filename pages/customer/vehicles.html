@@ -61,7 +61,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 sm:h-20">
                 <!-- Logo -->
-                <a href="../landing.html" class="flex items-center space-x-2 sm:space-x-3">
+                <a href="home.html" class="flex items-center space-x-2 sm:space-x-3">
                     <div class="relative">
                         <i class="fas fa-car text-cream text-2xl sm:text-3xl"
                             style="text-shadow: 0 0 10px rgba(239, 228, 210, 0.5);"></i>
@@ -207,10 +207,8 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    <!-- Scripts -->
-    <script type="module" src="firebase.js"></script>
+    </div> <!-- Scripts -->
+    <script type="module" src="../../public/scripts/firebase.js"></script>
     <script type="module">
         import {
             auth,
@@ -220,7 +218,7 @@
             addVehicle,
             updateVehicle,
             deleteVehicle
-        } from './firebase.js';
+        } from '../../public/scripts/firebase.js';
 
         let currentUser = null;
         let userVehicles = [];
@@ -268,7 +266,7 @@
 
             // Logout
             document.getElementById('logout-btn').addEventListener('click', () => {
-                window.location.href = 'landing.html';
+                window.location.href = '../landing.html';
             });
         }
 

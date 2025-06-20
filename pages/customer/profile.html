@@ -93,7 +93,7 @@
                         <i class="fas fa-bars text-lg sm:text-xl"></i>
                     </button>
                 </div>
-            </div <!-- Mobile Menu -->
+            </div>
             <div id="mobile-menu" class="lg:hidden hidden py-4 border-t border-white/20">
                 <div class="flex flex-col space-y-4">
                     <a href="home.html"
@@ -255,16 +255,16 @@
     </div>
 
     <!-- Scripts -->
-    <script type="module" src="firebase.js"></script>
+    <script type="module" src="../../public/scripts/firebase.js"></script>
     <script type="module">
-        import {
-            auth,
-            onAuthChange,
-            getCurrentUser,
-            logoutUser,
-            getUserBookings,
-            getUserVehicles
-        } from './firebase.js';
+    import {
+        auth,
+        onAuthChange,
+        getCurrentUser,
+        logoutUser,
+        getUserBookings,
+        getUserVehicles
+    } from '../../public/scripts/firebase.js';
 
         let currentUser = null;
 
@@ -273,6 +273,9 @@
             initializeModals();
         });
 
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            window.location.href = '../landing.html';
+        });
         function initializeProfile() {
             onAuthChange(async (user) => {
                 if (user) {
@@ -289,7 +292,7 @@
 
             // Logout button
             document.getElementById('logout-btn').addEventListener('click', () => {
-                window.location.href = 'landing.html';
+                window.location.href = '../landing.html';
             });
         }
 

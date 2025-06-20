@@ -448,13 +448,27 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
                         required>
                 </div>
-
                 <div>
                     <label for="slot-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max
-                        Bookings</label>
+                        Regular Bookings</label>
                     <input type="number" id="slot-max-bookings" min="1" max="20" value="3"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
                         required>
+                </div>
+
+                <div>
+                    <label for="slot-max-premium-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max
+                        Premium Bookings</label>
+                    <input type="number" id="slot-max-premium-bookings" min="0" max="10" value="1"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                        required>
+                </div>
+
+                <div>
+                    <label for="slot-label" class="block text-sm font-medium text-gray-700 mb-2">Slot Label
+                        (Optional)</label>
+                    <input type="text" id="slot-label" placeholder="e.g., AM Slot 1, Battle Plan"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
                 </div>
 
                 <div>
@@ -584,8 +598,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="bulk-max-bookings" class="block text-sm font-medium text-gray-700 mb-2">Max
-                                Bookings per Slot</label>
+                                Regular Bookings per Slot</label>
                             <input type="number" id="bulk-max-bookings" min="1" max="20" value="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+                                required>
+                        </div>
+                        <div>
+                            <label for="bulk-max-premium-bookings"
+                                class="block text-sm font-medium text-gray-700 mb-2">Max
+                                Premium Bookings per Slot</label>
+                            <input type="number" id="bulk-max-premium-bookings" min="0" max="10" value="1"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
                                 required>
                         </div>
@@ -972,7 +994,7 @@
 
             // Logout button
             document.getElementById('logout-btn').addEventListener('click', () => {
-                window.location.href = '../login.html';
+                window.location.href = '../landing.html';
             });
         }
 
@@ -998,13 +1020,13 @@
         function closeAddTimeSlotModal() {
             document.getElementById('add-time-slot-modal').classList.add('hidden');
             document.getElementById('add-time-slot-form').reset();
-        }
-
-        async function handleAddTimeSlot(e) {
+        } async function handleAddTimeSlot(e) {
             e.preventDefault();
 
             const time = document.getElementById('slot-time').value;
             const maxBookings = parseInt(document.getElementById('slot-max-bookings').value);
+            const maxPremiumBookings = parseInt(document.getElementById('slot-max-premium-bookings').value);
+            const slotLabel = document.getElementById('slot-label').value.trim();
             const available = document.getElementById('slot-available').checked;
 
             if (!time) {
@@ -1026,11 +1048,14 @@
                 return;
             }
 
-            // Add new time slot
+            // Add new time slot with premium support
             currentTimeSlots[timeString] = {
+                label: slotLabel || timeString,
                 available: available,
                 maxBookings: maxBookings,
-                currentBookings: 0
+                maxPremiumBookings: maxPremiumBookings,
+                currentBookings: 0,
+                currentPremiumBookings: 0
             };
 
             displayAvailability();
@@ -1167,9 +1192,7 @@
         function handleBulkTemplateChange() {
             // This function can be used for custom templates in the future
             console.log('Bulk template changed');
-        }
-
-        function generateTimeSlots(startTime, endTime, intervalMinutes, maxBookings = 3) {
+        } function generateTimeSlots(startTime, endTime, intervalMinutes, maxBookings = 3, maxPremiumBookings = 1) {
             const slots = {};
             const start = new Date(`2025-01-01T${startTime}:00`);
             const end = new Date(`2025-01-01T${endTime}:00`);
@@ -1189,9 +1212,12 @@
                 });
 
                 slots[timeString] = {
+                    label: timeString,
                     available: true,
                     maxBookings: maxBookings,
-                    currentBookings: 0
+                    maxPremiumBookings: maxPremiumBookings,
+                    currentBookings: 0,
+                    currentPremiumBookings: 0
                 };
 
                 current.setMinutes(current.getMinutes() + intervalMinutes);
@@ -1207,31 +1233,30 @@
             switch (template) {
                 case '24hours':
                     timeSlots = generateTimeSlots('00:00', '23:59', interval);
-                    break;
-                case 'business-hours':
+                    break; case 'business-hours':
                     // AM Slots
-                    timeSlots["6:00 AM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "AM Battle Plan" };
-                    timeSlots["6:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 1" };
-                    timeSlots["8:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 2" };
-                    timeSlots["9:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 3" };
-                    timeSlots["11:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 4" };
-                    timeSlots["12:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 5" };
+                    timeSlots["6:00 AM"] = { label: "AM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["6:30 AM"] = { label: "AM Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["8:00 AM"] = { label: "AM Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["9:30 AM"] = { label: "AM Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["11:00 AM"] = { label: "AM Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["12:30 PM"] = { label: "AM Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
 
                     // PM Slots
-                    timeSlots["2:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "PM Battle Plan" };
-                    timeSlots["2:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 1" };
-                    timeSlots["4:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 2" };
-                    timeSlots["5:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 3" };
-                    timeSlots["7:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 4" };
-                    timeSlots["8:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 5" };
+                    timeSlots["2:00 PM"] = { label: "PM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["2:30 PM"] = { label: "PM Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["4:00 PM"] = { label: "PM Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["5:30 PM"] = { label: "PM Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["7:00 PM"] = { label: "PM Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["8:30 PM"] = { label: "PM Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
 
                     // GY Slots
-                    timeSlots["10:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "GY Battle Plan" };
-                    timeSlots["10:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 1" };
-                    timeSlots["12:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 2" };
-                    timeSlots["1:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 3" };
-                    timeSlots["3:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 4" };
-                    timeSlots["4:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 5" };
+                    timeSlots["10:00 PM"] = { label: "GY Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["10:30 PM"] = { label: "GY Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["12:00 AM"] = { label: "GY Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["1:30 AM"] = { label: "GY Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["3:00 AM"] = { label: "GY Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["4:30 AM"] = { label: "GY Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
                     break;
             }
 
@@ -1287,48 +1312,38 @@
                 currentDate.setDate(currentDate.getDate() + 1);
             }
 
-            previewText += `Total dates to be created: ${dateCount}\n`;
-
-            // Get sample time slots for preview
-            const sampleSlots = getSampleTimeSlots(template, interval);
+            previewText += `Total dates to be created: ${dateCount}\n`;            // Get sample time slots for preview
+            const sampleSlots = getTemplateTimeSlots(template, interval);
             previewText += `Sample time slots: ${Object.keys(sampleSlots).slice(0, 5).join(', ')}${Object.keys(sampleSlots).length > 5 ? '...' : ''}`;
 
             document.getElementById('preview-content').innerHTML = previewText.replace(/\n/g, '<br>');
             document.getElementById('bulk-preview').classList.remove('hidden');
-        }
-
-        function getSampleTimeSlots(template, intervalMinutes) {
+        } function getTemplateTimeSlots(template, intervalMinutes) {
             switch (template) {
                 case '24hours':
                     return generateTimeSlots('00:00', '23:59', intervalMinutes);
                 case 'business-hours':
-                    let timeSlots = {};
-
-                    // AM Slots
-                    timeSlots["6:00 AM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "AM Battle Plan" };
-                    timeSlots["6:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 1" };
-                    timeSlots["8:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 2" };
-                    timeSlots["9:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 3" };
-                    timeSlots["11:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 4" };
-                    timeSlots["12:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "AM Slot 5" };
-
-                    // PM Slots
-                    timeSlots["2:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "PM Battle Plan" };
-                    timeSlots["2:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 1" };
-                    timeSlots["4:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 2" };
-                    timeSlots["5:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 3" };
-                    timeSlots["7:00 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 4" };
-                    timeSlots["8:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "PM Slot 5" };
-
-                    // GY Slots
-                    timeSlots["10:00 PM"] = { available: false, maxBookings: 0, currentBookings: 0, label: "GY Battle Plan" };
-                    timeSlots["10:30 PM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 1" };
-                    timeSlots["12:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 2" };
-                    timeSlots["1:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 3" };
-                    timeSlots["3:00 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 4" };
-                    timeSlots["4:30 AM"] = { available: true, maxBookings: 3, currentBookings: 0, label: "GY Slot 5" };
-
-                    return timeSlots;
+                    // Return the predefined business hours template
+                    return {
+                        "6:00 AM": { label: "AM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:30 AM": { label: "AM Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "8:00 AM": { label: "AM Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "9:30 AM": { label: "AM Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "11:00 AM": { label: "AM Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "12:30 PM": { label: "AM Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:00 PM": { label: "PM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:30 PM": { label: "PM Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "4:00 PM": { label: "PM Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "5:30 PM": { label: "PM Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "7:00 PM": { label: "PM Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "8:30 PM": { label: "PM Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "10:00 PM": { label: "GY Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "10:30 PM": { label: "GY Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "12:00 AM": { label: "GY Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "1:30 AM": { label: "GY Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "3:00 AM": { label: "GY Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
+                        "4:30 AM": { label: "GY Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 }
+                    };
                 default:
                     return {};
             }
@@ -1340,8 +1355,8 @@
             const startDate = new Date(document.getElementById('bulk-start-date').value);
             const endDate = new Date(document.getElementById('bulk-end-date').value);
             const template = document.getElementById('bulk-template').value;
-            const interval = parseInt(document.getElementById('bulk-interval').value);
-            const maxBookings = parseInt(document.getElementById('bulk-max-bookings').value);
+            const interval = parseInt(document.getElementById('bulk-interval').value); const maxBookings = parseInt(document.getElementById('bulk-max-bookings').value);
+            const maxPremiumBookings = parseInt(document.getElementById('bulk-max-premium-bookings').value);
             const skipExisting = document.getElementById('bulk-skip-existing').checked;
             const selectedDays = Array.from(document.querySelectorAll('input[name="days"]:checked')).map(cb => parseInt(cb.value));
 
@@ -1382,15 +1397,12 @@
                             currentDate.setDate(currentDate.getDate() + 1);
                             continue;
                         }
-                    }
-
-                    // Generate time slots based on template
-                    let timeSlots = getSampleTimeSlots(template, interval);
-
-                    // Update max bookings for all slots
+                    }                    // Generate time slots based on template
+                    let timeSlots = getTemplateTimeSlots(template, interval);// Update max bookings for all slots
                     Object.keys(timeSlots).forEach(time => {
                         if (timeSlots[time].available) {
                             timeSlots[time].maxBookings = maxBookings;
+                            timeSlots[time].maxPremiumBookings = maxPremiumBookings;
                         }
                     });
 
@@ -1497,16 +1509,22 @@
             });
 
             grid.appendChild(gridContainer);
-        }
-
-        function createTimeSlotElement(time, slot) {
+        } function createTimeSlotElement(time, slot) {
             const div = document.createElement('div');
             div.className = 'time-slot-card';
 
             const availableClass = slot.available ? 'text-green-600' : 'text-red-600';
             const availableIcon = slot.available ? 'check-circle' : 'times-circle';
-            const slotLabel = slot.label ? `<span class="ml-1 text-xs text-gray-500">(${slot.label})</span>` : '';
-            const percentage = ((slot.currentBookings || 0) / slot.maxBookings) * 100;
+            const slotLabel = slot.label && slot.label !== time ? `<span class="ml-1 text-xs text-gray-500">(${slot.label})</span>` : '';
+
+            const regularBookings = slot.currentBookings || 0;
+            const premiumBookings = slot.currentPremiumBookings || 0;
+            const totalBookings = regularBookings + premiumBookings;
+            const maxRegularBookings = slot.maxBookings || 3;
+            const maxPremiumBookings = slot.maxPremiumBookings || 1;
+            const maxTotalBookings = maxRegularBookings + maxPremiumBookings;
+
+            const percentage = (totalBookings / maxTotalBookings) * 100;
 
             div.innerHTML = `
                 <!-- Mobile Layout -->
@@ -1519,11 +1537,13 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="text-xs text-gray-600">
-                            <span class="font-medium">${slot.currentBookings || 0}</span>/${slot.maxBookings} bookings
+                    <div class="grid grid-cols-2 gap-2 mb-2 text-xs">
+                        <div class="text-gray-600">
+                            <span class="font-medium">${regularBookings}</span>/${maxRegularBookings} regular
                         </div>
-                        <div class="text-xs text-gray-500">${Math.round(percentage)}% filled</div>
+                        <div class="text-gray-600">
+                            <span class="font-medium">${premiumBookings}</span>/${maxPremiumBookings} premium
+                        </div>
                     </div>
                     
                     <div class="progress-bar mb-2">
@@ -1552,8 +1572,9 @@
                         </div>
                         
                         <div class="flex items-center space-x-4">
-                            <div class="text-sm text-gray-600">
-                                <span class="font-medium">${slot.currentBookings || 0}</span>/${slot.maxBookings}
+                            <div class="text-sm text-gray-600 flex space-x-3">
+                                <span><span class="font-medium">${regularBookings}</span>/${maxRegularBookings} reg</span>
+                                <span><span class="font-medium text-orange-600">${premiumBookings}</span>/${maxPremiumBookings} prem</span>
                             </div>
                             
                             <div class="flex space-x-1">
@@ -1572,7 +1593,7 @@
                             <div class="progress-fill" style="width: ${percentage}%"></div>
                         </div>
                         <div class="text-xs text-gray-500 min-w-0">
-                            ${Math.round(percentage)}%
+                            ${Math.round(percentage)}% filled
                         </div>
                     </div>
                 </div>
@@ -1586,32 +1607,40 @@
             deleteBtn.addEventListener('click', () => deleteTimeSlot(time));
 
             return div;
-        }
-
-        function updateSlotStats() {
+        } function updateSlotStats() {
             const totalSlots = Object.keys(currentTimeSlots).length;
-            const totalCapacity = Object.values(currentTimeSlots).reduce((sum, slot) => sum + slot.maxBookings, 0);
+            const totalRegularCapacity = Object.values(currentTimeSlots).reduce((sum, slot) => sum + (slot.maxBookings || 0), 0);
+            const totalPremiumCapacity = Object.values(currentTimeSlots).reduce((sum, slot) => sum + (slot.maxPremiumBookings || 0), 0);
+            const totalCapacity = totalRegularCapacity + totalPremiumCapacity;
 
             document.getElementById('total-slots-count').textContent = totalSlots;
-            document.getElementById('total-capacity').textContent = totalCapacity;
-        }
-
-        function editTimeSlot(time) {
+            document.getElementById('total-capacity').textContent = `${totalCapacity} (${totalRegularCapacity} reg + ${totalPremiumCapacity} prem)`;
+        } function editTimeSlot(time) {
             const slot = currentTimeSlots[time];
 
-            const newMaxBookings = prompt(`Edit max bookings for ${time}:`, slot.maxBookings);
-            if (newMaxBookings !== null && !isNaN(newMaxBookings) && newMaxBookings > 0) {
+            const newMaxBookings = prompt(`Edit max regular bookings for ${time}:`, slot.maxBookings || 3);
+            if (newMaxBookings !== null && !isNaN(newMaxBookings) && newMaxBookings >= 0) {
                 slot.maxBookings = parseInt(newMaxBookings);
-                displayAvailability();
-                updateSlotStats();
+
+                const newMaxPremiumBookings = prompt(`Edit max premium bookings for ${time}:`, slot.maxPremiumBookings || 1);
+                if (newMaxPremiumBookings !== null && !isNaN(newMaxPremiumBookings) && newMaxPremiumBookings >= 0) {
+                    slot.maxPremiumBookings = parseInt(newMaxPremiumBookings);
+
+                    const newLabel = prompt(`Edit label for ${time} (optional):`, slot.label || time);
+                    if (newLabel !== null) {
+                        slot.label = newLabel.trim() || time;
+                    }
+
+                    displayAvailability();
+                    updateSlotStats();
+                }
             }
-        }
-
-        function deleteTimeSlot(time) {
+        } function deleteTimeSlot(time) {
             const slot = currentTimeSlots[time];
+            const totalBookings = (slot.currentBookings || 0) + (slot.currentPremiumBookings || 0);
 
-            if (slot.currentBookings > 0) {
-                alert(`Cannot delete time slot with ${slot.currentBookings} existing booking(s)`);
+            if (totalBookings > 0) {
+                alert(`Cannot delete time slot with ${totalBookings} existing booking(s)`);
                 return;
             }
 

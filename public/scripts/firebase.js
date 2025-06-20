@@ -229,11 +229,11 @@ export async function createBooking(vehicleId, service, date, time, paymentMetho
         }
 
         const timeSlot = availability[time];
-        if (!timeSlot.available || timeSlot.currentBookings >= timeSlot.maxBookings) {
-            throw new Error("Selected time slot is fully booked");
+        if (!timeSlot.available) {
+            throw new Error("Selected time slot is not available");
         }
 
-        // Get service details
+        // Get service details to check if it's premium
         const serviceQuery = query(collection(db, "services"), where("name", "==", service));
         const serviceSnapshot = await getDocs(serviceQuery);
 
@@ -243,6 +243,22 @@ export async function createBooking(vehicleId, service, date, time, paymentMetho
 
         const serviceData = serviceSnapshot.docs[0].data();
         const amount = serviceData.price;
+        const isPremium = serviceData.isPremium || false;
+
+        // Check availability based on service type
+        if (isPremium) {
+            const currentPremiumBookings = timeSlot.currentPremiumBookings || 0;
+            const maxPremiumBookings = timeSlot.maxPremiumBookings || 1;
+            if (currentPremiumBookings >= maxPremiumBookings) {
+                throw new Error("Selected time slot is fully booked for premium services");
+            }
+        } else {
+            const currentBookings = timeSlot.currentBookings || 0;
+            const maxBookings = timeSlot.maxBookings || 3;
+            if (currentBookings >= maxBookings) {
+                throw new Error("Selected time slot is fully booked for regular services");
+            }
+        }
 
         const bookingData = {
             userId: user.uid,
@@ -267,12 +283,29 @@ export async function createBooking(vehicleId, service, date, time, paymentMetho
         // Create the booking
         const bookingRef = await addDoc(collection(db, "bookings"), bookingData);
 
-        // Update the availability atomically
+        // Update the availability atomically based on service type
         const availabilityRef = doc(db, "availability", date);
-        await updateDoc(availabilityRef, {
-            [`${time}.currentBookings`]: timeSlot.currentBookings + 1,
-            [`${time}.available`]: timeSlot.currentBookings + 1 < timeSlot.maxBookings
-        });
+        const updateData = {};
+
+        if (isPremium) {
+            const newPremiumCount = (timeSlot.currentPremiumBookings || 0) + 1;
+            updateData[`${time}.currentPremiumBookings`] = newPremiumCount;
+
+            // Check if both regular and premium are at capacity
+            const regularAtCapacity = (timeSlot.currentBookings || 0) >= (timeSlot.maxBookings || 3);
+            const premiumAtCapacity = newPremiumCount >= (timeSlot.maxPremiumBookings || 1);
+            updateData[`${time}.available`] = !(regularAtCapacity && premiumAtCapacity);
+        } else {
+            const newRegularCount = (timeSlot.currentBookings || 0) + 1;
+            updateData[`${time}.currentBookings`] = newRegularCount;
+
+            // Check if both regular and premium are at capacity
+            const regularAtCapacity = newRegularCount >= (timeSlot.maxBookings || 3);
+            const premiumAtCapacity = (timeSlot.currentPremiumBookings || 0) >= (timeSlot.maxPremiumBookings || 1);
+            updateData[`${time}.available`] = !(regularAtCapacity && premiumAtCapacity);
+        }
+
+        await updateDoc(availabilityRef, updateData);
 
         return { id: bookingRef.id, ...bookingData };
 
@@ -332,12 +365,22 @@ export async function cancelBooking(bookingId) {
 
     const booking = bookingDoc.data();
 
+    // Get service details to check if it's premium
+    const serviceQuery = query(collection(db, "services"), where("name", "==", booking.service));
+    const serviceSnapshot = await getDocs(serviceQuery);
+
+    let isPremium = false;
+    if (!serviceSnapshot.empty) {
+        const serviceData = serviceSnapshot.docs[0].data();
+        isPremium = serviceData.isPremium || false;
+    }
+
     // Update booking status
     await updateDoc(doc(db, "bookings", bookingId), {
         status: "Cancelled"
     });
 
-    // Update availability (decrease currentBookings and set available to true if needed)
+    // Update availability (decrease currentBookings/currentPremiumBookings and update available status)
     const availabilityRef = doc(db, "availability", booking.date);
     const availabilityDoc = await getDoc(availabilityRef);
 
@@ -346,10 +389,27 @@ export async function cancelBooking(bookingId) {
         const timeSlot = availability[booking.time];
 
         if (timeSlot) {
-            await updateDoc(availabilityRef, {
-                [`${booking.time}.currentBookings`]: Math.max(0, timeSlot.currentBookings - 1),
-                [`${booking.time}.available`]: true
-            });
+            const updateData = {};
+
+            if (isPremium) {
+                const newPremiumCount = Math.max(0, (timeSlot.currentPremiumBookings || 0) - 1);
+                updateData[`${booking.time}.currentPremiumBookings`] = newPremiumCount;
+
+                // Update availability - available if either regular or premium has space
+                const regularHasSpace = (timeSlot.currentBookings || 0) < (timeSlot.maxBookings || 3);
+                const premiumHasSpace = newPremiumCount < (timeSlot.maxPremiumBookings || 1);
+                updateData[`${booking.time}.available`] = regularHasSpace || premiumHasSpace;
+            } else {
+                const newRegularCount = Math.max(0, (timeSlot.currentBookings || 0) - 1);
+                updateData[`${booking.time}.currentBookings`] = newRegularCount;
+
+                // Update availability - available if either regular or premium has space
+                const regularHasSpace = newRegularCount < (timeSlot.maxBookings || 3);
+                const premiumHasSpace = (timeSlot.currentPremiumBookings || 0) < (timeSlot.maxPremiumBookings || 1);
+                updateData[`${booking.time}.available`] = regularHasSpace || premiumHasSpace;
+            }
+
+            await updateDoc(availabilityRef, updateData);
         }
     }
 

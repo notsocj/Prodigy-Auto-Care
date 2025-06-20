@@ -274,8 +274,8 @@ export async function getAvailabilityRange(startDate, endDate) {
     }
 }
 
-// Update specific time slot booking count
-export async function updateTimeSlotBookingCount(dateString, timeSlot, increment = true) {
+// Update specific time slot booking count with premium support
+export async function updateTimeSlotBookingCount(dateString, timeSlot, increment = true, isPremium = false) {
     try {
         const availabilityRef = doc(db, "availability", dateString);
         const availabilityDoc = await getDoc(availabilityRef);
@@ -284,19 +284,43 @@ export async function updateTimeSlotBookingCount(dateString, timeSlot, increment
             const availability = availabilityDoc.data();
 
             if (availability[timeSlot]) {
-                const currentBookings = availability[timeSlot].currentBookings || 0;
-                const maxBookings = availability[timeSlot].maxBookings;
+                const slot = availability[timeSlot];
 
-                let newBookingCount;
-                if (increment) {
-                    newBookingCount = Math.min(currentBookings + 1, maxBookings);
+                // Current counts
+                const currentBookings = slot.currentBookings || 0;
+                const currentPremiumBookings = slot.currentPremiumBookings || 0;
+
+                // Max limits
+                const maxBookings = slot.maxBookings || 3;
+                const maxPremiumBookings = slot.maxPremiumBookings || 1;
+
+                let newBookingCount, newPremiumBookingCount;
+
+                if (isPremium) {
+                    // Handle premium booking
+                    if (increment) {
+                        newPremiumBookingCount = Math.min(currentPremiumBookings + 1, maxPremiumBookings);
+                    } else {
+                        newPremiumBookingCount = Math.max(currentPremiumBookings - 1, 0);
+                    }
+                    newBookingCount = currentBookings; // Regular bookings unchanged
                 } else {
-                    newBookingCount = Math.max(currentBookings - 1, 0);
+                    // Handle regular booking
+                    if (increment) {
+                        newBookingCount = Math.min(currentBookings + 1, maxBookings);
+                    } else {
+                        newBookingCount = Math.max(currentBookings - 1, 0);
+                    }
+                    newPremiumBookingCount = currentPremiumBookings; // Premium bookings unchanged
                 }
+
+                // Check if slot should be marked unavailable
+                const isAvailable = newBookingCount < maxBookings || newPremiumBookingCount < maxPremiumBookings;
 
                 await updateDoc(availabilityRef, {
                     [`${timeSlot}.currentBookings`]: newBookingCount,
-                    [`${timeSlot}.available`]: newBookingCount < maxBookings
+                    [`${timeSlot}.currentPremiumBookings`]: newPremiumBookingCount,
+                    [`${timeSlot}.available`]: isAvailable
                 });
 
                 return true;
@@ -310,8 +334,8 @@ export async function updateTimeSlotBookingCount(dateString, timeSlot, increment
     }
 }
 
-// Check if a specific time slot is available
-export async function checkTimeSlotAvailability(dateString, timeSlot) {
+// Check if a specific time slot is available for premium or regular bookings
+export async function checkTimeSlotAvailability(dateString, timeSlot, isPremium = false) {
     try {
         const availability = await getAvailability(dateString);
 
@@ -320,7 +344,22 @@ export async function checkTimeSlotAvailability(dateString, timeSlot) {
         }
 
         const slot = availability[timeSlot];
-        return slot.available && (slot.currentBookings || 0) < slot.maxBookings;
+
+        if (!slot.available) {
+            return false;
+        }
+
+        if (isPremium) {
+            // Check premium availability
+            const currentPremiumBookings = slot.currentPremiumBookings || 0;
+            const maxPremiumBookings = slot.maxPremiumBookings || 1;
+            return currentPremiumBookings < maxPremiumBookings;
+        } else {
+            // Check regular availability
+            const currentBookings = slot.currentBookings || 0;
+            const maxBookings = slot.maxBookings || 3;
+            return currentBookings < maxBookings;
+        }
     } catch (error) {
         console.error('Error checking time slot availability:', error);
         return false;
@@ -364,6 +403,72 @@ export async function getBookingsForDate(dateString) {
         return bookings;
     } catch (error) {
         console.error('Error getting bookings for date:', error);
+        throw error;
+    }
+}
+
+// Service management functions
+export async function getServices() {
+    try {
+        const servicesSnapshot = await getDocs(collection(db, "services"));
+        const services = [];
+        servicesSnapshot.forEach((doc) => {
+            services.push({ id: doc.id, ...doc.data() });
+        });
+        return services;
+    } catch (error) {
+        console.error('Error getting services:', error);
+        throw error;
+    }
+}
+
+export async function createService(serviceData) {
+    try {
+        const serviceRef = doc(collection(db, "services"));
+        await setDoc(serviceRef, {
+            ...serviceData,
+            createdAt: serverTimestamp()
+        });
+        return serviceRef.id;
+    } catch (error) {
+        console.error('Error creating service:', error);
+        throw error;
+    }
+}
+
+export async function updateService(serviceId, serviceData) {
+    try {
+        await updateDoc(doc(db, "services", serviceId), serviceData);
+        return true;
+    } catch (error) {
+        console.error('Error updating service:', error);
+        throw error;
+    }
+}
+
+export async function deleteService(serviceId) {
+    try {
+        await deleteDoc(doc(db, "services", serviceId));
+        return true;
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        throw error;
+    }
+}
+
+export async function getServiceByName(serviceName) {
+    try {
+        const serviceQuery = query(collection(db, "services"), where("name", "==", serviceName));
+        const serviceSnapshot = await getDocs(serviceQuery);
+
+        if (serviceSnapshot.empty) {
+            return null;
+        }
+
+        const serviceDoc = serviceSnapshot.docs[0];
+        return { id: serviceDoc.id, ...serviceDoc.data() };
+    } catch (error) {
+        console.error('Error getting service by name:', error);
         throw error;
     }
 }

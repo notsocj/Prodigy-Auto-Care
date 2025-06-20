@@ -14,7 +14,12 @@ import {
     getAvailabilityRange as adminGetAvailabilityRange,
     updateTimeSlotBookingCount as adminUpdateTimeSlotBookingCount,
     checkTimeSlotAvailability as adminCheckTimeSlotAvailability,
-    getBookingsForDate as adminGetBookingsForDate
+    getBookingsForDate as adminGetBookingsForDate,
+    getServices as adminGetServices,
+    createService as adminCreateService,
+    updateService as adminUpdateService,
+    deleteService as adminDeleteService,
+    getServiceByName as adminGetServiceByName
 } from '../../admin-firebase.js';
 
 // Auth functions
@@ -85,4 +90,25 @@ export async function checkTimeSlotAvailability(dateString, timeSlot) {
 // Get all bookings for a specific date (for admin view)
 export async function getBookingsForDate(dateString) {
     return await adminGetBookingsForDate(dateString);
+}
+
+// Service management functions
+export async function getServices() {
+    return await adminGetServices();
+}
+
+export async function createService(serviceData) {
+    return await adminCreateService(serviceData);
+}
+
+export async function updateService(serviceId, serviceData) {
+    return await adminUpdateService(serviceId, serviceData);
+}
+
+export async function deleteService(serviceId) {
+    return await adminDeleteService(serviceId);
+}
+
+export async function getServiceByName(serviceName) {
+    return await adminGetServiceByName(serviceName);
 }
