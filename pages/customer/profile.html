@@ -69,15 +69,16 @@
                     </div>
                 </div>
                 <!-- Desktop Navigation -->
-                <div class="hidden lg:flex items-center space-x-6">
+                <div class="hidden lg:flex items-center space-x-8">
                     <a href="home.html"
-                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Home</a>
+                        class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">Book Service</a>
                     <a href="bookings.html"
-                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">My Bookings</a>
+                        class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">My
+                        Bookings</a>
                     <a href="vehicles.html"
-                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">My Vehicles</a>
-                    <a href="#"
-                        class="text-cream hover:text-cream/90 transition-all duration-300 font-medium">Profile</a>
+                        class="text-cream hover:text-cream/80 transition-all duration-300 font-medium">My
+                        Vehicles</a>
+                    <a href="profile.html" class="text-cream font-semibold border-b-2 border-cream pb-1">Profile</a>
                 </div>
 
                 <!-- Mobile/Desktop Actions -->
@@ -257,14 +258,14 @@
     <!-- Scripts -->
     <script type="module" src="../../public/scripts/firebase.js"></script>
     <script type="module">
-    import {
-        auth,
-        onAuthChange,
-        getCurrentUser,
-        logoutUser,
-        getUserBookings,
-        getUserVehicles
-    } from '../../public/scripts/firebase.js';
+        import {
+            auth,
+            onAuthChange,
+            getCurrentUser,
+            logoutUser,
+            getUserBookings,
+            getUserVehicles
+        } from '../../public/scripts/firebase.js';
 
         let currentUser = null;
 
