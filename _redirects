@@ -1,0 +1,9 @@
+# Redirects for SPA routing
+/ /pages/landing.html 200
+/admin/* /pages/admin/:splat 200
+/auth/* /pages/auth/:splat 200
+/customer/* /pages/customer/:splat 200
+/detailers/* /pages/detailers/:splat 200
+
+# Handle 404s by serving the landing page
+/* /pages/landing.html 404

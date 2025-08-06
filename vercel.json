@@ -1,0 +1,68 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/pages/landing.html",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/admin/(.*)",
+      "destination": "/pages/admin/$1"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/pages/auth/$1"
+    },
+    {
+      "source": "/customer/(.*)",
+      "destination": "/pages/customer/$1"
+    },
+    {
+      "source": "/detailers/(.*)",
+      "destination": "/pages/detailers/$1"
+    },
+    {
+      "source": "/public/(.*)",
+      "destination": "/public/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/public/assets/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/public/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "pages/**/*.html": {
+      "runtime": "@vercel/static"
+    }
+  }
+}
