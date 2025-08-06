@@ -267,13 +267,16 @@
                                         Date & Time</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Team & Bay</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Amount</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Washer</th>
+                                        Detailer</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Actions</th>
@@ -333,6 +336,7 @@
                             <option value="">Select template</option>
                             <option value="24hours">24 Hours (Every Hour)</option>
                             <option value="business-hours">Prodigy Operating Hours</option>
+                            <option value="teams-shifts">Teams & Shifts (AM/PM/GY)</option>
                         </select>
                     </div>
                     <div>
@@ -574,6 +578,8 @@
                                 <option value="">Select template</option>
                                 <option value="24hours">24 Hours (All Day)</option>
                                 <option value="business-hours">Prodigy Operating Hours</option>
+                                <option value="teams-shifts">Teams & Shifts (AM/PM/GY)</option>
+                                <option value="detailed-teams">Detailed Teams Template (Full Operations)</option>
                             </select>
                         </div>
                         <div>
@@ -652,7 +658,7 @@
     <script type="module" src="../../public/scripts/firebase.js"></script>
     <script type="module" src="../../public/scripts/admin.js"></script>
     <script type="module">
-        import { onAdminAuthChange, getRecentBookings, updateBookingStatus, assignWasherToBooking, getActiveStaff, getAvailability, updateDateAvailability } from '../../public/scripts/admin.js';
+        import { onAdminAuthChange, getRecentBookings, updateBookingStatus, assignWasherToBooking, assignBayToBooking, getActiveStaff, getAvailability, updateDateAvailability } from '../../public/scripts/admin.js';
 
         let allBookings = [];
         let filteredBookings = [];
@@ -808,6 +814,11 @@
             };
             const statusColor = statusColors[booking.status] || 'gray';
 
+            // Bay options for assignment
+            const bayOptions = [
+                'Bay 1', 'Bay 2', 'Bay 3', 'Bay 4', 'Bay 5', 'Bay 6'
+            ];
+
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900">${customerName}</div>
@@ -825,6 +836,11 @@
                     <div class="text-sm text-gray-500">${booking.time}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${booking.team || 'N/A'} Team</div>
+                    <div class="text-sm text-gray-500">${booking.bay || 'Unassigned'}</div>
+                    ${booking.washingCycle ? `<div class="text-xs text-blue-600">${booking.washingCycle}</div>` : ''}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-${statusColor}-100 text-${statusColor}-800">
                         ${booking.status}
                     </span>
@@ -836,15 +852,21 @@
                     <div class="text-sm text-gray-900">${washerName}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div class="flex space-x-2">
+                    <div class="flex flex-col space-y-1">
                         <select class="status-update-select text-xs p-1 border rounded" data-booking-id="${booking.id}">
                             <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
                             <option value="Ongoing" ${booking.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
                             <option value="Completed" ${booking.status === 'Completed' ? 'selected' : ''}>Completed</option>
                             <option value="Cancelled" ${booking.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                         </select>
+                        <select class="bay-assign-select text-xs p-1 border rounded" data-booking-id="${booking.id}">
+                            <option value="">Set Bay</option>
+                            ${bayOptions.map(bay =>
+                `<option value="${bay}" ${booking.bay === bay ? 'selected' : ''}>${bay}</option>`
+            ).join('')}
+                        </select>
                         <select class="washer-assign-select text-xs p-1 border rounded" data-booking-id="${booking.id}">
-                            <option value="">Assign Washer</option>
+                            <option value="">Assign Detailer</option>
                             ${washers.map(washer =>
                 `<option value="${washer.id}" ${booking.washerId === washer.id ? 'selected' : ''}>${washer.user?.fullName || 'Unknown'}</option>`
             ).join('')}
@@ -856,6 +878,7 @@
             // Add event listeners for dropdowns
             const statusSelect = row.querySelector('.status-update-select');
             const washerSelect = row.querySelector('.washer-assign-select');
+            const baySelect = row.querySelector('.bay-assign-select');
 
             statusSelect.addEventListener('change', async (e) => {
                 await handleStatusUpdate(booking.id, e.target.value);
@@ -864,6 +887,12 @@
             washerSelect.addEventListener('change', async (e) => {
                 if (e.target.value) {
                     await handleWasherAssignment(booking.id, e.target.value);
+                }
+            });
+
+            baySelect.addEventListener('change', async (e) => {
+                if (e.target.value) {
+                    await handleBayAssignment(booking.id, e.target.value);
                 }
             });
 
@@ -912,10 +941,29 @@
 
                 applyFilters(); // Re-apply current filters
 
-                alert('Washer assigned successfully');
+                alert('Detailer assigned successfully');
             } catch (error) {
-                console.error('Error assigning washer:', error);
-                alert('Error assigning washer');
+                console.error('Error assigning detailer:', error);
+                alert('Error assigning detailer');
+            }
+        }
+
+        async function handleBayAssignment(bookingId, bay) {
+            try {
+                await assignBayToBooking(bookingId, bay);
+
+                // Update local data
+                const booking = allBookings.find(b => b.id === bookingId);
+                if (booking) {
+                    booking.bay = bay;
+                }
+
+                applyFilters(); // Re-apply current filters
+
+                alert('Bay assigned successfully');
+            } catch (error) {
+                console.error('Error assigning bay:', error);
+                alert('Error assigning bay');
             }
         }
 
@@ -1258,6 +1306,76 @@
                     timeSlots["3:00 AM"] = { label: "GY Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
                     timeSlots["4:30 AM"] = { label: "GY Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 };
                     break;
+
+                case 'teams-shifts':
+                    // AM TEAM Schedule
+                    timeSlots["6:00 AM"] = { label: "AM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["6:15 AM"] = { label: "AM Maintenance (Bay 4-6)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // AM Washing Cycles - Each with 3 bays (3 detailers)
+                    timeSlots["6:30 AM"] = { label: "W1-W3 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["8:00 AM"] = { label: "W4-W6 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["9:30 AM"] = { label: "W7-W9 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["11:00 AM"] = { label: "AM Break", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["12:00 PM"] = { label: "W10-W12 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["1:30 PM"] = { label: "AM Bay Shift W13-W15 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // PM TEAM Schedule
+                    timeSlots["2:00 PM"] = { label: "PM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["2:15 PM"] = { label: "PM Maintenance (Bay 1-3)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // PM Washing Cycles - Each with 3 bays (3 detailers)
+                    timeSlots["2:30 PM"] = { label: "W16-W18 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["4:00 PM"] = { label: "W19-W21 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["5:30 PM"] = { label: "PM Break", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["6:30 PM"] = { label: "W22-W24 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["8:00 PM"] = { label: "W25-W27 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["9:30 PM"] = { label: "PM Bay Shift W28-W30 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // GY TEAM Schedule
+                    timeSlots["10:00 PM"] = { label: "GY Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["10:15 PM"] = { label: "GY Maintenance (Bay 4-6)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // GY Washing Cycles - Each with 3 bays (3 detailers)
+                    timeSlots["10:30 PM"] = { label: "W31-W33 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["12:00 AM"] = { label: "W34-W36 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["1:30 AM"] = { label: "GY Break", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["2:30 AM"] = { label: "W37-W39 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["4:00 AM"] = { label: "W40-W42 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["5:30 AM"] = { label: "GY Bay Shift W43-W45 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    break;
+
+                case 'detailed-teams':
+                    // AM TEAM - Full Detail with exact specifications
+                    timeSlots["6:00 AM"] = { label: "AM Battle Plan (6:00-6:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["6:15 AM"] = { label: "AM Maintenance Bay 4-6 (6:15-6:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["6:30 AM"] = { label: "W1-W3: W1(Bay4) W2(Bay5) W3(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["8:00 AM"] = { label: "W4-W6: W4(Bay1) W5(Bay2) W6(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["9:30 AM"] = { label: "W7-W9: W7(Bay1) W8(Bay2) W9(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["11:00 AM"] = { label: "AM Break (11:00-12:00)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["12:00 PM"] = { label: "W10-W12: W10(Bay1) W11(Bay2) W12(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["1:30 PM"] = { label: "Bay Shift: W13(Bay4) W14(Bay5) W15(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // PM TEAM - Full Detail  
+                    timeSlots["2:00 PM"] = { label: "PM Battle Plan (2:00-2:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["2:15 PM"] = { label: "PM Maintenance Bay 1-3 (2:15-2:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["2:30 PM"] = { label: "W16-W18: W16(Bay1) W17(Bay2) W18(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["4:00 PM"] = { label: "W19-W21: W19(Bay4) W20(Bay5) W21(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["5:30 PM"] = { label: "PM Break (5:30-6:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["6:30 PM"] = { label: "W22-W24: W22(Bay4) W23(Bay5) W24(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["8:00 PM"] = { label: "W25-W27: W25(Bay4) W26(Bay5) W27(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["9:30 PM"] = { label: "Bay Shift: W28(Bay1) W29(Bay2) W30(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+
+                    // GY TEAM - Full Detail
+                    timeSlots["10:00 PM"] = { label: "GY Battle Plan (10:00-10:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["10:15 PM"] = { label: "GY Maintenance Bay 4-6 (10:15-10:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["10:30 PM"] = { label: "W31-W33: W31(Bay4) W32(Bay5) W33(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["12:00 AM"] = { label: "W34-W36: W34(Bay4) W35(Bay5) W36(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["1:30 AM"] = { label: "GY Break (1:30-2:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["2:30 AM"] = { label: "W37-W39: W37(Bay1) W38(Bay2) W39(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["4:00 AM"] = { label: "W40-W42: W40(Bay1) W41(Bay2) W42(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    timeSlots["5:30 AM"] = { label: "Bay Shift: W43(Bay1) W44(Bay2) W45(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 };
+                    break;
             }
 
             if (Object.keys(timeSlots).length > 0) {
@@ -1344,6 +1462,75 @@
                         "3:00 AM": { label: "GY Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
                         "4:30 AM": { label: "GY Slot 5", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 }
                     };
+
+                case 'teams-shifts':
+                    // Return the detailed teams & shifts template
+                    return {
+                        // AM TEAM Schedule
+                        "6:00 AM": { label: "AM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:15 AM": { label: "AM Maintenance (Bay 4-6)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:30 AM": { label: "W1-W3 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "8:00 AM": { label: "W4-W6 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "9:30 AM": { label: "W7-W9 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "11:00 AM": { label: "AM Break", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "12:00 PM": { label: "W10-W12 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "1:30 PM": { label: "AM Bay Shift W13-W15 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+
+                        // PM TEAM Schedule
+                        "2:00 PM": { label: "PM Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:15 PM": { label: "PM Maintenance (Bay 1-3)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:30 PM": { label: "W16-W18 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "4:00 PM": { label: "W19-W21 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "5:30 PM": { label: "PM Break", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:30 PM": { label: "W22-W24 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "8:00 PM": { label: "W25-W27 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "9:30 PM": { label: "PM Bay Shift W28-W30 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+
+                        // GY TEAM Schedule  
+                        "10:00 PM": { label: "GY Battle Plan", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "10:15 PM": { label: "GY Maintenance (Bay 4-6)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "10:30 PM": { label: "W31-W33 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "12:00 AM": { label: "W34-W36 (Bay 4,5,6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "1:30 AM": { label: "GY Break", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:30 AM": { label: "W37-W39 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "4:00 AM": { label: "W40-W42 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "5:30 AM": { label: "GY Bay Shift W43-W45 (Bay 1,2,3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 }
+                    };
+
+                case 'detailed-teams':
+                    // Return the new detailed teams template with exact specifications
+                    return {
+                        // AM TEAM - Full Detail
+                        "6:00 AM": { label: "AM Battle Plan (6:00-6:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:15 AM": { label: "AM Maintenance Bay 4-6 (6:15-6:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:30 AM": { label: "W1-W3: W1(Bay4) W2(Bay5) W3(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "8:00 AM": { label: "W4-W6: W4(Bay1) W5(Bay2) W6(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "9:30 AM": { label: "W7-W9: W7(Bay1) W8(Bay2) W9(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "11:00 AM": { label: "AM Break (11:00-12:00)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "12:00 PM": { label: "W10-W12: W10(Bay1) W11(Bay2) W12(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "1:30 PM": { label: "Bay Shift: W13(Bay4) W14(Bay5) W15(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+
+                        // PM TEAM - Full Detail  
+                        "2:00 PM": { label: "PM Battle Plan (2:00-2:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:15 PM": { label: "PM Maintenance Bay 1-3 (2:15-2:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:30 PM": { label: "W16-W18: W16(Bay1) W17(Bay2) W18(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "4:00 PM": { label: "W19-W21: W19(Bay4) W20(Bay5) W21(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "5:30 PM": { label: "PM Break (5:30-6:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "6:30 PM": { label: "W22-W24: W22(Bay4) W23(Bay5) W24(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "8:00 PM": { label: "W25-W27: W25(Bay4) W26(Bay5) W27(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "9:30 PM": { label: "Bay Shift: W28(Bay1) W29(Bay2) W30(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+
+                        // GY TEAM - Full Detail
+                        "10:00 PM": { label: "GY Battle Plan (10:00-10:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "10:15 PM": { label: "GY Maintenance Bay 4-6 (10:15-10:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "10:30 PM": { label: "W31-W33: W31(Bay4) W32(Bay5) W33(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "12:00 AM": { label: "W34-W36: W34(Bay4) W35(Bay5) W36(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "1:30 AM": { label: "GY Break (1:30-2:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "2:30 AM": { label: "W37-W39: W37(Bay1) W38(Bay2) W39(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "4:00 AM": { label: "W40-W42: W40(Bay1) W41(Bay2) W42(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+                        "5:30 AM": { label: "Bay Shift: W43(Bay1) W44(Bay2) W45(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 }
+                    };
+
                 default:
                     return {};
             }

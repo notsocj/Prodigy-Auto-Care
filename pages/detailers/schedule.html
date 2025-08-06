@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule - Detailer Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cream': '#EFE4D2',
+            'blue-dark': '#254D70',
+            'navy': '#131D4F',
+            'brown': '#954C2E'
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="../../public/assets/styles/global.css" rel="stylesheet">
+  <style>
+    /* Mobile-first responsive design */
+    .mobile-nav {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .mobile-nav.hidden {
+      transform: translateX(-100%);
+    }
+
+    /* Calendar styling */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background-color: #e5e7eb;
+    }
+
+    .calendar-day {
+      background-color: white;
+      min-height: 100px;
+      padding: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .calendar-day:hover {
+      background-color: #f9fafb;
+    }
+
+    .calendar-day.other-month {
+      background-color: #f3f4f6;
+      color: #9ca3af;
+    }
+
+    .calendar-day.today {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .calendar-day.selected {
+      background-color: #1e40af;
+      color: white;
+    }
+
+    .job-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .job-item {
+      font-size: 10px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .job-item:hover {
+      transform: scale(1.05);
+    }
+
+    /* Mobile calendar adjustments */
+    @media (max-width: 768px) {
+      .calendar-day {
+        min-height: 80px;
+        padding: 4px;
+      }
+
+      .job-item {
+        font-size: 9px;
+        padding: 1px 3px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans">
+  <!-- Mobile Navigation Toggle -->
+  <div class="lg:hidden bg-white shadow-sm px-4 py-3 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <i class="fas fa-car text-navy text-xl"></i>
+      <h1 class="text-navy text-lg font-bold">Prodigy</h1>
+    </div>
+    <button id="mobile-menu-toggle" class="text-navy p-2">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"
+    class="mobile-nav fixed lg:static top-0 left-0 h-full w-64 bg-gradient-to-b from-navy to-blue-dark text-white z-50 lg:translate-x-0 -translate-x-full">
+    <div class="p-6">
+      <div class="flex items-center space-x-3 mb-8">
+        <i class="fas fa-car text-cream text-2xl"></i>
+        <div>
+          <h1 class="text-cream text-xl font-bold">Prodigy</h1>
+          <p class="text-cream/70 text-xs">Detailer Portal</p>
+        </div>
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="bg-white/10 rounded-lg p-4 mb-6">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-cream rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-navy text-lg"></i>
+          </div>
+          <div>
+            <h3 id="user-name" class="font-semibold text-cream">Loading...</h3>
+            <p id="user-email" class="text-cream/70 text-sm">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <ul class="space-y-2">
+        <li>
+          <a href="dashboard.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="jobs.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-tasks"></i>
+            <span>My Jobs</span>
+          </a>
+        </li>
+        <li>
+          <a href="schedule.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-white/20 text-cream font-medium">
+            <i class="fas fa-calendar"></i>
+            <span>Schedule</span>
+          </a>
+        </li>
+        <li>
+          <a href="profile.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-user-cog"></i>
+            <span>Profile Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Logout Button -->
+      <div class="absolute bottom-6 left-6 right-6">
+        <button id="logout-btn"
+          class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-colors">
+          <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 min-h-screen">
+    <main class="p-4 lg:p-6">
+      <!-- Page Header -->
+      <div class="mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 class="text-2xl lg:text-3xl font-bold text-navy mb-2">My Schedule</h1>
+            <p class="text-gray-600">View your upcoming jobs and schedule.</p>
+          </div>
+          <div class="mt-4 sm:mt-0 flex space-x-2">
+            <button id="today-btn"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              <i class="fas fa-calendar-day mr-2"></i>Today
+            </button>
+            <button id="refresh-schedule"
+              class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              <i class="fas fa-sync-alt mr-2"></i>Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Today's Jobs -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Today's Jobs</p>
+              <h3 id="today-jobs" class="text-xl font-bold text-blue-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-calendar-day text-blue-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tomorrow's Jobs -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Tomorrow</p>
+              <h3 id="tomorrow-jobs" class="text-xl font-bold text-green-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-calendar-plus text-green-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- This Week -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">This Week</p>
+              <h3 id="week-jobs" class="text-xl font-bold text-purple-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-calendar-week text-purple-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- This Month -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">This Month</p>
+              <h3 id="month-jobs" class="text-xl font-bold text-orange-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-calendar-alt text-orange-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar Section -->
+      <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6 mb-6">
+        <!-- Calendar Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-4">
+            <button id="prev-month" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i class="fas fa-chevron-left text-gray-600"></i>
+            </button>
+            <h2 id="calendar-title" class="text-xl font-bold text-navy">Loading...</h2>
+            <button id="next-month" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <i class="fas fa-chevron-right text-gray-600"></i>
+            </button>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="flex items-center text-sm text-gray-600">
+              <div class="w-3 h-3 bg-yellow-400 rounded mr-2"></div>
+              <span class="hidden sm:inline">Pending</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-600">
+              <div class="w-3 h-3 bg-blue-400 rounded mr-2"></div>
+              <span class="hidden sm:inline">Ongoing</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-600">
+              <div class="w-3 h-3 bg-green-400 rounded mr-2"></div>
+              <span class="hidden sm:inline">Completed</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar Days Header -->
+        <div class="calendar-grid mb-1">
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Sun</div>
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Mon</div>
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Tue</div>
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Wed</div>
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Thu</div>
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Fri</div>
+          <div class="bg-gray-100 p-3 text-center font-medium text-gray-700">Sat</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar-grid" class="calendar-grid">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Selected Day Details -->
+      <div id="day-details" class="bg-white rounded-xl shadow-sm p-4 lg:p-6 hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h3 id="selected-date" class="text-xl font-bold text-navy">Selected Date</h3>
+          <button id="close-day-details" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="day-jobs" class="space-y-3">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+  <!-- Job Details Modal -->
+  <div id="job-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-navy">Job Details</h3>
+        <button id="close-job-modal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div id="job-details-content">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="../../public/scripts/firebase.js"></script>
+  <script type="module">
+    import { auth, db } from '../../public/scripts/firebase.js';
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js';
+    import { doc, getDoc, updateDoc, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js';
+
+    let currentUser = null;
+    let currentUserData = null;
+    let currentWasherData = null;
+    let allJobs = [];
+    let currentDate = new Date();
+    let selectedDate = null;
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function () {
+      initializeApp();
+      setupMobileNavigation();
+      setupEventListeners();
+    });
+
+    function initializeApp() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          try {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              if (userData.role === 'washer') {
+                currentUser = user;
+                currentUserData = userData;
+                await loadWasherData();
+                await loadJobs();
+                updateUserProfile();
+                renderCalendar();
+                updateStats();
+              } else {
+                window.location.href = '../auth/login.html';
+              }
+            } else {
+              window.location.href = '../auth/login.html';
+            }
+          } catch (error) {
+            console.error('Error loading user data:', error);
+            window.location.href = '../auth/login.html';
+          }
+        } else {
+          window.location.href = '../auth/login.html';
+        }
+      });
+    }
+
+    async function loadWasherData() {
+      try {
+        const washersQuery = query(collection(db, 'washers'), where('userId', '==', currentUser.uid));
+        const washerSnapshot = await getDocs(washersQuery);
+
+        if (!washerSnapshot.empty) {
+          currentWasherData = { id: washerSnapshot.docs[0].id, ...washerSnapshot.docs[0].data() };
+        }
+      } catch (error) {
+        console.error('Error loading washer data:', error);
+      }
+    }
+
+    function updateUserProfile() {
+      document.getElementById('user-name').textContent = currentUserData.fullName || 'Unknown User';
+      document.getElementById('user-email').textContent = currentUserData.email || '';
+    }
+
+    async function loadJobs() {
+      try {
+        if (!currentWasherData) return;
+
+        // Load jobs assigned to this washer
+        const bookingsQuery = query(
+          collection(db, 'bookings'),
+          where('washerId', '==', currentWasherData.id),
+          orderBy('date', 'asc')
+        );
+
+        const bookingsSnapshot = await getDocs(bookingsQuery);
+        allJobs = [];
+
+        for (const docSnap of bookingsSnapshot.docs) {
+          const booking = { id: docSnap.id, ...docSnap.data() };
+
+          // Get user and vehicle details
+          if (booking.userId) {
+            const userDoc = await getDoc(doc(db, 'users', booking.userId));
+            booking.user = userDoc.exists() ? userDoc.data() : null;
+          }
+
+          if (booking.vehicleId) {
+            const vehicleDoc = await getDoc(doc(db, 'vehicles', booking.vehicleId));
+            booking.vehicle = vehicleDoc.exists() ? vehicleDoc.data() : null;
+          }
+
+          allJobs.push(booking);
+        }
+
+        renderCalendar();
+        updateStats();
+
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+      }
+    }
+
+    function updateStats() {
+      const today = new Date().toISOString().split('T')[0];
+      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+      // Get start of week and month
+      const startOfWeek = new Date();
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+      const weekStart = startOfWeek.toISOString().split('T')[0];
+
+      const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const monthStart = startOfMonth.toISOString().split('T')[0];
+
+      const todayJobs = allJobs.filter(job => job.date === today).length;
+      const tomorrowJobs = allJobs.filter(job => job.date === tomorrow).length;
+      const weekJobs = allJobs.filter(job => job.date >= weekStart).length;
+      const monthJobs = allJobs.filter(job => job.date >= monthStart).length;
+
+      document.getElementById('today-jobs').textContent = todayJobs;
+      document.getElementById('tomorrow-jobs').textContent = tomorrowJobs;
+      document.getElementById('week-jobs').textContent = weekJobs;
+      document.getElementById('month-jobs').textContent = monthJobs;
+    }
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      // Update calendar title
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      document.getElementById('calendar-title').textContent = `${monthNames[month]} ${year}`;
+
+      // Get first day of month and number of days
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startDate = new Date(firstDay);
+      startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+      const calendarGrid = document.getElementById('calendar-grid');
+      calendarGrid.innerHTML = '';
+
+      // Generate 42 days (6 weeks)
+      for (let i = 0; i < 42; i++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i);
+
+        const dayElement = createDayElement(date, month);
+        calendarGrid.appendChild(dayElement);
+      }
+    }
+
+    function createDayElement(date, currentMonth) {
+      const dayElement = document.createElement('div');
+      const isCurrentMonth = date.getMonth() === currentMonth;
+      const isToday = date.toDateString() === new Date().toDateString();
+      const dateString = date.toISOString().split('T')[0];
+      const dayJobs = allJobs.filter(job => job.date === dateString);
+
+      dayElement.className = `calendar-day cursor-pointer ${!isCurrentMonth ? 'other-month' : ''
+        } ${isToday ? 'today' : ''}`;
+
+      dayElement.innerHTML = `
+                <div class="font-medium mb-2">${date.getDate()}</div>
+                <div class="space-y-1">
+                    ${dayJobs.slice(0, 3).map(job => {
+        const statusColors = {
+          'Pending': 'bg-yellow-200 text-yellow-800',
+          'Ongoing': 'bg-blue-200 text-blue-800',
+          'Completed': 'bg-green-200 text-green-800',
+          'Cancelled': 'bg-red-200 text-red-800'
+        };
+        const colorClass = statusColors[job.status] || 'bg-gray-200 text-gray-800';
+
+        return `
+                            <div class="job-item ${colorClass} truncate" data-job-id="${job.id}">
+                                ${job.time} - ${job.service.substring(0, 15)}${job.service.length > 15 ? '...' : ''}
+                            </div>
+                        `;
+      }).join('')}
+                    ${dayJobs.length > 3 ? `
+                        <div class="text-xs text-gray-500">+${dayJobs.length - 3} more</div>
+                    ` : ''}
+                </div>
+            `;
+
+      dayElement.addEventListener('click', () => showDayDetails(date, dayJobs));
+
+      // Add event listeners to job items
+      dayElement.querySelectorAll('.job-item').forEach(jobEl => {
+        jobEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const jobId = jobEl.getAttribute('data-job-id');
+          const job = allJobs.find(j => j.id === jobId);
+          if (job) showJobDetails(job);
+        });
+      });
+
+      return dayElement;
+    }
+
+    function showDayDetails(date, jobs) {
+      selectedDate = date;
+      const dayDetails = document.getElementById('day-details');
+      const selectedDateEl = document.getElementById('selected-date');
+      const dayJobsEl = document.getElementById('day-jobs');
+
+      selectedDateEl.textContent = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      if (jobs.length === 0) {
+        dayJobsEl.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600">No jobs scheduled for this day.</p>
+                    </div>
+                `;
+      } else {
+        dayJobsEl.innerHTML = jobs.map(job => createJobCard(job)).join('');
+      }
+
+      dayDetails.classList.remove('hidden');
+      dayDetails.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function createJobCard(job) {
+      const statusColors = {
+        'Pending': { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: 'fa-clock' },
+        'Ongoing': { bg: 'bg-blue-100', text: 'text-blue-800', icon: 'fa-play' },
+        'Completed': { bg: 'bg-green-100', text: 'text-green-800', icon: 'fa-check' },
+        'Cancelled': { bg: 'bg-red-100', text: 'text-red-800', icon: 'fa-times' }
+      };
+
+      const status = statusColors[job.status] || statusColors['Pending'];
+      const customerName = job.user?.fullName || 'Unknown Customer';
+      const vehicleInfo = job.vehicle ?
+        `${job.vehicle.make} ${job.vehicle.model}` :
+        'Vehicle info unavailable';
+
+      return `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                     onclick="showJobDetails(${JSON.stringify(job).replace(/"/g, '&quot;')})">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h4 class="font-semibold text-navy">${job.service}</h4>
+                            <p class="text-sm text-gray-600">${customerName}</p>
+                            <p class="text-xs text-gray-500">${vehicleInfo}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-2 py-1 ${status.bg} ${status.text} text-xs rounded-full font-medium">
+                                <i class="fas ${status.icon} mr-1"></i>${job.status}
+                            </span>
+                            <p class="text-sm font-medium text-gray-900 mt-1">₱${job.payment?.amount || 0}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-600">
+                        <div class="flex items-center space-x-4">
+                            <span><i class="fas fa-clock mr-1"></i>${job.time}</span>
+                            ${job.bay ? `<span><i class="fas fa-map-marker-alt mr-1"></i>${job.bay}</span>` : ''}
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-700 font-medium">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+    }
+
+    function showJobDetails(job) {
+      const modal = document.getElementById('job-modal');
+      const content = document.getElementById('job-details-content');
+
+      const statusColors = {
+        'Pending': 'text-yellow-600',
+        'Ongoing': 'text-blue-600',
+        'Completed': 'text-green-600',
+        'Cancelled': 'text-red-600'
+      };
+
+      content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Job Header -->
+                    <div class="border-b border-gray-200 pb-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xl font-bold text-navy">${job.service}</h4>
+                            <span class="px-3 py-1 bg-gray-100 ${statusColors[job.status] || 'text-gray-600'} text-sm rounded-full font-medium">
+                                ${job.status}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 mt-1">Booking ID: ${job.id}</p>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Customer Information</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Name:</span>
+                                <span class="font-medium">${job.user?.fullName || 'Unknown'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Email:</span>
+                                <span class="font-medium">${job.user?.email || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Phone:</span>
+                                <span class="font-medium">${job.user?.phoneNumber || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Information -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Vehicle Information</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Make & Model:</span>
+                                <span class="font-medium">${job.vehicle ? `${job.vehicle.make} ${job.vehicle.model}` : 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Plate Number:</span>
+                                <span class="font-medium">${job.vehicle?.plateNumber || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Vehicle Type:</span>
+                                <span class="font-medium">${job.vehicle?.vehicle_type || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Job Details</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Date:</span>
+                                <span class="font-medium">${formatDate(job.date)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Time:</span>
+                                <span class="font-medium">${job.time}</span>
+                            </div>
+                            ${job.bay ? `
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Bay:</span>
+                                    <span class="font-medium">${job.bay}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Payment Information</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Amount:</span>
+                                <span class="font-medium text-lg">₱${job.payment?.amount || 0}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Method:</span>
+                                <span class="font-medium">${job.payment?.method || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Status:</span>
+                                <span class="font-medium">${job.payment?.status || 'Pending'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                        ${job.status === 'Pending' ? `
+                            <button onclick="updateJobStatusFromModal('${job.id}', 'Ongoing')" 
+                                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-play mr-2"></i>Start Job
+                            </button>
+                        ` : ''}
+                        ${job.status === 'Ongoing' ? `
+                            <button onclick="updateJobStatusFromModal('${job.id}', 'Completed')" 
+                                    class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-check mr-2"></i>Complete Job
+                            </button>
+                        ` : ''}
+                        <button onclick="closeJobModal()" 
+                                class="px-6 py-3 border border-gray-300 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+      modal.classList.remove('hidden');
+    }
+
+    // Global functions
+    window.showJobDetails = showJobDetails;
+
+    window.updateJobStatusFromModal = async function (jobId, newStatus) {
+      try {
+        await updateDoc(doc(db, 'bookings', jobId), {
+          status: newStatus
+        });
+
+        // Update local data
+        const job = allJobs.find(j => j.id === jobId);
+        if (job) {
+          job.status = newStatus;
+        }
+
+        renderCalendar();
+        updateStats();
+        closeJobModal();
+
+        // Update day details if showing
+        if (selectedDate) {
+          const dateString = selectedDate.toISOString().split('T')[0];
+          const dayJobs = allJobs.filter(job => job.date === dateString);
+          showDayDetails(selectedDate, dayJobs);
+        }
+
+        showNotification(`Job ${newStatus.toLowerCase()} successfully!`, 'success');
+      } catch (error) {
+        console.error('Error updating job status:', error);
+        showNotification('Error updating job status', 'error');
+      }
+    };
+
+    window.closeJobModal = function () {
+      document.getElementById('job-modal').classList.add('hidden');
+    };
+
+    function setupEventListeners() {
+      // Calendar navigation
+      document.getElementById('prev-month').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      });
+
+      document.getElementById('next-month').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      });
+
+      // Today button
+      document.getElementById('today-btn').addEventListener('click', () => {
+        currentDate = new Date();
+        renderCalendar();
+        updateStats();
+      });
+
+      // Refresh schedule
+      document.getElementById('refresh-schedule').addEventListener('click', () => {
+        loadJobs();
+      });
+
+      // Close day details
+      document.getElementById('close-day-details').addEventListener('click', () => {
+        document.getElementById('day-details').classList.add('hidden');
+      });
+
+      // Modal close
+      document.getElementById('close-job-modal').addEventListener('click', closeJobModal);
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+          window.location.href = '../auth/login.html';
+        } catch (error) {
+          console.error('Error signing out:', error);
+        }
+      });
+    }
+
+    function setupMobileNavigation() {
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+
+      mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white font-medium z-50 ${type === 'success' ? 'bg-green-600' :
+          type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+        }`;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  </script>
+</body>
+
+</html>

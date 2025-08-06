@@ -177,6 +177,9 @@
             const userDoc = await getDoc(doc(db, "users", result.user.uid));
             if (userDoc.exists() && userDoc.data().role === 'admin') {
               window.location.href = '../admin/dashboard.html';
+            } 
+            else if (userDoc.exists() && userDoc.data().role === 'washer'){ 
+              window.location.href = '../detailers/dashboard.html';
             } else {
               window.location.href = '../customer/home.html';
             }

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operations Management - Prodigy Auto Care Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .bg-cream {
+      background-color: #f7f5f0;
+    }
+
+    .text-navy {
+      color: #1a2b5c;
+    }
+
+    .bg-navy {
+      background-color: #1a2b5c;
+    }
+
+    .text-blue-dark {
+      color: #2c5aa0;
+    }
+
+    .bg-blue-dark {
+      background-color: #2c5aa0;
+    }
+
+    .team-card {
+      transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .time-slot {
+      transition: all 0.2s ease;
+    }
+
+    .time-slot:hover {
+      background-color: #f3f4f6;
+    }
+
+    .task-available {
+      background-color: #dcfce7;
+      border-left: 4px solid #16a34a;
+    }
+
+    .task-unavailable {
+      background-color: #fef2f2;
+      border-left: 4px solid #dc2626;
+    }
+
+    .task-maintenance {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+    }
+  </style>
+</head>
+
+<body class="bg-cream min-h-screen font-sans">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <img class="h-8 w-auto" src="../../public/assets/images/favicon.ico" alt="Prodigy Auto Care">
+          </div>
+          <div class="ml-4">
+            <h1 class="text-xl font-bold text-navy">Operations Management</h1>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="back-to-dashboard" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+          </button>
+          <button id="logout-btn" class="text-red-600 hover:text-red-800">
+            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Header Section -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-2xl font-bold font-display text-navy">Daily Operations Schedule</h2>
+          <p class="text-gray-600">Manage team schedules, bay assignments, and booking slots</p>
+        </div>
+        <div class="flex space-x-4">
+          <button id="schedule-date-picker"
+            class="bg-blue-dark text-white px-4 py-2 rounded-lg hover:bg-navy transition-colors">
+            <i class="fas fa-calendar mr-2"></i>Select Date
+          </button>
+          <button id="export-schedule-btn"
+            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <i class="fas fa-download mr-2"></i>Export Schedule
+          </button>
+        </div>
+      </div>
+
+      <!-- Date Selector -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div>
+          <label for="operations-date" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+          <input type="date" id="operations-date"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+        </div>
+        <div class="flex items-end">
+          <button id="load-operations-btn"
+            class="w-full bg-blue-dark text-white py-2 px-4 rounded-lg hover:bg-navy transition-colors">
+            <i class="fas fa-search mr-2"></i>Load Operations
+          </button>
+        </div>
+        <div class="flex items-end">
+          <button id="bulk-manage-btn"
+            class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+            <i class="fas fa-cogs mr-2"></i>Bulk Manage
+          </button>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-green-100 border-l-4 border-green-500 rounded"></div>
+          <span>Available Slot</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-red-100 border-l-4 border-red-500 rounded"></div>
+          <span>Unavailable/Break</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-yellow-100 border-l-4 border-yellow-500 rounded"></div>
+          <span>Maintenance</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-blue-100 border-l-4 border-blue-500 rounded"></div>
+          <span>Battle Plan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teams Schedule -->
+    <div id="teams-schedule" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- AM Team -->
+      <div class="team-card bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
+          <h3 class="text-xl font-bold">AM TEAM</h3>
+          <p class="text-blue-100">6:00 AM - 3:00 PM</p>
+          <div class="mt-2 text-sm">
+            <span class="bg-blue-400 px-2 py-1 rounded">3 Detailers</span>
+          </div>
+        </div>
+        <div id="am-schedule" class="p-4 space-y-2">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- PM Team -->
+      <div class="team-card bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6">
+          <h3 class="text-xl font-bold">PM TEAM</h3>
+          <p class="text-orange-100">2:00 PM - 11:00 PM</p>
+          <div class="mt-2 text-sm">
+            <span class="bg-orange-400 px-2 py-1 rounded">3 Detailers</span>
+          </div>
+        </div>
+        <div id="pm-schedule" class="p-4 space-y-2">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- GY Team -->
+      <div class="team-card bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6">
+          <h3 class="text-xl font-bold">GY TEAM</h3>
+          <p class="text-purple-100">10:00 PM - 7:00 AM</p>
+          <div class="mt-2 text-sm">
+            <span class="bg-purple-400 px-2 py-1 rounded">3 Detailers</span>
+          </div>
+        </div>
+        <div id="gy-schedule" class="p-4 space-y-2">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Operations Summary -->
+    <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+      <h3 class="text-lg font-bold text-navy mb-4">Operations Summary</h3>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-blue-600" id="total-slots">0</div>
+          <div class="text-sm text-gray-600">Total Time Slots</div>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-green-600" id="available-slots">0</div>
+          <div class="text-sm text-gray-600">Available Slots</div>
+        </div>
+        <div class="bg-yellow-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-yellow-600" id="booked-slots">0</div>
+          <div class="text-sm text-gray-600">Booked Slots</div>
+        </div>
+        <div class="bg-red-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-red-600" id="capacity-usage">0%</div>
+          <div class="text-sm text-gray-600">Capacity Usage</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Time Slot Detail Modal -->
+  <div id="slot-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-navy">Time Slot Details</h3>
+        <button id="close-slot-modal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div id="slot-detail-content">
+        <!-- Will be populated by JavaScript -->
+      </div>
+
+      <div class="flex justify-end mt-6 space-x-4">
+        <button id="edit-slot-btn" class="bg-blue-dark text-white px-4 py-2 rounded-lg hover:bg-navy transition-colors">
+          <i class="fas fa-edit mr-2"></i>Edit Slot
+        </button>
+        <button id="close-slot-modal-btn"
+          class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import {
+      onAdminAuthChange,
+      getAvailability,
+      getBookingsForDate,
+      updateDateAvailability
+    } from '../../public/scripts/admin.js';
+
+    let currentDate = null;
+    let currentAvailability = {};
+    let currentBookings = [];
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeOperations();
+      setupEventListeners();
+    });
+
+    function initializeOperations() {
+      // Set default date to today
+      const today = new Date();
+      document.getElementById('operations-date').value = today.toISOString().split('T')[0];
+
+      // Check authentication
+      onAdminAuthChange((user) => {
+        if (!user) {
+          window.location.href = '../auth/login.html';
+        } else {
+          loadOperations();
+        }
+      });
+    }
+
+    function setupEventListeners() {
+      document.getElementById('load-operations-btn').addEventListener('click', loadOperations);
+      document.getElementById('back-to-dashboard').addEventListener('click', () => {
+        window.location.href = 'dashboard.html';
+      });
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        // Add logout functionality
+        window.location.href = '../auth/login.html';
+      });
+      document.getElementById('close-slot-modal').addEventListener('click', () => {
+        document.getElementById('slot-detail-modal').classList.add('hidden');
+      });
+      document.getElementById('close-slot-modal-btn').addEventListener('click', () => {
+        document.getElementById('slot-detail-modal').classList.add('hidden');
+      });
+      document.getElementById('export-schedule-btn').addEventListener('click', exportSchedule);
+    }
+
+    async function loadOperations() {
+      const dateInput = document.getElementById('operations-date');
+      const selectedDate = dateInput.value;
+
+      if (!selectedDate) {
+        alert('Please select a date');
+        return;
+      }
+
+      try {
+        currentDate = selectedDate;
+
+        // Load availability and bookings
+        currentAvailability = await getAvailability(selectedDate) || {};
+        currentBookings = await getBookingsForDate(selectedDate) || [];
+
+        // Render team schedules
+        renderTeamSchedules();
+        updateOperationsSummary();
+
+      } catch (error) {
+        console.error('Error loading operations:', error);
+        alert('Error loading operations data');
+      }
+    }
+
+    function renderTeamSchedules() {
+      const amSchedule = document.getElementById('am-schedule');
+      const pmSchedule = document.getElementById('pm-schedule');
+      const gySchedule = document.getElementById('gy-schedule');
+
+      // Clear existing content
+      amSchedule.innerHTML = '';
+      pmSchedule.innerHTML = '';
+      gySchedule.innerHTML = '';
+
+      // Define team time slots
+      const teamSlots = {
+        am: [
+          '6:00 AM', '6:15 AM', '6:30 AM', '8:00 AM', '9:30 AM',
+          '11:00 AM', '12:00 PM', '1:30 PM'
+        ],
+        pm: [
+          '2:00 PM', '2:15 PM', '2:30 PM', '4:00 PM', '5:30 PM',
+          '6:30 PM', '8:00 PM', '9:30 PM'
+        ],
+        gy: [
+          '10:00 PM', '10:15 PM', '10:30 PM', '12:00 AM', '1:30 AM',
+          '2:30 AM', '4:00 AM', '5:30 AM'
+        ]
+      };
+
+      // Render each team's schedule
+      renderTeamSlots(amSchedule, teamSlots.am, 'AM');
+      renderTeamSlots(pmSchedule, teamSlots.pm, 'PM');
+      renderTeamSlots(gySchedule, teamSlots.gy, 'GY');
+    }
+
+    function renderTeamSlots(container, timeSlots, team) {
+      timeSlots.forEach(time => {
+        const slotData = currentAvailability[time] || {};
+        const bookingsForSlot = currentBookings.filter(b => b.time === time);
+
+        const slotElement = createTimeSlotElement(time, slotData, bookingsForSlot, team);
+        container.appendChild(slotElement);
+      });
+    }
+
+    function createTimeSlotElement(time, slotData, bookings, team) {
+      const div = document.createElement('div');
+      div.className = 'time-slot p-3 border rounded-lg cursor-pointer';
+
+      // Determine slot type and styling
+      let slotClass = 'task-available';
+      let icon = 'fas fa-car-wash';
+
+      if (!slotData.available || slotData.maxBookings === 0) {
+        if (slotData.label && slotData.label.includes('Battle Plan')) {
+          slotClass = 'bg-blue-100 border-l-4 border-blue-500';
+          icon = 'fas fa-users';
+        } else if (slotData.label && slotData.label.includes('Maintenance')) {
+          slotClass = 'task-maintenance';
+          icon = 'fas fa-tools';
+        } else if (slotData.label && slotData.label.includes('Break')) {
+          slotClass = 'task-unavailable';
+          icon = 'fas fa-coffee';
+        } else {
+          slotClass = 'task-unavailable';
+          icon = 'fas fa-times';
+        }
+      }
+
+      div.className += ` ${slotClass}`;
+
+      const currentBookings = slotData.currentBookings || 0;
+      const maxBookings = slotData.maxBookings || 0;
+      const capacityPercentage = maxBookings > 0 ? Math.round((currentBookings / maxBookings) * 100) : 0;
+
+      div.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-navy">${time}</div>
+                    <i class="${icon} text-gray-500"></i>
+                </div>
+                <div class="text-sm text-gray-600 mb-2">${slotData.label || 'No label'}</div>
+                ${maxBookings > 0 ? `
+                    <div class="flex items-center justify-between text-xs">
+                        <span>Bookings: ${currentBookings}/${maxBookings}</span>
+                        <span class="font-semibold">${capacityPercentage}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: ${capacityPercentage}%"></div>
+                    </div>
+                ` : ''}
+                ${bookings.length > 0 ? `
+                    <div class="mt-2 space-y-1">
+                        ${bookings.slice(0, 2).map(booking => `
+                            <div class="text-xs bg-white p-1 rounded border">
+                                ${booking.plateNumber || 'N/A'} - ${booking.vehicleClass || 'N/A'}
+                            </div>
+                        `).join('')}
+                        ${bookings.length > 2 ? `<div class="text-xs text-gray-500">+${bookings.length - 2} more</div>` : ''}
+                    </div>
+                ` : ''}
+            `;
+
+      // Add click event to show details
+      div.addEventListener('click', () => showSlotDetails(time, slotData, bookings, team));
+
+      return div;
+    }
+
+    function showSlotDetails(time, slotData, bookings, team) {
+      const modal = document.getElementById('slot-detail-modal');
+      const content = document.getElementById('slot-detail-content');
+
+      content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Time Slot</h4>
+                            <p class="text-lg font-bold text-navy">${time}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Team</h4>
+                            <p class="text-lg font-bold text-navy">${team}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Task Type</h4>
+                            <p>${slotData.label || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Capacity</h4>
+                            <p>${slotData.currentBookings || 0}/${slotData.maxBookings || 0}</p>
+                        </div>
+                    </div>
+                    
+                    ${bookings.length > 0 ? `
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Current Bookings</h4>
+                            <div class="space-y-2">
+                                ${bookings.map(booking => `
+                                    <div class="bg-gray-50 p-3 rounded border">
+                                        <div class="grid grid-cols-2 gap-2 text-sm">
+                                            <div><strong>Customer:</strong> ${booking.user?.fullName || 'N/A'}</div>
+                                            <div><strong>Vehicle:</strong> ${booking.vehicleClass || 'N/A'}</div>
+                                            <div><strong>Plate:</strong> ${booking.plateNumber || 'N/A'}</div>
+                                            <div><strong>Service:</strong> ${booking.service || 'N/A'}</div>
+                                            <div><strong>Bay:</strong> ${booking.bay || 'N/A'}</div>
+                                            <div><strong>Status:</strong> 
+                                                <span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">${booking.status}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '<p class="text-gray-500">No bookings for this time slot</p>'}
+                </div>
+            `;
+
+      modal.classList.remove('hidden');
+    }
+
+    function updateOperationsSummary() {
+      const slots = Object.keys(currentAvailability);
+      const totalSlots = slots.length;
+      const availableSlots = slots.filter(time => {
+        const slot = currentAvailability[time];
+        return slot.available && (slot.currentBookings || 0) < (slot.maxBookings || 0);
+      }).length;
+      const bookedSlots = slots.reduce((sum, time) => {
+        return sum + (currentAvailability[time].currentBookings || 0);
+      }, 0);
+      const totalCapacity = slots.reduce((sum, time) => {
+        return sum + (currentAvailability[time].maxBookings || 0);
+      }, 0);
+      const capacityUsage = totalCapacity > 0 ? Math.round((bookedSlots / totalCapacity) * 100) : 0;
+
+      document.getElementById('total-slots').textContent = totalSlots;
+      document.getElementById('available-slots').textContent = availableSlots;
+      document.getElementById('booked-slots').textContent = bookedSlots;
+      document.getElementById('capacity-usage').textContent = capacityUsage + '%';
+    }
+
+    function exportSchedule() {
+      if (!currentDate) {
+        alert('Please load operations data first');
+        return;
+      }
+
+      // Create CSV content
+      let csvContent = `Prodigy Auto Care - Operations Schedule for ${currentDate}\n\n`;
+      csvContent += `Time,Team,Task,Bay,Max Bookings,Current Bookings,Status\n`;
+
+      Object.keys(currentAvailability).forEach(time => {
+        const slot = currentAvailability[time];
+        const team = determineTeam(time);
+        csvContent += `${time},${team},"${slot.label || ''}","${slot.bay || ''}",${slot.maxBookings || 0},${slot.currentBookings || 0},${slot.available ? 'Available' : 'Unavailable'}\n`;
+      });
+
+      // Download CSV
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `operations-schedule-${currentDate}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    function determineTeam(time) {
+      const hour = parseInt(time.split(':')[0]);
+      const ampm = time.includes('AM') ? 'AM' : 'PM';
+
+      if ((ampm === 'AM' && hour >= 6) || (ampm === 'PM' && hour <= 1)) {
+        return 'AM';
+      } else if (ampm === 'PM' && hour >= 2 && hour <= 9) {
+        return 'PM';
+      } else {
+        return 'GY';
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Settings - Detailer Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cream': '#EFE4D2',
+            'blue-dark': '#254D70',
+            'navy': '#131D4F',
+            'brown': '#954C2E'
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="../../public/assets/styles/global.css" rel="stylesheet">
+  <style>
+    /* Mobile-first responsive design */
+    .mobile-nav {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .mobile-nav.hidden {
+      transform: translateX(-100%);
+    }
+
+    /* Form animations */
+    .form-field {
+      transition: all 0.3s ease;
+    }
+
+    .form-field:focus-within {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans">
+  <!-- Mobile Navigation Toggle -->
+  <div class="lg:hidden bg-white shadow-sm px-4 py-3 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <i class="fas fa-car text-navy text-xl"></i>
+      <h1 class="text-navy text-lg font-bold">Prodigy</h1>
+    </div>
+    <button id="mobile-menu-toggle" class="text-navy p-2">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"
+    class="mobile-nav fixed lg:static top-0 left-0 h-full w-64 bg-gradient-to-b from-navy to-blue-dark text-white z-50 lg:translate-x-0 -translate-x-full">
+    <div class="p-6">
+      <div class="flex items-center space-x-3 mb-8">
+        <i class="fas fa-car text-cream text-2xl"></i>
+        <div>
+          <h1 class="text-cream text-xl font-bold">Prodigy</h1>
+          <p class="text-cream/70 text-xs">Detailer Portal</p>
+        </div>
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="bg-white/10 rounded-lg p-4 mb-6">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-cream rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-navy text-lg"></i>
+          </div>
+          <div>
+            <h3 id="user-name" class="font-semibold text-cream">Loading...</h3>
+            <p id="user-email" class="text-cream/70 text-sm">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <ul class="space-y-2">
+        <li>
+          <a href="dashboard.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="jobs.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-tasks"></i>
+            <span>My Jobs</span>
+          </a>
+        </li>
+        <li>
+          <a href="schedule.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-calendar"></i>
+            <span>Schedule</span>
+          </a>
+        </li>
+        <li>
+          <a href="profile.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-white/20 text-cream font-medium">
+            <i class="fas fa-user-cog"></i>
+            <span>Profile Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Logout Button -->
+      <div class="absolute bottom-6 left-6 right-6">
+        <button id="logout-btn"
+          class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-colors">
+          <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 min-h-screen">
+    <main class="p-4 lg:p-6">
+      <!-- Page Header -->
+      <div class="mb-6">
+        <h1 class="text-2xl lg:text-3xl font-bold text-navy mb-2">Profile Settings</h1>
+        <p class="text-gray-600">Manage your account details and preferences.</p>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6 mb-6">
+        <h2 class="text-xl font-bold text-navy mb-6">Personal Information</h2>
+
+        <form id="profile-form" class="space-y-6">
+          <!-- Full Name -->
+          <div class="form-field">
+            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+            <input type="text" id="fullName" name="fullName"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark transition-all"
+              placeholder="Enter your full name" required>
+          </div>
+
+          <!-- Email (Read-only) -->
+          <div class="form-field">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <input type="email" id="email" name="email"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+              placeholder="Your email address" readonly>
+            <p class="text-xs text-gray-500 mt-1">Email cannot be changed. Contact admin if needed.</p>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-field">
+            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark transition-all"
+              placeholder="Enter your phone number">
+          </div>
+
+          <!-- Work Status -->
+          <div class="form-field">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Work Status</label>
+            <div class="flex items-center justify-between p-4 border border-gray-300 rounded-lg">
+              <div>
+                <h4 class="font-medium text-gray-900">Availability Status</h4>
+                <p class="text-sm text-gray-600">Set whether you're available for work assignments</p>
+              </div>
+              <div class="flex items-center space-x-3">
+                <span id="status-text" class="text-sm font-medium">Loading...</span>
+                <button type="button" id="status-toggle"
+                  class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none">
+                  <span id="status-indicator"
+                    class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <button type="submit" id="save-profile"
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors">
+              <i class="fas fa-save mr-2"></i>Save Changes
+            </button>
+            <button type="button" id="cancel-changes"
+              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 px-6 rounded-lg font-medium transition-colors">
+              <i class="fas fa-times mr-2"></i>Cancel Changes
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Account Stats -->
+      <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6 mb-6">
+        <h2 class="text-xl font-bold text-navy mb-6">Account Statistics</h2>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Total Jobs Completed -->
+          <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="w-12 h-12 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+              <i class="fas fa-check-circle text-green-600 text-xl"></i>
+            </div>
+            <h3 id="total-completed" class="text-2xl font-bold text-green-600">0</h3>
+            <p class="text-sm text-gray-600">Jobs Completed</p>
+          </div>
+
+          <!-- Member Since -->
+          <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="w-12 h-12 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+              <i class="fas fa-calendar-alt text-blue-600 text-xl"></i>
+            </div>
+            <h3 id="member-since" class="text-lg font-bold text-blue-600">-</h3>
+            <p class="text-sm text-gray-600">Member Since</p>
+          </div>
+
+          <!-- Average Rating -->
+          <div class="text-center p-4 bg-yellow-50 rounded-lg">
+            <div class="w-12 h-12 bg-yellow-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+              <i class="fas fa-star text-yellow-600 text-xl"></i>
+            </div>
+            <h3 id="avg-rating" class="text-2xl font-bold text-yellow-600">0.0</h3>
+            <p class="text-sm text-gray-600">Avg. Rating</p>
+          </div>
+
+          <!-- Current Status -->
+          <div class="text-center p-4 bg-purple-50 rounded-lg">
+            <div class="w-12 h-12 bg-purple-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+              <i class="fas fa-user-check text-purple-600 text-xl"></i>
+            </div>
+            <h3 id="current-status" class="text-lg font-bold text-purple-600">Loading...</h3>
+            <p class="text-sm text-gray-600">Current Status</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Section -->
+      <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6">
+        <h2 class="text-xl font-bold text-navy mb-6">Security Settings</h2>
+
+        <div class="space-y-4">
+          <!-- Change Password -->
+          <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div>
+              <h4 class="font-medium text-gray-900">Change Password</h4>
+              <p class="text-sm text-gray-600">Update your account password for security</p>
+            </div>
+            <button id="change-password-btn"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              Change Password
+            </button>
+          </div>
+
+          <!-- Two-Factor Authentication -->
+          <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div>
+              <h4 class="font-medium text-gray-900">Two-Factor Authentication</h4>
+              <p class="text-sm text-gray-600">Add an extra layer of security to your account</p>
+            </div>
+            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium cursor-not-allowed">
+              Coming Soon
+            </button>
+          </div>
+
+          <!-- Account Deletion -->
+          <div class="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
+            <div>
+              <h4 class="font-medium text-red-900">Delete Account</h4>
+              <p class="text-sm text-red-600">Permanently delete your account and data</p>
+            </div>
+            <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+  <!-- Change Password Modal -->
+  <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-navy">Change Password</h3>
+        <button id="close-password-modal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="password-form" class="space-y-4">
+        <div>
+          <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1">Current Password *</label>
+          <input type="password" id="current-password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="Enter current password" required>
+        </div>
+
+        <div>
+          <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">New Password *</label>
+          <input type="password" id="new-password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="Enter new password" required minlength="6">
+        </div>
+
+        <div>
+          <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password
+            *</label>
+          <input type="password" id="confirm-password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark"
+            placeholder="Confirm new password" required minlength="6">
+        </div>
+
+        <div class="flex space-x-4 pt-4">
+          <button type="button" id="cancel-password"
+            class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+            Cancel
+          </button>
+          <button type="submit"
+            class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            Update Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="../../public/scripts/firebase.js"></script>
+  <script type="module">
+    import { auth, db } from '../../public/scripts/firebase.js';
+    import { onAuthStateChanged, signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js';
+    import { doc, getDoc, updateDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js';
+
+    let currentUser = null;
+    let currentUserData = null;
+    let currentWasherData = null;
+    let originalFormData = {};
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function () {
+      initializeApp();
+      setupMobileNavigation();
+      setupEventListeners();
+    });
+
+    function initializeApp() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          try {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              if (userData.role === 'washer') {
+                currentUser = user;
+                currentUserData = userData;
+                await loadWasherData();
+                await loadUserStats();
+                populateForm();
+                updateUserProfile();
+              } else {
+                window.location.href = '../auth/login.html';
+              }
+            } else {
+              window.location.href = '../auth/login.html';
+            }
+          } catch (error) {
+            console.error('Error loading user data:', error);
+            window.location.href = '../auth/login.html';
+          }
+        } else {
+          window.location.href = '../auth/login.html';
+        }
+      });
+    }
+
+    async function loadWasherData() {
+      try {
+        const washersQuery = query(collection(db, 'washers'), where('userId', '==', currentUser.uid));
+        const washerSnapshot = await getDocs(washersQuery);
+
+        if (!washerSnapshot.empty) {
+          currentWasherData = { id: washerSnapshot.docs[0].id, ...washerSnapshot.docs[0].data() };
+        } else {
+          // Create washer document if it doesn't exist
+          await createWasherDocument();
+        }
+      } catch (error) {
+        console.error('Error loading washer data:', error);
+      }
+    }
+
+    async function loadUserStats() {
+      try {
+        if (!currentWasherData) return;
+
+        // Load completed jobs count
+        const bookingsQuery = query(
+          collection(db, 'bookings'),
+          where('washerId', '==', currentWasherData.id),
+          where('status', '==', 'Completed')
+        );
+
+        const completedSnapshot = await getDocs(bookingsQuery);
+        const completedCount = completedSnapshot.size;
+
+        // Calculate average rating (simplified - would be more complex in real app)
+        let totalRating = 0;
+        let ratedJobs = 0;
+
+        completedSnapshot.forEach(doc => {
+          const job = doc.data();
+          if (job.rating) {
+            totalRating += job.rating;
+            ratedJobs++;
+          }
+        });
+
+        const avgRating = ratedJobs > 0 ? (totalRating / ratedJobs).toFixed(1) : '0.0';
+
+        // Update stats display
+        document.getElementById('total-completed').textContent = completedCount;
+        document.getElementById('avg-rating').textContent = avgRating;
+
+        // Member since
+        const memberSince = currentUserData.createdAt ?
+          formatDate(currentUserData.createdAt) : 'Unknown';
+        document.getElementById('member-since').textContent = memberSince;
+
+        // Current status
+        const availability = currentWasherData?.availability || 'Unavailable';
+        document.getElementById('current-status').textContent = availability;
+
+      } catch (error) {
+        console.error('Error loading user stats:', error);
+      }
+    }
+
+    function populateForm() {
+      // Populate form fields
+      document.getElementById('fullName').value = currentUserData.fullName || '';
+      document.getElementById('email').value = currentUserData.email || '';
+      document.getElementById('phoneNumber').value = currentUserData.phoneNumber || '';
+
+      // Store original data for comparison
+      originalFormData = {
+        fullName: currentUserData.fullName || '',
+        phoneNumber: currentUserData.phoneNumber || ''
+      };
+
+      updateStatusDisplay();
+    }
+
+    function updateUserProfile() {
+      document.getElementById('user-name').textContent = currentUserData.fullName || 'Unknown User';
+      document.getElementById('user-email').textContent = currentUserData.email || '';
+    }
+
+    function updateStatusDisplay() {
+      const availability = currentWasherData?.availability || 'Unavailable';
+      const isOnWork = availability === 'On Work';
+
+      document.getElementById('status-text').textContent = availability;
+
+      const statusToggle = document.getElementById('status-toggle');
+      const statusIndicator = document.getElementById('status-indicator');
+
+      if (isOnWork) {
+        statusToggle.classList.add('bg-green-600');
+        statusToggle.classList.remove('bg-gray-400');
+        statusIndicator.classList.add('translate-x-5');
+        statusIndicator.classList.remove('translate-x-0');
+      } else {
+        statusToggle.classList.add('bg-gray-400');
+        statusToggle.classList.remove('bg-green-600');
+        statusIndicator.classList.add('translate-x-0');
+        statusIndicator.classList.remove('translate-x-5');
+      }
+    }
+
+    function setupEventListeners() {
+      // Profile form submission
+      document.getElementById('profile-form').addEventListener('submit', handleProfileSubmit);
+
+      // Cancel changes
+      document.getElementById('cancel-changes').addEventListener('click', () => {
+        populateForm();
+        showNotification('Changes cancelled', 'info');
+      });
+
+      // Status toggle
+      document.getElementById('status-toggle').addEventListener('click', toggleAvailability);
+
+      // Change password modal
+      document.getElementById('change-password-btn').addEventListener('click', () => {
+        document.getElementById('password-modal').classList.remove('hidden');
+      });
+
+      document.getElementById('close-password-modal').addEventListener('click', closePasswordModal);
+      document.getElementById('cancel-password').addEventListener('click', closePasswordModal);
+      document.getElementById('password-form').addEventListener('submit', handlePasswordChange);
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+          window.location.href = '../auth/login.html';
+        } catch (error) {
+          console.error('Error signing out:', error);
+        }
+      });
+    }
+
+    async function handleProfileSubmit(e) {
+      e.preventDefault();
+
+      const formData = {
+        fullName: document.getElementById('fullName').value.trim(),
+        phoneNumber: document.getElementById('phoneNumber').value.trim()
+      };
+
+      // Check if anything changed
+      if (formData.fullName === originalFormData.fullName &&
+        formData.phoneNumber === originalFormData.phoneNumber) {
+        showNotification('No changes to save', 'info');
+        return;
+      }
+
+      try {
+        const saveBtn = document.getElementById('save-profile');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        saveBtn.disabled = true;
+
+        // Update user document
+        await updateDoc(doc(db, 'users', currentUser.uid), formData);
+
+        // Update local data
+        currentUserData = { ...currentUserData, ...formData };
+        originalFormData = { ...formData };
+
+        updateUserProfile();
+        showNotification('Profile updated successfully!', 'success');
+
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        showNotification('Error updating profile', 'error');
+
+        const saveBtn = document.getElementById('save-profile');
+        saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Save Changes';
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function toggleAvailability() {
+      if (!currentWasherData) return;
+
+      const newAvailability = currentWasherData.availability === 'On Work' ? 'Unavailable' : 'On Work';
+
+      try {
+        await updateDoc(doc(db, 'washers', currentWasherData.id), {
+          availability: newAvailability
+        });
+
+        // Also update user document with status
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          status: newAvailability
+        });
+
+        currentWasherData.availability = newAvailability;
+        updateStatusDisplay();
+
+        // Update current status in stats
+        document.getElementById('current-status').textContent = newAvailability;
+
+        showNotification(`Status updated to ${newAvailability}`, 'success');
+      } catch (error) {
+        console.error('Error updating availability:', error);
+        showNotification('Error updating status', 'error');
+      }
+    }
+
+    function closePasswordModal() {
+      document.getElementById('password-modal').classList.add('hidden');
+      document.getElementById('password-form').reset();
+    }
+
+    async function handlePasswordChange(e) {
+      e.preventDefault();
+
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (newPassword !== confirmPassword) {
+        showNotification('New passwords do not match', 'error');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        showNotification('Password must be at least 6 characters', 'error');
+        return;
+      }
+
+      try {
+        // Reauthenticate user
+        const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+        await reauthenticateWithCredential(currentUser, credential);
+
+        // Update password
+        await updatePassword(currentUser, newPassword);
+
+        closePasswordModal();
+        showNotification('Password updated successfully!', 'success');
+      } catch (error) {
+        console.error('Error updating password:', error);
+
+        let errorMessage = 'Error updating password';
+        if (error.code === 'auth/wrong-password') {
+          errorMessage = 'Current password is incorrect';
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = 'New password is too weak';
+        }
+
+        showNotification(errorMessage, 'error');
+      }
+    }
+
+    function setupMobileNavigation() {
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+
+      mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return 'Unknown';
+
+      const date = timestamp.seconds ?
+        new Date(timestamp.seconds * 1000) :
+        new Date(timestamp);
+
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white font-medium z-50 ${type === 'success' ? 'bg-green-600' :
+          type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+        }`;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  </script>
+</body>
+
+</html>

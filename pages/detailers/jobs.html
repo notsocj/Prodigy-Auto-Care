@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Jobs - Detailer Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cream': '#EFE4D2',
+            'blue-dark': '#254D70',
+            'navy': '#131D4F',
+            'brown': '#954C2E'
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            'display': ['Poppins', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="../../public/assets/styles/global.css" rel="stylesheet">
+  <style>
+    /* Mobile-first responsive design */
+    .mobile-nav {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .mobile-nav.hidden {
+      transform: translateX(-100%);
+    }
+
+    /* Job card animations */
+    .job-card {
+      transition: all 0.3s ease;
+    }
+
+    .job-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Status badge styles */
+    .status-badge {
+      animation: pulse 2s infinite;
+    }
+
+    .status-badge.ongoing {
+      animation: pulse 1.5s infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans">
+  <!-- Mobile Navigation Toggle -->
+  <div class="lg:hidden bg-white shadow-sm px-4 py-3 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <i class="fas fa-car text-navy text-xl"></i>
+      <h1 class="text-navy text-lg font-bold">Prodigy</h1>
+    </div>
+    <button id="mobile-menu-toggle" class="text-navy p-2">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"
+    class="mobile-nav fixed lg:static top-0 left-0 h-full w-64 bg-gradient-to-b from-navy to-blue-dark text-white z-50 lg:translate-x-0 -translate-x-full">
+    <div class="p-6">
+      <div class="flex items-center space-x-3 mb-8">
+        <i class="fas fa-car text-cream text-2xl"></i>
+        <div>
+          <h1 class="text-cream text-xl font-bold">Prodigy</h1>
+          <p class="text-cream/70 text-xs">Detailer Portal</p>
+        </div>
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="bg-white/10 rounded-lg p-4 mb-6">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-cream rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-navy text-lg"></i>
+          </div>
+          <div>
+            <h3 id="user-name" class="font-semibold text-cream">Loading...</h3>
+            <p id="user-email" class="text-cream/70 text-sm">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <ul class="space-y-2">
+        <li>
+          <a href="dashboard.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="jobs.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-white/20 text-cream font-medium">
+            <i class="fas fa-tasks"></i>
+            <span>My Jobs</span>
+          </a>
+        </li>
+        <li>
+          <a href="schedule.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-calendar"></i>
+            <span>Schedule</span>
+          </a>
+        </li>
+        <li>
+          <a href="profile.html"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fas fa-user-cog"></i>
+            <span>Profile Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Logout Button -->
+      <div class="absolute bottom-6 left-6 right-6">
+        <button id="logout-btn"
+          class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-colors">
+          <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 min-h-screen">
+    <main class="p-4 lg:p-6">
+      <!-- Page Header -->
+      <div class="mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 class="text-2xl lg:text-3xl font-bold text-navy mb-2">My Jobs</h1>
+            <p class="text-gray-600">Manage your assigned jobs and track progress.</p>
+          </div>
+          <div class="mt-4 sm:mt-0">
+            <button id="refresh-jobs"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              <i class="fas fa-sync-alt mr-2"></i>Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Statistics -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Total Jobs -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Total Jobs</p>
+              <h3 id="total-jobs" class="text-xl font-bold text-navy mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-tasks text-blue-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Jobs -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Pending</p>
+              <h3 id="pending-jobs" class="text-xl font-bold text-yellow-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-clock text-yellow-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ongoing Jobs -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Ongoing</p>
+              <h3 id="ongoing-jobs" class="text-xl font-bold text-blue-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-play text-blue-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed Jobs -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Completed</p>
+              <h3 id="completed-jobs" class="text-xl font-bold text-green-600 mt-1">0</h3>
+            </div>
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-check text-green-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <!-- Search -->
+          <div class="flex-1">
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="text" id="search-jobs" placeholder="Search by customer name or vehicle..."
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+            </div>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <select id="status-filter"
+              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+              <option value="">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <!-- Date Filter -->
+          <div>
+            <input type="date" id="date-filter"
+              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-dark focus:border-blue-dark">
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs List -->
+      <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6">
+        <!-- Loading State -->
+        <div id="jobs-loading" class="text-center py-12">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p class="text-gray-500">Loading your jobs...</p>
+        </div>
+
+        <!-- Jobs Grid -->
+        <div id="jobs-grid" class="space-y-4 hidden">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- No Jobs State -->
+        <div id="no-jobs" class="text-center py-12 hidden">
+          <i class="fas fa-tasks text-4xl text-gray-400 mb-4"></i>
+          <h3 class="text-xl font-semibold text-navy mb-2">No Jobs Found</h3>
+          <p class="text-gray-600">You don't have any jobs that match the current filters.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+  <!-- Job Details Modal -->
+  <div id="job-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-navy">Job Details</h3>
+        <button id="close-job-modal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div id="job-details-content">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="../../public/scripts/firebase.js"></script>
+  <script type="module">
+    import { auth, db } from '../../public/scripts/firebase.js';
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js';
+    import { doc, getDoc, updateDoc, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js';
+
+    let currentUser = null;
+    let currentUserData = null;
+    let currentWasherData = null;
+    let allJobs = [];
+    let filteredJobs = [];
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function () {
+      initializeApp();
+      setupMobileNavigation();
+      setupEventListeners();
+    });
+
+    function initializeApp() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          try {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              if (userData.role === 'washer') {
+                currentUser = user;
+                currentUserData = userData;
+                await loadWasherData();
+                await loadJobs();
+                updateUserProfile();
+              } else {
+                window.location.href = '../auth/login.html';
+              }
+            } else {
+              window.location.href = '../auth/login.html';
+            }
+          } catch (error) {
+            console.error('Error loading user data:', error);
+            window.location.href = '../auth/login.html';
+          }
+        } else {
+          window.location.href = '../auth/login.html';
+        }
+      });
+    }
+
+    async function loadWasherData() {
+      try {
+        const washersQuery = query(collection(db, 'washers'), where('userId', '==', currentUser.uid));
+        const washerSnapshot = await getDocs(washersQuery);
+
+        if (!washerSnapshot.empty) {
+          currentWasherData = { id: washerSnapshot.docs[0].id, ...washerSnapshot.docs[0].data() };
+        }
+      } catch (error) {
+        console.error('Error loading washer data:', error);
+      }
+    }
+
+    function updateUserProfile() {
+      document.getElementById('user-name').textContent = currentUserData.fullName || 'Unknown User';
+      document.getElementById('user-email').textContent = currentUserData.email || '';
+    }
+
+    async function loadJobs() {
+      try {
+        if (!currentWasherData) return;
+
+        // Load jobs assigned to this washer
+        const bookingsQuery = query(
+          collection(db, 'bookings'),
+          where('washerId', '==', currentWasherData.id),
+          orderBy('date', 'desc')
+        );
+
+        const bookingsSnapshot = await getDocs(bookingsQuery);
+        allJobs = [];
+
+        for (const docSnap of bookingsSnapshot.docs) {
+          const booking = { id: docSnap.id, ...docSnap.data() };
+
+          // Get user and vehicle details
+          if (booking.userId) {
+            const userDoc = await getDoc(doc(db, 'users', booking.userId));
+            booking.user = userDoc.exists() ? userDoc.data() : null;
+          }
+
+          if (booking.vehicleId) {
+            const vehicleDoc = await getDoc(doc(db, 'vehicles', booking.vehicleId));
+            booking.vehicle = vehicleDoc.exists() ? vehicleDoc.data() : null;
+          }
+
+          allJobs.push(booking);
+        }
+
+        filteredJobs = [...allJobs];
+        updateJobStats();
+        displayJobs();
+
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+      } finally {
+        document.getElementById('jobs-loading').classList.add('hidden');
+      }
+    }
+
+    function updateJobStats() {
+      const totalJobs = allJobs.length;
+      const pendingJobs = allJobs.filter(job => job.status === 'Pending').length;
+      const ongoingJobs = allJobs.filter(job => job.status === 'Ongoing').length;
+      const completedJobs = allJobs.filter(job => job.status === 'Completed').length;
+
+      document.getElementById('total-jobs').textContent = totalJobs;
+      document.getElementById('pending-jobs').textContent = pendingJobs;
+      document.getElementById('ongoing-jobs').textContent = ongoingJobs;
+      document.getElementById('completed-jobs').textContent = completedJobs;
+    }
+
+    function displayJobs() {
+      const jobsGrid = document.getElementById('jobs-grid');
+      const noJobsEl = document.getElementById('no-jobs');
+
+      if (filteredJobs.length === 0) {
+        jobsGrid.classList.add('hidden');
+        noJobsEl.classList.remove('hidden');
+        return;
+      }
+
+      jobsGrid.classList.remove('hidden');
+      noJobsEl.classList.add('hidden');
+      jobsGrid.innerHTML = '';
+
+      filteredJobs.forEach(job => {
+        const jobCard = createJobCard(job);
+        jobsGrid.appendChild(jobCard);
+      });
+    }
+
+    function createJobCard(job) {
+      const statusColors = {
+        'Pending': { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: 'fa-clock', badge: 'status-badge' },
+        'Ongoing': { bg: 'bg-blue-100', text: 'text-blue-800', icon: 'fa-play', badge: 'status-badge ongoing' },
+        'Completed': { bg: 'bg-green-100', text: 'text-green-800', icon: 'fa-check', badge: '' },
+        'Cancelled': { bg: 'bg-red-100', text: 'text-red-800', icon: 'fa-times', badge: '' }
+      };
+
+      const status = statusColors[job.status] || statusColors['Pending'];
+      const customerName = job.user?.fullName || 'Unknown Customer';
+      const vehicleInfo = job.vehicle ?
+        `${job.vehicle.make} ${job.vehicle.model}` :
+        'Vehicle info unavailable';
+      const plateNumber = job.vehicle?.plateNumber || 'N/A';
+
+      const card = document.createElement('div');
+      card.className = 'job-card bg-white border border-gray-200 rounded-lg p-4 cursor-pointer';
+      card.onclick = () => showJobDetails(job);
+
+      card.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h3 class="font-semibold text-navy text-lg">${job.service}</h3>
+                            <span class="px-3 py-1 ${status.bg} ${status.text} text-xs rounded-full font-medium ${status.badge}">
+                                <i class="fas ${status.icon} mr-1"></i>${job.status}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 font-medium">${customerName}</p>
+                        <p class="text-sm text-gray-500">${job.user?.email || ''}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-900">₱${job.payment?.amount || 0}</p>
+                        ${job.payment?.method ? `<p class="text-xs text-gray-500">${job.payment.method}</p>` : ''}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-car mr-2 w-4"></i>
+                            <span>${vehicleInfo}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-hashtag mr-2 w-4"></i>
+                            <span>${plateNumber}</span>
+                        </div>
+                        ${job.vehicle?.vehicle_type ? `
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-tag mr-2 w-4"></i>
+                                <span>${job.vehicle.vehicle_type}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-calendar mr-2 w-4"></i>
+                            <span>${formatDate(job.date)}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-clock mr-2 w-4"></i>
+                            <span>${job.time}</span>
+                        </div>
+                        ${job.bay ? `
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                                <span>${job.bay}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="flex space-x-2 pt-3 border-t border-gray-200">
+                    ${job.status === 'Pending' ? `
+                        <button onclick="event.stopPropagation(); updateJobStatus('${job.id}', 'Ongoing')" 
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-medium transition-colors">
+                            <i class="fas fa-play mr-1"></i>Start Job
+                        </button>
+                    ` : ''}
+                    ${job.status === 'Ongoing' ? `
+                        <button onclick="event.stopPropagation(); updateJobStatus('${job.id}', 'Completed')" 
+                                class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm font-medium transition-colors">
+                            <i class="fas fa-check mr-1"></i>Complete Job
+                        </button>
+                    ` : ''}
+                    <button onclick="event.stopPropagation(); showJobDetails(this.closest('.job-card').job)" 
+                            class="px-4 py-2 border border-gray-300 hover:bg-gray-50 rounded text-sm font-medium transition-colors">
+                        <i class="fas fa-eye mr-1"></i>Details
+                    </button>
+                </div>
+            `;
+
+      // Store job data on the card for easy access
+      card.job = job;
+
+      return card;
+    }
+
+    function showJobDetails(job) {
+      const modal = document.getElementById('job-modal');
+      const content = document.getElementById('job-details-content');
+
+      const statusColors = {
+        'Pending': 'text-yellow-600',
+        'Ongoing': 'text-blue-600',
+        'Completed': 'text-green-600',
+        'Cancelled': 'text-red-600'
+      };
+
+      content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Job Header -->
+                    <div class="border-b border-gray-200 pb-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xl font-bold text-navy">${job.service}</h4>
+                            <span class="px-3 py-1 bg-gray-100 ${statusColors[job.status] || 'text-gray-600'} text-sm rounded-full font-medium">
+                                ${job.status}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 mt-1">Booking ID: ${job.id}</p>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Customer Information</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Name:</span>
+                                <span class="font-medium">${job.user?.fullName || 'Unknown'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Email:</span>
+                                <span class="font-medium">${job.user?.email || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Phone:</span>
+                                <span class="font-medium">${job.user?.phoneNumber || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Information -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Vehicle Information</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Make & Model:</span>
+                                <span class="font-medium">${job.vehicle ? `${job.vehicle.make} ${job.vehicle.model}` : 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Plate Number:</span>
+                                <span class="font-medium">${job.vehicle?.plateNumber || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Vehicle Type:</span>
+                                <span class="font-medium">${job.vehicle?.vehicle_type || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Job Details</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Date:</span>
+                                <span class="font-medium">${formatDate(job.date)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Time:</span>
+                                <span class="font-medium">${job.time}</span>
+                            </div>
+                            ${job.bay ? `
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Bay:</span>
+                                    <span class="font-medium">${job.bay}</span>
+                                </div>
+                            ` : ''}
+                            ${job.team ? `
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Team:</span>
+                                    <span class="font-medium">${job.team}</span>
+                                </div>
+                            ` : ''}
+                            ${job.washingCycle ? `
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Washing Cycle:</span>
+                                    <span class="font-medium">${job.washingCycle}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div>
+                        <h5 class="font-semibold text-navy mb-3">Payment Information</h5>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Amount:</span>
+                                <span class="font-medium text-lg">₱${job.payment?.amount || 0}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Method:</span>
+                                <span class="font-medium">${job.payment?.method || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Status:</span>
+                                <span class="font-medium">${job.payment?.status || 'Pending'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                        ${job.status === 'Pending' ? `
+                            <button onclick="updateJobStatusFromModal('${job.id}', 'Ongoing')" 
+                                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-play mr-2"></i>Start Job
+                            </button>
+                        ` : ''}
+                        ${job.status === 'Ongoing' ? `
+                            <button onclick="updateJobStatusFromModal('${job.id}', 'Completed')" 
+                                    class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-check mr-2"></i>Complete Job
+                            </button>
+                        ` : ''}
+                        <button onclick="closeJobModal()" 
+                                class="px-6 py-3 border border-gray-300 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+      modal.classList.remove('hidden');
+    }
+
+    // Global functions for job management
+    window.updateJobStatus = async function (jobId, newStatus) {
+      try {
+        await updateDoc(doc(db, 'bookings', jobId), {
+          status: newStatus
+        });
+
+        // Update local data
+        const job = allJobs.find(j => j.id === jobId);
+        if (job) {
+          job.status = newStatus;
+        }
+
+        applyFilters();
+        updateJobStats();
+        showNotification(`Job ${newStatus.toLowerCase()} successfully!`, 'success');
+      } catch (error) {
+        console.error('Error updating job status:', error);
+        showNotification('Error updating job status', 'error');
+      }
+    };
+
+    window.updateJobStatusFromModal = async function (jobId, newStatus) {
+      await updateJobStatus(jobId, newStatus);
+      closeJobModal();
+    };
+
+    window.closeJobModal = function () {
+      document.getElementById('job-modal').classList.add('hidden');
+    };
+
+    function setupEventListeners() {
+      // Search and filters
+      document.getElementById('search-jobs').addEventListener('input', applyFilters);
+      document.getElementById('status-filter').addEventListener('change', applyFilters);
+      document.getElementById('date-filter').addEventListener('change', applyFilters);
+
+      // Refresh jobs
+      document.getElementById('refresh-jobs').addEventListener('click', () => {
+        document.getElementById('jobs-loading').classList.remove('hidden');
+        document.getElementById('jobs-grid').classList.add('hidden');
+        document.getElementById('no-jobs').classList.add('hidden');
+        loadJobs();
+      });
+
+      // Modal close
+      document.getElementById('close-job-modal').addEventListener('click', closeJobModal);
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+          window.location.href = '../auth/login.html';
+        } catch (error) {
+          console.error('Error signing out:', error);
+        }
+      });
+    }
+
+    function applyFilters() {
+      const searchTerm = document.getElementById('search-jobs').value.toLowerCase();
+      const statusFilter = document.getElementById('status-filter').value;
+      const dateFilter = document.getElementById('date-filter').value;
+
+      filteredJobs = allJobs.filter(job => {
+        const customerName = job.user?.fullName?.toLowerCase() || '';
+        const vehicleInfo = job.vehicle ?
+          `${job.vehicle.make} ${job.vehicle.model} ${job.vehicle.plateNumber}`.toLowerCase() : '';
+
+        const matchesSearch = !searchTerm ||
+          customerName.includes(searchTerm) ||
+          vehicleInfo.includes(searchTerm) ||
+          job.service.toLowerCase().includes(searchTerm);
+
+        const matchesStatus = !statusFilter || job.status === statusFilter;
+        const matchesDate = !dateFilter || job.date === dateFilter;
+
+        return matchesSearch && matchesStatus && matchesDate;
+      });
+
+      displayJobs();
+    }
+
+    function setupMobileNavigation() {
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+
+      mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white font-medium z-50 ${type === 'success' ? 'bg-green-600' :
+          type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+        }`;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  </script>
+</body>
+
+</html>

@@ -8,6 +8,7 @@ import {
     updateBookingStatus as adminUpdateBookingStatus,
     updateWasherAvailability as adminUpdateWasherAvailability,
     assignWasherToBooking as adminAssignWasherToBooking,
+    assignBayToBooking as adminAssignBayToBooking,
     getAvailability as adminGetAvailability,
     updateDateAvailability as adminUpdateDateAvailability,
     deleteAvailability as adminDeleteAvailability,
@@ -55,6 +56,11 @@ export async function updateWasherAvailability(washerId, availability) {
 // Assign washer to booking
 export async function assignWasherToBooking(bookingId, washerId) {
     return await adminAssignWasherToBooking(bookingId, washerId);
+}
+
+// Assign bay to booking
+export async function assignBayToBooking(bookingId, bay) {
+    return await adminAssignBayToBooking(bookingId, bay);
 }
 
 // Availability management functions

@@ -260,6 +260,20 @@ export async function createBooking(vehicleId, service, date, time, paymentMetho
             }
         }
 
+        // Get vehicle details to populate class information
+        const vehicleDoc = await getDoc(doc(db, "vehicles", vehicleId));
+        if (!vehicleDoc.exists()) {
+            throw new Error("Vehicle not found");
+        }
+        const vehicleData = vehicleDoc.data();
+
+        // Get user details for mobile number
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.exists() ? userDoc.data() : {};
+
+        // Extract bay and team information from time slot label
+        const slotInfo = parseTimeSlotInfo(time, timeSlot.label);
+
         const bookingData = {
             userId: user.uid,
             washerId: null, // Will be assigned later by admin
@@ -277,6 +291,16 @@ export async function createBooking(vehicleId, service, date, time, paymentMetho
             loyaltyPointsUsed,
             rating: null,
             review: null,
+            // Enhanced tracking fields for detailed operations
+            vehicleClass: vehicleData.vehicle_type, // Sedan, SUV, etc.
+            bay: slotInfo.bay, // Will be assigned based on team shifts and current bookings
+            washingCycle: slotInfo.washingCycle, // W1, W2, etc.
+            team: slotInfo.team, // AM, PM, GY
+            taskType: slotInfo.taskType, // Washing, Battle Plan, Maintenance, Break, Bay Shift
+            plateNumber: vehicleData.plateNumber, // For easy reference
+            price: amount, // For quick reference
+            mobileNumber: userData.phoneNumber || null, // From user profile
+            invoiceNumber: null, // To be generated later
             createdAt: serverTimestamp()
         };
 
@@ -306,6 +330,39 @@ export async function createBooking(vehicleId, service, date, time, paymentMetho
         }
 
         await updateDoc(availabilityRef, updateData);
+
+        // Assign bay and team information based on shift management
+        try {
+            const { enhanceBookingWithBayInfo, getWashingCycleByTime, getTeamByTime } = await import('./shift-management.js');
+
+            // Get current bookings count for this time slot to determine bay assignment
+            const currentSlotBookings = isPremium ?
+                (timeSlot.currentPremiumBookings || 0) :
+                (timeSlot.currentBookings || 0);
+
+            const cycle = getWashingCycleByTime(time);
+            const team = getTeamByTime(time);
+
+            if (cycle && team) {
+                const bayIndex = currentSlotBookings % cycle.bays.length;
+                const assignedBay = cycle.bays[bayIndex];
+
+                // Update booking with bay and team information
+                await updateDoc(doc(db, "bookings", bookingRef.id), {
+                    bay: { id: assignedBay, name: `Bay ${assignedBay}` },
+                    washingCycle: cycle.code,
+                    team: team.name
+                });
+
+                // Update the returned booking data
+                bookingData.bay = { id: assignedBay, name: `Bay ${assignedBay}` };
+                bookingData.washingCycle = cycle.code;
+                bookingData.team = team.name;
+            }
+        } catch (shiftError) {
+            console.warn('Could not assign bay information:', shiftError);
+            // Booking creation continues without bay assignment
+        }
 
         return { id: bookingRef.id, ...bookingData };
 
@@ -414,6 +471,63 @@ export async function cancelBooking(bookingId) {
     }
 
     return true;
+}
+
+// Helper function to parse time slot information
+function parseTimeSlotInfo(time, label) {
+    const slotInfo = {
+        bay: null,
+        washingCycle: null,
+        team: null,
+        taskType: 'Washing'
+    };
+
+    // Determine team based on time
+    const hour = parseInt(time.split(':')[0]);
+    const ampm = time.includes('AM') ? 'AM' : 'PM';
+
+    if ((ampm === 'AM' && hour >= 6) || (ampm === 'PM' && hour <= 1)) {
+        slotInfo.team = 'AM';
+    } else if (ampm === 'PM' && hour >= 2 && hour <= 9) {
+        slotInfo.team = 'PM';
+    } else {
+        slotInfo.team = 'GY';
+    }
+
+    // Parse label for specific information
+    if (label.includes('Battle Plan')) {
+        slotInfo.taskType = 'Battle Plan';
+    } else if (label.includes('Maintenance')) {
+        slotInfo.taskType = 'Maintenance';
+    } else if (label.includes('Break')) {
+        slotInfo.taskType = 'Break';
+    } else if (label.includes('Bay Shift')) {
+        slotInfo.taskType = 'Bay Shift';
+    }
+
+    // Extract washing cycle (W1, W2, etc.)
+    const washingMatch = label.match(/W(\d+)-W(\d+)|W(\d+)/);
+    if (washingMatch) {
+        if (washingMatch[3]) {
+            slotInfo.washingCycle = `W${washingMatch[3]}`;
+        } else {
+            slotInfo.washingCycle = `W${washingMatch[1]}-W${washingMatch[2]}`;
+        }
+    }
+
+    // Extract bay information
+    const bayMatch = label.match(/Bay\s*(\d+)\)|Bay\s*(\d+)[,-]\s*(\d+)[,-]\s*(\d+)|Bay\s*(\d+)-(\d+)/);
+    if (bayMatch) {
+        if (bayMatch[1]) {
+            slotInfo.bay = `Bay ${bayMatch[1]}`;
+        } else if (bayMatch[2] && bayMatch[3] && bayMatch[4]) {
+            slotInfo.bay = `Bay ${bayMatch[2]},${bayMatch[3]},${bayMatch[4]}`;
+        } else if (bayMatch[5] && bayMatch[6]) {
+            slotInfo.bay = `Bay ${bayMatch[5]}-${bayMatch[6]}`;
+        }
+    }
+
+    return slotInfo;
 }
 
 export { auth, db };

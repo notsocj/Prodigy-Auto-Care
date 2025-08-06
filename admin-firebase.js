@@ -210,6 +210,14 @@ export async function assignWasherToBooking(bookingId, washerId) {
     return true;
 }
 
+// Assign bay to booking
+export async function assignBayToBooking(bookingId, bay) {
+    await updateDoc(doc(db, "bookings", bookingId), {
+        bay: bay
+    });
+    return true;
+}
+
 // Availability management functions
 export async function getAvailability(dateString) {
     try {

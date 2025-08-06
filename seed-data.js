@@ -71,25 +71,44 @@ export async function seedServices() {
 
 // Seed availability data for the next 30 days
 export async function seedAvailability() {
-    const timeSlots = {
-        "08:00 AM": { label: "Morning Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "09:00 AM": { label: "Morning Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "10:00 AM": { label: "Morning Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "11:00 AM": { label: "Morning Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "12:00 PM": { label: "Lunch Slot", available: true, maxBookings: 2, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 }, // Lunch break - fewer slots
-        "01:00 PM": { label: "Afternoon Slot 1", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "02:00 PM": { label: "Afternoon Slot 2", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "03:00 PM": { label: "Afternoon Slot 3", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "04:00 PM": { label: "Afternoon Slot 4", available: true, maxBookings: 3, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-        "05:00 PM": { label: "Evening Slot", available: true, maxBookings: 2, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 }  // End of day - fewer slots
+    const detailedTeamsTimeSlots = {
+        // AM TEAM - Full Detail
+        "6:00 AM": { label: "AM Battle Plan (6:00-6:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "6:15 AM": { label: "AM Maintenance Bay 4-6 (6:15-6:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "6:30 AM": { label: "W1-W3: W1(Bay4) W2(Bay5) W3(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "8:00 AM": { label: "W4-W6: W4(Bay1) W5(Bay2) W6(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "9:30 AM": { label: "W7-W9: W7(Bay1) W8(Bay2) W9(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "11:00 AM": { label: "AM Break (11:00-12:00)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "12:00 PM": { label: "W10-W12: W10(Bay1) W11(Bay2) W12(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "1:30 PM": { label: "Bay Shift: W13(Bay4) W14(Bay5) W15(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+
+        // PM TEAM - Full Detail  
+        "2:00 PM": { label: "PM Battle Plan (2:00-2:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "2:15 PM": { label: "PM Maintenance Bay 1-3 (2:15-2:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "2:30 PM": { label: "W16-W18: W16(Bay1) W17(Bay2) W18(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "4:00 PM": { label: "W19-W21: W19(Bay4) W20(Bay5) W21(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "5:30 PM": { label: "PM Break (5:30-6:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "6:30 PM": { label: "W22-W24: W22(Bay4) W23(Bay5) W24(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "8:00 PM": { label: "W25-W27: W25(Bay4) W26(Bay5) W27(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "9:30 PM": { label: "Bay Shift: W28(Bay1) W29(Bay2) W30(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+
+        // GY TEAM - Full Detail
+        "10:00 PM": { label: "GY Battle Plan (10:00-10:15)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "10:15 PM": { label: "GY Maintenance Bay 4-6 (10:15-10:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "10:30 PM": { label: "W31-W33: W31(Bay4) W32(Bay5) W33(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "12:00 AM": { label: "W34-W36: W34(Bay4) W35(Bay5) W36(Bay6)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "1:30 AM": { label: "GY Break (1:30-2:30)", available: false, maxBookings: 0, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "2:30 AM": { label: "W37-W39: W37(Bay1) W38(Bay2) W39(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "4:00 AM": { label: "W40-W42: W40(Bay1) W41(Bay2) W42(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 },
+        "5:30 AM": { label: "Bay Shift: W43(Bay1) W44(Bay2) W45(Bay3)", available: true, maxBookings: 3, maxPremiumBookings: 0, currentBookings: 0, currentPremiumBookings: 0 }
     };
 
     const today = new Date();
     let successCount = 0;
 
-    console.log('Starting availability seeding...');
+    console.log('Starting detailed teams availability seeding...');
 
-    for (let i = 1; i <= 90; i++) { // Start from tomorrow, seed for next 90 days
+    for (let i = 1; i <= 30; i++) { // Start from tomorrow, seed for next 30 days
         const date = new Date(today);
         date.setDate(today.getDate() + i);
 
@@ -99,34 +118,36 @@ export async function seedAvailability() {
             continue;
         }
 
-        // Reduce slots on Saturdays (day 6)
-        let dailyTimeSlots = { ...timeSlots };
-        if (date.getDay() === 6) {
-            // Saturday - reduced hours
-            dailyTimeSlots = {
-                "08:00 AM": { label: "Saturday Slot 1", available: true, maxBookings: 2, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-                "09:00 AM": { label: "Saturday Slot 2", available: true, maxBookings: 2, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-                "10:00 AM": { label: "Saturday Slot 3", available: true, maxBookings: 2, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-                "11:00 AM": { label: "Saturday Slot 4", available: true, maxBookings: 2, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 },
-                "12:00 PM": { label: "Saturday Final Slot", available: true, maxBookings: 1, maxPremiumBookings: 1, currentBookings: 0, currentPremiumBookings: 0 }
-            };
-        }
-
         const dateString = date.toISOString().split('T')[0];
 
         try {
-            await setDoc(doc(db, "availability", dateString), dailyTimeSlots);
+            await setDoc(doc(db, "availability", dateString), detailedTeamsTimeSlots);
             successCount++;
             if (successCount % 10 === 0) {
-                console.log(`Seeded ${successCount} days...`);
+                console.log(`Seeded ${successCount} days with detailed teams template...`);
             }
         } catch (error) {
             console.error(`Error seeding date ${dateString}:`, error);
         }
     }
 
-    console.log(`Availability seeded successfully for ${successCount} days`);
+    console.log(`Detailed teams availability seeded successfully for ${successCount} days`);
     return successCount;
+}
+
+try {
+    await setDoc(doc(db, "availability", dateString), dailyTimeSlots);
+    successCount++;
+    if (successCount % 10 === 0) {
+        console.log(`Seeded ${successCount} days...`);
+    }
+} catch (error) {
+    console.error(`Error seeding date ${dateString}:`, error);
+}
+    }
+
+console.log(`Availability seeded successfully for ${successCount} days`);
+return successCount;
 }
 
 // Seed admin settings
