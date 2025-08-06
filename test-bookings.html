@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Bookings</title>
+</head>
+
+<body>
+  <h1>Testing Firebase Bookings</h1>
+  <div id="output"></div>
+
+  <script type="module">
+    import { getUserBookings, onAuthStateChanged, auth } from '../../public/scripts/firebase.js';
+
+    const output = document.getElementById('output');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        output.innerHTML = '<p>User authenticated. Loading bookings...</p>';
+        try {
+          const bookings = await getUserBookings();
+          output.innerHTML = `
+                        <p>Found ${bookings.length} bookings:</p>
+                        <pre>${JSON.stringify(bookings, null, 2)}</pre>
+                    `;
+        } catch (error) {
+          output.innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+      } else {
+        output.innerHTML = '<p>User not authenticated</p>';
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -49,6 +49,19 @@
         .bg-gradient-primary {
             background: linear-gradient(135deg, #254D70 0%, #131D4F 100%);
         }
+
+        .rating-stars button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.25rem;
+            transition: color 0.2s;
+        }
+
+        .rating-stars button:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
@@ -128,7 +141,7 @@
                         <i class="fas fa-calendar-check text-blue-500"></i>
                     </div>
                 </div>
-                <h2 class="text-3xl font-bold text-navy">3</h2>
+                <h2 id="total-bookings" class="text-3xl font-bold text-navy">0</h2>
                 <p class="text-sm text-gray-500">Total Bookings</p>
             </div>
 
@@ -139,7 +152,7 @@
                         <i class="fas fa-check-circle text-green-500"></i>
                     </div>
                 </div>
-                <h2 class="text-3xl font-bold text-navy">0</h2>
+                <h2 id="completed-bookings" class="text-3xl font-bold text-navy">0</h2>
                 <p class="text-sm text-gray-500">Completed</p>
             </div>
 
@@ -150,7 +163,7 @@
                         <i class="fas fa-clock text-yellow-500"></i>
                     </div>
                 </div>
-                <h2 class="text-3xl font-bold text-navy">2</h2>
+                <h2 id="pending-bookings" class="text-3xl font-bold text-navy">0</h2>
                 <p class="text-sm text-gray-500">Pending</p>
             </div>
 
@@ -161,7 +174,7 @@
                         <i class="fas fa-coins text-brown"></i>
                     </div>
                 </div>
-                <h2 class="text-3xl font-bold text-navy">₱0</h2>
+                <h2 id="total-spent" class="text-3xl font-bold text-navy">₱0</h2>
                 <p class="text-sm text-gray-500">Total Spent</p>
             </div>
         </div>
@@ -171,117 +184,49 @@
             <div class="flex flex-wrap gap-4 items-center">
                 <div class="relative flex-grow">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" placeholder="Search bookings..."
+                    <input id="search-input" type="text" placeholder="Search bookings..."
                         class="pl-10 w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-dark">
                 </div>
 
                 <div class="flex gap-2">
-                    <select
+                    <select id="status-filter"
                         class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-dark">
-                        <option>All Status</option>
-                        <option>Pending</option>
-                        <option>Ongoing</option>
-                        <option>Completed</option>
-                        <option>Cancelled</option>
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
                     </select>
 
-                    <select
+                    <select id="service-filter"
                         class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-dark">
-                        <option>All Services</option>
-                        <option>Basic Wash</option>
-                        <option>Premium Wash</option>
-                        <option>Deluxe Wash</option>
+                        <option value="all">All Services</option>
+                        <option value="basic">Basic Wash</option>
+                        <option value="premium">Premium Wash</option>
+                        <option value="deluxe">Deluxe Wash</option>
                     </select>
                 </div>
 
-                <button class="text-blue-dark hover:text-navy flex items-center gap-1">
+                <button id="clear-filters" class="text-blue-dark hover:text-navy flex items-center gap-1">
                     <i class="fas fa-times"></i> Clear Filters
                 </button>
             </div>
         </div>
 
         <!-- Bookings List -->
-        <div class="space-y-4">
-            <!-- Booking Item - Ongoing -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-blue-500">
-                <div class="p-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <h3 class="text-xl font-bold text-navy mb-1">Premium Wash</h3>
-                            <p class="text-gray-600 text-sm">Mitsubishi Adventure (NCP-4012)</p>
-                        </div>
-                        <div class="mt-2 md:mt-0">
-                            <span
-                                class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Ongoing</span>
-                        </div>
-                    </div>
+        <div id="bookings-list" class="space-y-4">
+            <!-- Bookings will be loaded dynamically -->
+        </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                        <div>
-                            <p class="text-xs text-gray-500">Date</p>
-                            <p class="font-medium">Friday, June 13, 2025</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Time</p>
-                            <p class="font-medium">09:00 AM</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Amount</p>
-                            <p class="font-medium text-brown">₱350</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Payment</p>
-                            <p class="font-medium">GCash</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Booking Item - Pending -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-yellow-500">
-                <div class="p-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <h3 class="text-xl font-bold text-navy mb-1">Premium Wash</h3>
-                            <p class="text-gray-600 text-sm">Mitsubishi Adventure (NCP-4012)</p>
-                        </div>
-                        <div class="mt-2 md:mt-0">
-                            <span
-                                class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">Pending</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                        <div>
-                            <p class="text-xs text-gray-500">Date</p>
-                            <p class="font-medium">Saturday, June 14, 2025</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Time</p>
-                            <p class="font-medium">11:00 AM</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Amount</p>
-                            <p class="font-medium text-brown">₱350</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Payment</p>
-                            <p class="font-medium">Cash</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- No bookings state (hidden by default) -->
-            <div id="no-bookings" class="hidden bg-white rounded-lg shadow-md p-10 text-center">
-                <i class="fas fa-calendar-times text-gray-400 text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold text-navy mb-2">No Bookings Found</h3>
-                <p class="text-gray-600 mb-6">You don't have any car wash appointments yet.</p>
-                <a href="home.html"
-                    class="inline-block px-6 py-3 bg-blue-dark text-white rounded-lg hover:bg-navy transition-all">
-                    Book a Service Now
-                </a>
-            </div>
+        <!-- No bookings state -->
+        <div id="no-bookings" class="hidden bg-white rounded-lg shadow-md p-10 text-center">
+            <i class="fas fa-calendar-times text-gray-400 text-4xl mb-4"></i>
+            <h3 class="text-xl font-bold text-navy mb-2">No Bookings Found</h3>
+            <p class="text-gray-600 mb-6">You don't have any car wash appointments yet.</p>
+            <a href="home.html"
+                class="inline-block px-6 py-3 bg-blue-dark text-white rounded-lg hover:bg-navy transition-all">
+                Book a Service Now
+            </a>
         </div>
 
         <!-- New Booking Button (Fixed) -->
@@ -294,31 +239,7 @@
     </main>
 
     <!-- Scripts -->
-    <script type="module">
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', () => {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Signout button
-        document.getElementById('signout-btn').addEventListener('click', () => {
-            window.location.href = '../landing.html';
-        });
-
-        // Handle booking data and display
-        document.addEventListener('DOMContentLoaded', function () {
-            // This would normally fetch data from Firebase
-            // For now we're using the static HTML
-
-            // Example of how you would handle no bookings:
-            // const hasBookings = true;
-            // if (!hasBookings) {
-            //     document.querySelectorAll('.booking-item').forEach(el => el.classList.add('hidden'));
-            //     document.getElementById('no-bookings').classList.remove('hidden');
-            // }
-        });
-    </script>
+    <script type="module" src="../../public/scripts/customer-bookings.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Bookings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .debug {
+      background: #f0f0f0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    .error {
+      background: #ffebee;
+      border-left: 4px solid #f44336;
+    }
+
+    .success {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+    }
+
+    .info {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Booking Debug Page</h1>
+  <div id="status">Loading...</div>
+  <div id="user-info"></div>
+  <div id="bookings-info"></div>
+
+  <script type="module">
+    import {
+      onAuthChange,
+      getCurrentUser,
+      getUserBookings,
+      auth
+    } from './public/scripts/firebase.js';
+
+    const statusDiv = document.getElementById('status');
+    const userInfoDiv = document.getElementById('user-info');
+    const bookingsInfoDiv = document.getElementById('bookings-info');
+
+    function addLog(message, type = 'info') {
+      const div = document.createElement('div');
+      div.className = `debug ${type}`;
+      div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+      document.body.appendChild(div);
+      console.log(message);
+    }
+
+    addLog('Starting debug session...');
+
+    onAuthChange(async (user) => {
+      if (user) {
+        addLog(`User authenticated: ${user.email} (UID: ${user.uid})`, 'success');
+        statusDiv.innerHTML = '<strong>Status:</strong> User is authenticated';
+
+        try {
+          const currentUser = await getCurrentUser();
+          addLog(`User data loaded: ${JSON.stringify(currentUser)}`, 'info');
+          userInfoDiv.innerHTML = `
+                        <h3>User Information:</h3>
+                        <pre>${JSON.stringify(currentUser, null, 2)}</pre>
+                    `;
+
+          const bookings = await getUserBookings();
+          addLog(`Bookings loaded: ${bookings.length} found`, 'success');
+          bookingsInfoDiv.innerHTML = `
+                        <h3>Bookings (${bookings.length} total):</h3>
+                        <pre>${JSON.stringify(bookings, null, 2)}</pre>
+                    `;
+
+          if (bookings.length === 0) {
+            addLog('No bookings found for this user', 'info');
+          }
+
+        } catch (error) {
+          addLog(`Error loading user data or bookings: ${error.message}`, 'error');
+          bookingsInfoDiv.innerHTML = `<h3>Error:</h3><pre>${error.message}</pre>`;
+        }
+      } else {
+        addLog('User not authenticated', 'error');
+        statusDiv.innerHTML = '<strong>Status:</strong> User not authenticated';
+        userInfoDiv.innerHTML = '<p>Please log in first</p>';
+
+        // Redirect to login after a delay
+        setTimeout(() => {
+          window.location.href = './pages/auth/login.html';
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+
+</html>
