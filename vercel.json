@@ -1,13 +1,12 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/",
-      "destination": "/pages/landing.html"
-    },
-    {
-      "source": "/landing",
-      "destination": "/pages/landing.html"
-    },
+      "destination": "/pages/landing.html",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
     {
       "source": "/admin/(.*)",
       "destination": "/pages/admin/$1"
@@ -23,26 +22,9 @@
     {
       "source": "/detailers/(.*)",
       "destination": "/pages/detailers/$1"
-    },
-    {
-      "source": "/public/(.*)",
-      "destination": "/public/$1"
-    },
-    {
-      "source": "/assets/(.*)",
-      "destination": "/public/assets/$1"
     }
   ],
   "headers": [
-    {
-      "source": "/public/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
     {
       "source": "/(.*)",
       "headers": [

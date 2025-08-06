@@ -2,15 +2,10 @@
 <html lang="en">
 
 <head>
-  <meta chars        <!-- Auth Buttons - Desktop -->
-        <div class="hidden lg:flex items-center space-x-4">
-          <a href="/auth/login.html" class="px-4 py-2 text-white hover:text-cream/80 transition-colors">
-            Sign In
-          </a>
-          <a href="/auth/register.html"F-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prodigy Auto Care - Premium Car Wash Services</title>
-  <link rel="icon" type="image/x-icon" href="/public/assets/images/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../public/assets/images/favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -35,7 +30,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="/public/assets/styles/global.css" rel="stylesheet">
+  <link href="../public/assets/styles/global.css" rel="stylesheet">
 </head>
 
 <body class="bg-cream font-sans">
@@ -86,10 +81,10 @@
           <a href="#testimonials" class="py-2 hover:text-cream/80 transition-colors">Reviews</a>
           <a href="#contact" class="py-2 hover:text-cream/80 transition-colors">Contact</a>
           <div class="flex flex-col space-y-2 pt-4 border-t border-white/20">
-            <a href="/auth/login.html" class="py-2 text-center text-white hover:text-cream/80 transition-colors">
+            <a href="auth/login.html" class="py-2 text-center text-white hover:text-cream/80 transition-colors">
               Sign In
             </a>
-            <a href="/auth/register.html"
+            <a href="auth/register.html"
               class="py-2 bg-cream text-navy rounded-lg font-medium text-center hover:bg-white transition-colors">
               Get Started
             </a>
@@ -121,7 +116,7 @@
             Book online and get your car sparkling clean!
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <a href="/customer/home.html" class="btn-primary px-8 py-4 rounded-xl font-semibold text-lg hover-lift">
+            <a href="customer/home.html" class="btn-primary px-8 py-4 rounded-xl font-semibold text-lg hover-lift">
               <i class="fas fa-calendar-alt mr-2"></i>
               Book Now
             </a>
@@ -346,11 +341,11 @@
       <h2 class="text-3xl md:text-4xl font-bold font-display mb-4">Ready to Experience Premium Car Care?</h2>
       <p class="text-xl mb-8 text-cream/90">Join thousands of satisfied customers and book your car wash today.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/customer/home.html"
+        <a href="customer/home.html"
           class="btn-primary px-8 py-4 rounded-xl font-semibold text-lg hover-lift bg-white text-white hover:bg-cream">
           <i class="fas fa-calendar-alt mr-2"></i>
           Book Your Service
-        </a> <a href="/auth/register.html" class="btn-secondary px-8 py-4 rounded-xl font-semibold text-lg">
+        </a> <a href="auth/register.html" class="btn-secondary px-8 py-4 rounded-xl font-semibold text-lg">
           Create Account
         </a>
       </div>
@@ -440,9 +435,9 @@
         <div>
           <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-cream/80">
-            <li><a href="/customer/home.html" class="hover:text-white transition-colors">Book Service</a></li>
-            <li><a href="/auth/login.html" class="hover:text-white transition-colors">Sign In</a></li>
-            <li><a href="/auth/register.html" class="hover:text-white transition-colors">Register</a></li>
+            <li><a href="customer/home.html" class="hover:text-white transition-colors">Book Service</a></li>
+            <li><a href="auth/login.html" class="hover:text-white transition-colors">Sign In</a></li>
+            <li><a href="auth/register.html" class="hover:text-white transition-colors">Register</a></li>
             <li><a href="#contact" class="hover:text-white transition-colors">Contact</a></li>
           </ul>
         </div>
@@ -455,7 +450,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script type="module" src="/public/scripts/utils.js"></script>
+  <script type="module" src="public/scripts/utils.js"></script>
   <script>
     // Mobile menu toggle
     document.getElementById('mobile-menu-button').addEventListener('click', () => {
