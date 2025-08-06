@@ -34,16 +34,86 @@ export async function seedServices() {
 // Seed availability data for the next 90 days
 export async function seedAvailability() {
     const timeSlots = {
-        "08:00 AM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "09:00 AM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "10:00 AM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "11:00 AM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "12:00 PM": { available: true, maxBookings: 2, currentBookings: 0 }, // Lunch break - fewer slots
-        "01:00 PM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "02:00 PM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "03:00 PM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "04:00 PM": { available: true, maxBookings: 3, currentBookings: 0 },
-        "05:00 PM": { available: true, maxBookings: 2, currentBookings: 0 }  // End of day - fewer slots
+        "08:00 AM": { 
+            label: "W1-W3 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "09:00 AM": { 
+            label: "W4-W6 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "10:00 AM": { 
+            label: "W7-W9 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "11:00 AM": { 
+            label: "W10-W12 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "12:00 PM": { 
+            label: "W13-W15 (Bay 1,2)",
+            available: true, 
+            maxBookings: 2, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "01:00 PM": { 
+            label: "W16-W18 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "02:00 PM": { 
+            label: "W19-W21 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "03:00 PM": { 
+            label: "W22-W24 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "04:00 PM": { 
+            label: "W25-W27 (Bay 1,2,3)",
+            available: true, 
+            maxBookings: 3, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        },
+        "05:00 PM": { 
+            label: "W28-W30 (Bay 1,2)",
+            available: true, 
+            maxBookings: 2, 
+            currentBookings: 0,
+            maxPremiumBookings: 1,
+            currentPremiumBookings: 0
+        }
     };
 
     const today = new Date();
@@ -63,11 +133,8 @@ export async function seedAvailability() {
         const dateString = date.toISOString().split('T')[0];
 
         try {
-            await setDoc(doc(db, "availability", dateString), {
-                date: dateString,
-                timeSlots: timeSlots,
-                createdAt: serverTimestamp()
-            });
+            // Create the availability document with time slots as direct properties
+            await setDoc(doc(db, "availability", dateString), timeSlots);
             successCount++;
         } catch (error) {
             console.error(`Error seeding availability for ${dateString}:`, error);

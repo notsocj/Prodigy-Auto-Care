@@ -183,7 +183,6 @@ export async function getAvailability(date) {
             return availabilityDoc.data();
         }
 
-        console.log(`No availability data found for date: ${date}`);
         return null;
     } catch (error) {
         console.error('Error getting availability for', date, ':', error);
@@ -196,7 +195,6 @@ export async function checkDateAvailability(date) {
         const availability = await getAvailability(date);
 
         if (!availability) {
-            console.log(`No availability document for ${date}`);
             return false;
         }
 
@@ -208,7 +206,6 @@ export async function checkDateAvailability(date) {
             }
         }
 
-        console.log(`No available slots for ${date}`);
         return false;
     } catch (error) {
         console.error('Error checking date availability for', date, ':', error);

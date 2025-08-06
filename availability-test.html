@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Availability Check</title>
+</head>
+<body>
+    <h1>Availability Test</h1>
+    <div>
+        <button id="test-availability">Check Next 10 Days Availability</button>
+        <button id="seed-week">Seed Next 7 Days</button>
+    </div>
+    <div id="output"></div>
+
+    <script type="module">
+        import { 
+            checkDateAvailability, 
+            getAvailability,
+            db,
+            doc,
+            setDoc 
+        } from '../public/scripts/firebase.js';
+
+        const output = document.getElementById('output');
+
+        document.getElementById('test-availability').addEventListener('click', async () => {
+            output.innerHTML = '<p>Checking availability...</p>';
+            
+            const results = [];
+            const today = new Date();
+            
+            for (let i = 1; i <= 10; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() + i);
+                const dateString = checkDate.toISOString().split('T')[0];
+                
+                const hasAvailability = await checkDateAvailability(dateString);
+                results.push(`${dateString}: ${hasAvailability ? 'Available' : 'Not Available'}`);
+            }
+            
+            output.innerHTML = `
+                <h3>Availability Results:</h3>
+                <ul>
+                    ${results.map(result => `<li>${result}</li>`).join('')}
+                </ul>
+            `;
+        });
+
+        document.getElementById('seed-week').addEventListener('click', async () => {
+            output.innerHTML = '<p>Seeding next 7 days...</p>';
+            
+            const timeSlots = {
+                "09:00 AM": { 
+                    label: "W1-W3 (Bay 1,2,3)",
+                    available: true, 
+                    maxBookings: 3, 
+                    currentBookings: 0,
+                    maxPremiumBookings: 1,
+                    currentPremiumBookings: 0
+                },
+                "11:00 AM": { 
+                    label: "W10-W12 (Bay 1,2,3)",
+                    available: true, 
+                    maxBookings: 3, 
+                    currentBookings: 0,
+                    maxPremiumBookings: 1,
+                    currentPremiumBookings: 0
+                },
+                "02:00 PM": { 
+                    label: "W19-W21 (Bay 1,2,3)",
+                    available: true, 
+                    maxBookings: 3, 
+                    currentBookings: 0,
+                    maxPremiumBookings: 1,
+                    currentPremiumBookings: 0
+                },
+                "04:00 PM": { 
+                    label: "W25-W27 (Bay 1,2,3)",
+                    available: true, 
+                    maxBookings: 3, 
+                    currentBookings: 0,
+                    maxPremiumBookings: 1,
+                    currentPremiumBookings: 0
+                }
+            };
+
+            const today = new Date();
+            let count = 0;
+
+            for (let i = 1; i <= 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                // Skip Sundays
+                if (date.getDay() === 0) continue;
+                
+                const dateString = date.toISOString().split('T')[0];
+                
+                try {
+                    await setDoc(doc(db, "availability", dateString), timeSlots);
+                    count++;
+                } catch (error) {
+                    console.error('Error seeding:', error);
+                }
+            }
+            
+            output.innerHTML = `<p>Seeded ${count} days successfully!</p>`;
+        });
+    </script>
+</body>
+</html>
