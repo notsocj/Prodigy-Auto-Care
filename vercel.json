@@ -1,12 +1,13 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/",
-      "destination": "/pages/landing.html",
-      "permanent": true
-    }
-  ],
-  "rewrites": [
+      "destination": "/pages/landing.html"
+    },
+    {
+      "source": "/landing",
+      "destination": "/pages/landing.html"
+    },
     {
       "source": "/admin/(.*)",
       "destination": "/pages/admin/$1"
