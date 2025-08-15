@@ -800,23 +800,23 @@
     async function loadAvailableDates() {
       try {
         availableDates = [];
-        
+
         // Instead of checking each individual date, let's get all availability documents
         // and then check which ones have available slots
         const availabilityCollection = collection(db, "availability");
         const availabilitySnapshot = await getDocs(availabilityCollection);
-        
+
         const today = new Date();
         const todayString = today.toISOString().split('T')[0];
-        
+
         availabilitySnapshot.forEach((doc) => {
           const dateString = doc.id;
           const dateObj = new Date(dateString);
-          
+
           // Only include future dates (from tomorrow onwards)
           if (dateString > todayString) {
             const availability = doc.data();
-            
+
             // Check if any time slot has available spots
             let hasAvailableSlots = false;
             for (const time in availability) {
@@ -826,16 +826,16 @@
                 break;
               }
             }
-            
+
             if (hasAvailableSlots) {
               availableDates.push(dateString);
             }
           }
         });
-        
+
         // Sort dates in ascending order
         availableDates.sort();
-        
+
         console.log('Available dates loaded:', availableDates.length);
         initializeFlatpickr();
       } catch (error) {
@@ -853,7 +853,7 @@
 
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
+
       const maxDate = new Date();
       maxDate.setDate(maxDate.getDate() + 60);
 
